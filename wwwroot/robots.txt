@@ -1,8 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /usta-panel-2024/   
-Disallow: /Admin/
-Disallow: /api/
-Disallow: /hata/
-
-Sitemap: https://inegolboyaustasi.com/sitemap.xml
