@@ -1,0 +1,13 @@
+            @* Üst Menü *@
+            <nav class="admin-navbar">
+                <button class="btn btn-link sidebar-toggle" id="sidebarToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h1 class="page-title">@ViewData["Title"]</h1>
+                <div class="navbar-user">
+                    <span class="user-name">@User.Identity?.Name</span>
+                    <div class="user-avatar">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                </div>
+            </nav>

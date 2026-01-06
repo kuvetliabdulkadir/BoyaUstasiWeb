@@ -1,0 +1,96 @@
+﻿@model List<Statistic>
+@{
+    ViewData["Title"] = "İstatistikler";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>İstatistikler</h2>
+        <a class="btn btn-primary" href="@ViewBag.AdminPath/istatistikler/ekle">
+            <i class="bi bi-plus-lg me-2"></i>Yeni İstatistik
+        </a>
+    </div>
+    <div class="admin-card-body p-0">
+        @Html.AntiForgeryToken()
+        @if (Model.Any())
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Sıra</th>
+                        <th>Sıra No</th>
+                        <th>Başlık</th>
+                        <th>Değer</th>
+                        <th class="d-none d-lg-table-cell">Ek</th>
+                        <th class="d-none d-lg-table-cell">İkon</th>
+                        <th>Durum</th>
+                        <th class="d-none d-md-table-cell">Güncelleme</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ var orderedStats = Model.OrderBy(x => x.DisplayOrder).ToList(); int statIndex = 0; }
+                    @foreach (var s in orderedStats)
+                    {
+                        <tr data-item-id="@s.Id" data-display-order="@s.DisplayOrder">
+                            <td>
+                                @{
+                                    ViewData["ItemId"] = s.Id;
+                                    ViewData["UpdateOrderUrl"] = $"{ViewBag.AdminPath}/istatistikler/sira-guncelle";
+                                    ViewData["IsFirst"] = statIndex == 0;
+                                    ViewData["IsLast"] = statIndex == orderedStats.Count - 1;
+                                }
+                                <partial name="_AdminTableSortButtons" view-data="ViewData" />
+                            </td>
+                            <td>@s.DisplayOrder</td>
+                            <td><strong>@s.Title</strong></td>
+                            <td>@s.Value</td>
+                            <td class="d-none d-lg-table-cell">@(string.IsNullOrWhiteSpace(s.Suffix) ? "-" : s.Suffix)</td>
+                            <td class="d-none d-lg-table-cell">
+                                @if (!string.IsNullOrWhiteSpace(s.IconClass))
+                                {
+                                    <i class="@s.IconClass"></i>
+                                    <span class="text-muted small ms-2">@s.IconClass</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                @{
+                                    ViewData["IsActive"] = s.IsActive;
+                                    ViewData["ItemId"] = s.Id;
+                                    ViewData["ToggleUrl"] = $"{ViewBag.AdminPath}/istatistikler/aktif-pasif/{s.Id}";
+                                    ViewData["EntityName"] = "İstatistik";
+                                }
+                                <partial name="_AdminStatusBadge" view-data="ViewData" />
+                            </td>
+                            <td class="text-muted small d-none d-md-table-cell">@s.UpdatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>
+                                @{
+                                    ViewData["EditUrl"] = $"{ViewBag.AdminPath}/istatistikler/duzenle/{s.Id}";
+                                    ViewData["DeleteUrl"] = $"{ViewBag.AdminPath}/istatistikler/sil/{s.Id}";
+                                    ViewData["EntityName"] = "İstatistik";
+                                }
+                                <partial name="_AdminTableRowActions" view-data="ViewData" />
+                            </td>
+                        </tr>
+                        statIndex++;
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            {
+                ViewData["Icon"] = "bi-bar-chart-line";
+                ViewData["Message"] = "Henüz istatistik yok";
+            }
+            <partial name="_AdminEmptyState" view-data="ViewData" />
+        }
+    </div>
+</div>
+
+

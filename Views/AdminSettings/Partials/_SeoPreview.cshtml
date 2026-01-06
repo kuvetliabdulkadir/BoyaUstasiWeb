@@ -1,0 +1,277 @@
+@model boya_usta_web.Models.ViewModels.SeoSettingsVm
+
+@* Önizleme *@
+<div class="card mb-4">
+    <div class="card-header bg-dark text-white">
+        <i class="bi bi-eye me-2"></i>Google Arama Önizlemesi
+    </div>
+    <div class="card-body bg-light">
+        <div class="google-preview p-3 bg-white rounded border">
+            <div class="preview-title text-primary" style="font-size: 18px; font-family: Arial, sans-serif;" id="previewTitle">
+                @(string.IsNullOrEmpty(Model.DefaultTitle) ? "Sayfa Başlığı Buraya Gelecek" : Model.DefaultTitle)
+            </div>
+            <div class="preview-url text-success small" id="previewUrl">
+                @(string.IsNullOrEmpty(Model.SiteUrl) ? "https://www.example.com" : Model.SiteUrl)
+            </div>
+            <div class="preview-desc text-muted" style="font-size: 14px;" id="previewDesc">
+                @(string.IsNullOrEmpty(Model.DefaultDescription) ? "Meta açıklama buraya gelecek. Bu metin arama sonuçlarında görünür." : Model.DefaultDescription)
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .keywords-container {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        padding: 0.75rem;
+    }
+    .keywords-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        min-height: 38px;
+    }
+    .keyword-tag {
+        display: inline-flex;
+        align-items: center;
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        color: white;
+        padding: 0.35rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
+        animation: tagAppear 0.2s ease-out;
+    }
+    @@keyframes tagAppear {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    .keyword-tag .tag-text {
+        margin-right: 0.5rem;
+    }
+    .keyword-tag .tag-remove {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 0.75rem;
+        transition: all 0.2s;
+        padding: 0;
+    }
+    .keyword-tag .tag-remove:hover {
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(1.1);
+    }
+    .keywords-tags:empty::before {
+        content: 'Henüz anahtar kelime eklenmedi...';
+        color: #6c757d;
+        font-style: italic;
+    }
+    #keywordInput:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+</style>
+
+<script>
+    (function () {
+        // ========== Anahtar Kelime Tag Sistemi ==========
+        const keywordsHidden = document.getElementById('keywordsHidden');
+        const keywordsTags = document.getElementById('keywordsTags');
+        const keywordInput = document.getElementById('keywordInput');
+        const addKeywordBtn = document.getElementById('addKeywordBtn');
+        const keywordCount = document.getElementById('keywordCount');
+        
+        let keywords = [];
+        
+        // Mevcut kelimeleri yükle
+        function loadExistingKeywords() {
+            const existingValue = keywordsHidden.value || '';
+            if (existingValue.trim()) {
+                keywords = existingValue.split(',').map(k => k.trim()).filter(k => k.length > 0);
+                renderTags();
+            }
+        }
+        
+        // Tag'leri render et
+        function renderTags() {
+            keywordsTags.innerHTML = '';
+            keywords.forEach((keyword, index) => {
+                const tag = document.createElement('span');
+                tag.className = 'keyword-tag';
+                tag.innerHTML = `
+                    <span class="tag-text">${escapeHtml(keyword)}</span>
+                    <button type="button" class="tag-remove" data-index="${index}" title="Kaldır">
+                        <i class="bi bi-x"></i>
+                    </button>
+                `;
+                keywordsTags.appendChild(tag);
+            });
+            updateHiddenInput();
+            updateCount();
+        }
+        
+        // Hidden input'u güncelle
+        function updateHiddenInput() {
+            keywordsHidden.value = keywords.join(', ');
+        }
+        
+        // Sayacı güncelle
+        function updateCount() {
+            keywordCount.textContent = keywords.length;
+            if (keywords.length >= 5 && keywords.length <= 10) {
+                keywordCount.className = 'text-success';
+            } else if (keywords.length > 10) {
+                keywordCount.className = 'text-warning';
+            } else {
+                keywordCount.className = '';
+            }
+        }
+        
+        // Kelime ekle
+        function addKeyword(keyword) {
+            keyword = keyword.trim().toLowerCase();
+            if (!keyword)
+            {
+                return false;
+            }
+            
+            // Zaten var mı kontrol et
+            if (keywords.some(k => k.toLowerCase() === keyword)) {
+                // Animasyon ile uyar
+                keywordInput.classList.add('is-invalid');
+                setTimeout(() => keywordInput.classList.remove('is-invalid'), 1000);
+                return false;
+            }
+            
+            keywords.push(keyword);
+            renderTags();
+            return true;
+        }
+        
+        // Kelime kaldır
+        function removeKeyword(index) {
+            keywords.splice(index, 1);
+            renderTags();
+        }
+        
+        // HTML escape
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Event listeners
+        addKeywordBtn.addEventListener('click', function() {
+            if (addKeyword(keywordInput.value)) {
+                keywordInput.value = '';
+                keywordInput.focus();
+            }
+        });
+        
+        keywordInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (addKeyword(this.value)) {
+                    this.value = '';
+                }
+            }
+        });
+        
+        // Tag silme (event delegation)
+        keywordsTags.addEventListener('click', function(e) {
+            const removeBtn = e.target.closest('.tag-remove');
+            if (removeBtn) {
+                const index = parseInt(removeBtn.dataset.index);
+                removeKeyword(index);
+            }
+        });
+        
+        // Sayfa yüklendiğinde mevcut kelimeleri yükle
+        loadExistingKeywords();
+        
+        // Karakter Sayaçları
+        function setupCounter(inputId, counterId, maxLength) {
+            const input = document.getElementById(inputId);
+            const counter = document.getElementById(counterId);
+            if (!input || !counter)
+            {
+                return;
+            }
+            
+            function update() {
+                const len = (input.value || '').length;
+                counter.textContent = len;
+                if (len > maxLength * 0.9) {
+                    counter.classList.add('text-warning');
+                    counter.classList.remove('text-danger');
+                } else {
+                    counter.classList.remove('text-warning', 'text-danger');
+                }
+                if (len > maxLength) {
+                    counter.classList.remove('text-warning');
+                    counter.classList.add('text-danger');
+                }
+            }
+            update();
+            input.addEventListener('input', update);
+        }
+        
+        setupCounter('defaultTitle', 'titleCount', 70);
+        setupCounter('defaultDesc', 'descCount', 160);
+        
+        // Renk Seçici
+        const colorPicker = document.getElementById('themeColorPicker');
+        const colorInput = document.getElementById('ThemeColor');
+        if (colorPicker && colorInput) {
+            colorPicker.addEventListener('input', function() {
+                colorInput.value = this.value;
+            });
+            colorInput.addEventListener('input', function() {
+                if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) {
+                    colorPicker.value = this.value;
+                }
+            });
+        }
+        
+        // Google Önizleme
+        const titleInput = document.getElementById('defaultTitle');
+        const descInput = document.getElementById('defaultDesc');
+        const urlInput = document.getElementById('SiteUrl');
+        const previewTitle = document.getElementById('previewTitle');
+        const previewDesc = document.getElementById('previewDesc');
+        const previewUrl = document.getElementById('previewUrl');
+        
+        if (titleInput && previewTitle) {
+            titleInput.addEventListener('input', function() {
+                previewTitle.textContent = this.value || 'Sayfa Başlığı Buraya Gelecek';
+            });
+        }
+        if (descInput && previewDesc) {
+            descInput.addEventListener('input', function() {
+                previewDesc.textContent = this.value || 'Meta açıklama buraya gelecek.';
+            });
+        }
+        if (urlInput && previewUrl) {
+            urlInput.addEventListener('input', function() {
+                previewUrl.textContent = this.value || 'https://www.example.com';
+            });
+        }
+    })();
+</script>

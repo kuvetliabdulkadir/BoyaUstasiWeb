@@ -1,0 +1,99 @@
+﻿@model Service
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content text-center">
+            <h1 class="fade-in">@Html.Raw(Model.Title)</h1>
+            <p class="fade-in">@Html.Raw(Model.ShortDescription)</p>
+            <nav aria-label="breadcrumb" class="fade-in">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Services" asp-action="Index">Hizmetler</a></li>
+                    <li class="breadcrumb-item active">@Html.Raw(Model.Title)</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="service-detail-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="detail-card fade-in">
+                    @* Üst Başlık *@
+                    <div class="detail-header">
+                        <div class="detail-icon">
+                            @{
+                                var randomIcons = new[] { 
+                                    "fas fa-paint-roller", "fas fa-paint-brush", "fas fa-spray-can",
+                                    "bi bi-brush-fill", "bi bi-palette-fill", "bi bi-bucket-fill",
+                                    "bi bi-paint-bucket", "fas fa-hammer", "fas fa-tools",
+                                    "bi bi-tools", "fas fa-hard-hat", "bi bi-award"
+                                };
+                                var iconToShow = !string.IsNullOrEmpty(Model.IconClass) 
+                                    ? Model.IconClass 
+                                    : randomIcons[System.Math.Abs(Model.Id) % randomIcons.Length];
+                            }
+                            <i class="@iconToShow"></i>
+                        </div>
+                        <div>
+                            <h2 class="mb-2">@Html.Raw(Model.Title)</h2>
+                            @if (!string.IsNullOrEmpty(Model.PriceInfo))
+                            {
+                                <div class="price-pill">
+                                    <i class="bi bi-cash-coin me-2"></i>@Html.Raw(Model.PriceInfo)
+                                </div>
+                            }
+                        </div>  
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.FullDescription))
+                    {
+                        <p class="detail-text">@Html.Raw(Model.FullDescription)</p>
+                    }
+
+                    @if (Model.Details != null && Model.Details.Any())
+                    {
+                        <h3 class="mt-4 mb-3 h5 font-weight-bold">Hizmet Detayları</h3>
+                        <ul class="feature-list">
+                            @foreach (var d in Model.Details.OrderBy(x => x.DisplayOrder))
+                            {
+                                <li><i class="bi bi-check2-circle"></i> @Html.Raw(d.DetailText)</li>
+                            }
+                        </ul>
+                    }
+
+                    <div class="mt-5 d-flex gap-3 flex-wrap action-buttons">
+                        <a asp-controller="Contact" asp-action="Index" asp-route-serviceType="@Model.Title" class="btn btn-outline-gold btn-lg">
+                            <i class="bi bi-calendar-check me-2"></i>Teklif Al
+                        </a>
+                        <a asp-controller="Services" asp-action="Index" class="btn btn-outline-gold btn-lg">
+                            <i class="bi bi-arrow-left me-2"></i>Hizmetlere Dön
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="side-card fade-in-right">
+                    <h4 class="mb-2">Bu hizmet için fiyat teklifi</h4>
+                    <p class="text-muted mb-4 small">Kısa bir form ile sizi arayalım veya WhatsApp’tan yazın.</p>
+                    <a asp-controller="Contact" asp-action="Index" asp-route-serviceType="@Model.Title" class="btn btn-gold w-100 mb-3">
+                        <i class="bi bi-envelope me-2"></i>Form ile Gönder
+                    </a>
+                    <a asp-controller="Simulator" asp-action="Index" class="btn btn-outline-gold w-100">
+                        <i class="bi bi-palette-fill me-2"></i>Renk Simülatörü
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/service-detail.css" asp-append-version="true" />
+}

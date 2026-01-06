@@ -1,0 +1,43 @@
+﻿@model boya_usta_web.Models.ViewModels.ContactSettingsVm
+@{
+    ViewData["Title"] = "İletişim Ayarları";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>İletişim Ayarları</h2>
+        <a href="@ViewBag.AdminPath/ayarlar" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri
+        </a>
+    </div>
+    <div class="admin-card-body">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+
+        <form method="post" class="admin-form">
+            @Html.AntiForgeryToken()
+            <div class="row g-3">
+                <partial name="~/Views/AdminSettings/Partials/_ContactGeneral.cshtml" model="Model" />
+                <partial name="~/Views/AdminSettings/Partials/_ContactWorkingHours.cshtml" model="Model" />
+                <partial name="~/Views/AdminSettings/Partials/_ContactCities.cshtml" model="Model" />
+                <partial name="~/Views/AdminSettings/Partials/_ContactDistricts.cshtml" model="Model" />
+                <partial name="~/Views/AdminSettings/Partials/_ContactApiKeys.cshtml" model="Model" />
+                
+                <div class="col-12">
+                    <hr class="my-3" />
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-check-lg me-2"></i>Kaydet
+                    </button>
+                    <a href="@ViewBag.AdminPath/ayarlar" class="btn btn-outline-secondary ms-2">İptal</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="~/Views/AdminSettings/Partials/_ContactScripts.cshtml" />
+}

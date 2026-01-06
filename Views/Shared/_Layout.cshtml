@@ -1,0 +1,56 @@
+﻿@using boya_usta_web.Services
+@using boya_usta_web.Helpers
+@inject ISettingsService SettingsService
+@{
+    var settings = await SettingsService.GetAllSettingsAsync();
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    @await Html.PartialAsync("_Head")
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    
+    @* Yükleme Ekranı *@
+    <div id="loading-screen" class="loading-screen" role="status" aria-live="polite">
+        <div class="loading-content">
+            <div class="paint-brush-loader">
+                <i class="fas fa-paint-roller" style="color: #1a365d;" aria-hidden="true"></i>
+            </div>
+            <p>Yükleniyor...</p>
+        </div>
+    </div>
+
+    @await Html.PartialAsync("_Navigation")
+
+    @* Ana İçerik *@
+    <main id="main-content" role="main">
+        @RenderBody()
+    </main>
+
+    @await Html.PartialAsync("_Footer")
+    
+    @* Şema Verileri *@
+    @await Html.PartialAsync("_LocalBusinessSchema")
+    @if (ViewBag.Reviews != null)
+    {
+        @await Html.PartialAsync("_ReviewSchema")
+    }
+    @if (ViewBag.Faqs != null)
+    {
+        @await Html.PartialAsync("_FaqSchema")
+    }
+    @if (ViewBag.Breadcrumbs != null)
+    {
+        @await Html.PartialAsync("_BreadcrumbSchema")
+    }
+
+    @await Html.PartialAsync("_Scripts")
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

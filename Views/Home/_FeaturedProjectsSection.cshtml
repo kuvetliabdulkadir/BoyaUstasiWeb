@@ -1,0 +1,108 @@
+﻿@{
+    var featuredProjects = ViewBag.FeaturedProjects as List<Project> ?? new List<Project>();
+}
+
+@if (featuredProjects.Any())
+{
+
+
+    //Projeler 
+    <section class="projects-section bg-light-custom">
+        <div class="container">
+            <div class="section-header text-center fade-in">
+                <span class="section-subtitle">Projelerimiz</span>
+                <h2 class="section-title">Öne Çıkan Çalışmalarımız</h2>
+                <p class="section-description">Gerçekleştirdiğimiz başarılı projelerden örnekler</p>
+            </div>
+
+            @*Slider Alanı *@   
+            <div class="project-slider-container fade-in">
+                <button class="slider-nav-btn slider-prev" onclick="scrollProjects(-1)" aria-label="Önceki">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+
+                @*Slider İçeriği *@
+                <div class="project-slider" id="featuredProjectsSlider">
+                    @foreach (var project in featuredProjects)
+                    {
+                        <div class="project-slide-item">
+                            <div class="project-card hover-lift h-100">
+                                @if (!string.IsNullOrEmpty(project.AfterImagePath))
+                                {
+                                    <div class="project-image">
+                                        <img src="@project.AfterImagePath" 
+                                             alt="@Html.Raw(project.Title)" 
+                                             loading="lazy" 
+                                             decoding="async"
+                                             width="468" 
+                                             height="312" />
+                                        <div class="project-overlay">
+                                            <a asp-route="project-detail" asp-route-slug="@project.Slug" class="btn btn-primary">
+                                                <i class="bi bi-eye me-2"></i>Detaylı Görüntüle
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="project-image">
+                                        <div class="project-image-placeholder">
+                                            <i class="fas fa-paint-roller"></i>
+                                        </div>
+                                        <div class="project-overlay">
+                                            <a asp-route="project-detail" asp-route-slug="@project.Slug" class="btn btn-primary">
+                                                <i class="bi bi-eye me-2"></i>Detaylı Görüntüle
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                                <div class="project-content">
+                                    <h3>@Html.Raw(project.Title)</h3>
+                                    @if (!string.IsNullOrEmpty(project.Category))
+                                    {
+                                        <span class="project-category">@Html.Raw(project.Category)</span>
+                                    }
+                                    @if (!string.IsNullOrEmpty(project.Location))
+                                    {
+                                        <p class="project-location">
+                                            <i class="bi bi-geo-alt-fill me-1"></i>@Html.Raw(project.Location)
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+             
+                <button class="slider-nav-btn slider-next" onclick="scrollProjects(1)" aria-label="Sonraki">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+
+            <div class="text-center mt-5 fade-in">
+                <a asp-controller="Projects" asp-action="Index" class="btn btn-primary btn-lg">
+                    Tüm Projelerimizi Görüntüle <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function scrollProjects(direction) {
+            const slider = document.getElementById('featuredProjectsSlider');
+            const item = slider.querySelector('.project-slide-item');
+            if (!item) return;
+
+            @* Kart genişliği + boşluk (gap) değerini dinamik hesapla *@
+            const style = window.getComputedStyle(slider);
+            const gap = parseFloat(style.gap) || 32; // Fallback 32px
+            const scrollAmount = (item.offsetWidth + gap) * direction;
+            
+            slider.scrollBy({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+}

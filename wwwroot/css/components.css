@@ -1,0 +1,194 @@
+﻿/*
+ * DOSYA: components.css
+ * KONUM: wwwroot/css/components.css
+ * KULLANIM: Tüm Sayfalar (Butonlar, Kartlar, UI Elemanları)
+ * 
+ * AÇIKLAMA: Sitede tekrar tekrar kullanılan görsel bileşenlerin (Component) stilleri.
+ * Butonlar, Yükleme Ekranı, WhatsApp Butonu ve Kart yapıları burada tanımlanır.
+ */
+
+/* [YÜKLEME EKRANI] - Loading Screen
+   Sayfa tamamen yüklenene kadar kullanıcıyı karşılayan animasyonlu perde. */
+.loading-screen {
+    position: fixed;
+    /* Sayfanın üzerine kilitlenir (Scroll yapılamaz) */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--white);
+    z-index: 9999;
+    /* Her şeyin üstünde */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+    /* Kaybolma efekti */
+}
+
+/* Yükleme bittiğinde JavaScript ile eklenen sınıf */
+.loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    /* Arkadaki butonlara tıklanabilsin */
+}
+
+/* Yükleniyor animasyonu içindeki Fırça İkonu (Büyütüldü) */
+.paint-brush-loader {
+    animation: bounce 2s infinite ease-in-out;
+    margin-bottom: 1.5rem;
+}
+
+.paint-brush-loader i {
+    font-size: 4rem !important;
+    /* İkonu büyüt */
+    color: var(--primary-color) !important;
+}
+
+.loading-content p {
+    font-size: 1.5rem;
+    /* Yazıyı büyüt */
+    color: var(--primary-color);
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* [BUTONLAR] - Buttons
+   Bootstrap butonlarını özelleştirme. */
+.btn {
+    padding: 0.75rem 1.5rem;
+    /* İç boşlukları artır */
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    transition: all var(--transition);
+    /* Yumuşak geçiş */
+    text-transform: uppercase;
+    /* Harfleri büyüt */
+    letter-spacing: 0.5px;
+    /* Harf aralarını aç */
+    font-size: 0.9rem;
+}
+
+/* Ana Buton (Mavi/Koyu) */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--text-light);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-2px);
+    /* Yukarı kalkma efekti */
+    box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
+}
+
+/* İkincil Buton (Altın/Vurgu) */
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: var(--text-light);
+}
+
+.btn-secondary:hover {
+    background-color: #a39068;
+    /* Biraz daha koyu altın */
+    border-color: #a39068;
+    transform: translateY(-2px);
+}
+
+/* WhatsApp Butonu (Özel Yeşil) */
+.btn-whatsapp {
+    background-color: #25D366 !important;
+    color: white !important;
+    border: none !important;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* İkon ve yazı arası boşluk */
+    box-shadow: 0 4px 6px rgba(37, 211, 102, 0.2);
+}
+
+.btn-whatsapp:hover {
+    background-color: #128C7E !important;
+    /* Daha koyu yeşil (WhatsApp Kurumsal Rengi) */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(37, 211, 102, 0.4);
+    color: white !important;
+}
+
+/* [BÖLÜM BAŞLIKLARI] - Section Headers
+   Her bölümün (Hizmetler, Projeler vb.) başlığı. */
+.section-header {
+    text-align: center;
+    /* Ortala */
+    margin-bottom: 3.5rem;
+    position: relative;
+    padding-bottom: 1.5rem;
+}
+
+/* Başlığın altındaki çizgi */
+.section-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    /* Tam ortaya hizala */
+    width: 60px;
+    height: 3px;
+    background: var(--secondary-color);
+    border-radius: 3px;
+}
+
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.section-subtitle {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--secondary-color);
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+}
+
+/* [KARTLAR] - Cards
+   Global kart stilleri. */
+.card-hover {
+    transition: all var(--transition);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    /* Hover'da yukarı kalk */
+    box-shadow: var(--shadow);
+}

@@ -1,0 +1,31 @@
+@model boya_usta_web.Models.ViewModels.SeoSettingsVm
+
+@* Tema ve Robots *@
+<div class="card mb-4">
+    <div class="card-header bg-secondary text-white">
+        <i class="bi bi-palette me-2"></i>Tema ve İndeksleme
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label asp-for="ThemeColor" class="form-label"></label>
+                <div class="input-group">
+                    <input type="color" class="form-control form-control-color" id="themeColorPicker" 
+                           value="@Model.ThemeColor" style="width: 50px;" />
+                    <input asp-for="ThemeColor" class="form-control" placeholder="#2c3e50" />
+                </div>
+                <div class="form-text">Tarayıcı tema rengi (mobil adres çubuğu)</div>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="RobotsDefault" class="form-label"></label>
+                <select asp-for="RobotsDefault" class="form-select">
+                    <option value="index, follow">index, follow (Önerilen)</option>
+                    <option value="noindex, follow">noindex, follow</option>
+                    <option value="index, nofollow">index, nofollow</option>
+                    <option value="noindex, nofollow">noindex, nofollow</option>
+                </select>
+                <div class="form-text">Arama motorları için varsayılan direktif</div>
+            </div>
+        </div>
+    </div>
+</div>

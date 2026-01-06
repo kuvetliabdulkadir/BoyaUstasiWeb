@@ -1,0 +1,31 @@
+@model boya_usta_web.Models.ViewModels.ContactSettingsVm
+
+<div class="col-12">
+    <label asp-for="Cities" class="form-label">Hizmet İlleri</label>
+    <div class="service-cities-container">
+        <div class="d-flex flex-wrap gap-2 mb-2" id="serviceCitiesTags">
+            @if (!string.IsNullOrEmpty(Model.Cities))
+            {
+                var cities = Model.Cities.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(c => c.Trim())
+                    .Where(c => !string.IsNullOrWhiteSpace(c));
+                foreach (var city in cities)
+                {
+                    <span class="badge bg-success d-flex align-items-center gap-2" style="font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                        <span>@city</span>
+                        <button type="button" class="btn-close btn-close-white" style="font-size: 0.7rem;" onclick="removeServiceCity(this)" aria-label="Kaldır"></button>
+                    </span>
+                }
+            }
+        </div>
+        <div class="input-group">
+            <input type="text" id="serviceCityInput" class="form-control" placeholder="İl adı yazın ve Enter'a basın" />
+            <button type="button" class="btn btn-outline-success" onclick="addServiceCity()">
+                <i class="bi bi-plus-lg"></i> Ekle
+            </button>
+        </div>
+        <input type="hidden" asp-for="Cities" id="serviceCitiesHidden" />
+        <div class="text-muted small mt-2">İl adı yazıp Enter'a basın veya "Ekle" butonuna tıklayın. Silmek için tag üzerindeki X'e tıklayın.</div>
+    </div>
+    <span asp-validation-for="Cities" class="text-danger"></span>
+</div>

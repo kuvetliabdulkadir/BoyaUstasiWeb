@@ -1,0 +1,111 @@
+﻿@model PopupSetting
+@{
+    ViewData["Title"] = "Pop-up Ayarı";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Pop-up Ayarı</h2>
+        <a href="@ViewBag.AdminPath/ayarlar" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri
+        </a>
+    </div>
+    <div class="admin-card-body">
+        <form method="post" class="admin-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="Title" class="form-label">Başlık *</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Content" class="form-label">İçerik</label>
+                    <textarea asp-for="Content" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ButtonText" class="form-label">Buton Metni</label>
+                    <input asp-for="ButtonText" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ButtonUrl" class="form-label">Buton URL</label>
+                    <input asp-for="ButtonUrl" class="form-control" placeholder="/iletisim" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="DelaySeconds" class="form-label">Gecikme (sn)</label>
+                    <input asp-for="DelaySeconds" type="number" min="0" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="DontShowAgainDays" class="form-label">Bir Daha Gösterme (gün)</label>
+                    <input asp-for="DontShowAgainDays" type="number" min="0" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="StartDate" class="form-label">Başlangıç</label>
+                    <input asp-for="StartDate" type="text" class="form-control flatpickr-datetime" id="startDate" data-value="@(Model.StartDate?.ToLocalTime().ToString("yyyy-MM-dd HH:mm"))" placeholder="Başlangıç tarihi seçin" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="EndDate" class="form-label">Bitiş</label>
+                    <input asp-for="EndDate" type="text" class="form-control flatpickr-datetime" id="endDate" data-value="@(Model.EndDate?.ToLocalTime().ToString("yyyy-MM-dd HH:mm"))" placeholder="Bitiş tarihi seçin" />
+                </div>
+                <div class="col-md-6 d-flex align-items-center">
+                    <div class="form-check mt-4">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label">Aktif</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr class="my-3" />
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-check-lg me-2"></i>Kaydet
+                    </button>
+                    <a href="@ViewBag.AdminPath/ayarlar" class="btn btn-outline-secondary ms-2">İptal</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            
+            const startPicker = flatpickr(startDateInput, {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true,
+                locale: "tr",
+                defaultDate: startDateInput?.dataset.value || null,
+                onChange: function(selectedDates, dateStr) {
+                    if (selectedDates.length > 0 && endPicker) {
+                        endPicker.set('minDate', selectedDates[0]);
+                    }
+                    if (dateStr) {
+                        startDateInput.value = dateStr;
+                    }
+                }
+            });
+            
+            const endPicker = flatpickr(endDateInput, {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true,
+                locale: "tr",
+                defaultDate: endDateInput?.dataset.value || null,
+                minDate: startDateInput?.dataset.value || null,
+                onChange: function(selectedDates, dateStr) {
+                    if (dateStr) {
+                        endDateInput.value = dateStr;
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+

@@ -1,0 +1,428 @@
+﻿/*
+ * DOSYA: contact.css
+ * KONUM: wwwroot/css/contact.css
+ * KULLANIM: Views/Contact/Index.cshtml
+ * 
+ * AÇIKLAMA: İletişim sayfası tasarımı. Form kartı, yan bilgi paneli
+ * ve harita entegrasyonu stillerini içerir.
+ */
+
+/* [SAYFA BAŞLIĞI] - Mavi Gradyan Arka Plan */
+/* [SAYFA BAŞLIĞI] - Global layout.css kullanılıyor */
+
+/* Breadcrumb (Navigasyon Yolu) */
+.page-header .breadcrumb {
+    margin-bottom: 0;
+}
+
+.page-header .breadcrumb-item,
+.page-header .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.page-header .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.95);
+    text-decoration: none;
+}
+
+.page-header .breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* [İLETİŞİM BÖLÜMÜ] - Ana Kapsayıcı */
+.contact-section {
+    padding: 0 0 5rem;
+    overflow-x: hidden;
+    background-color: #ffffff;
+    /* Beyaz Zemin - Üst ve altla birleşsin */
+}
+
+/* [FORM KARTI] - Modern ve Şık Tasarım */
+.contact-form-wrapper {
+    background: var(--white);
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    /* Yumuşak, kaliteli gölge */
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Üst kısma ince bir dekoratif çizgi */
+.contact-form-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--secondary-color), #d4c2a8);
+}
+
+.contact-form-wrapper h2 {
+    margin-bottom: 0.75rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    font-size: 2rem;
+    letter-spacing: -0.5px;
+}
+
+.contact-form-wrapper p.text-muted {
+    font-size: 1rem;
+    margin-bottom: 2.5rem !important;
+    color: #7f8c8d;
+}
+
+/* Form Elemanları - Premium Hissiyat */
+.form-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-size: 0.95rem;
+    display: block;
+}
+
+.form-control,
+.form-select {
+    padding: 1rem 1.25rem;
+    /* Daha geniş iç boşluk */
+    border-radius: 12px;
+    /* Daha yuvarlak */
+    border: 2px solid #f0f0f0;
+    /* Kalın ama açık gri çerçeve */
+    background-color: #ffffff;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    font-size: 1rem;
+    color: #2c3e50;
+    box-shadow: none;
+}
+
+/* Hover Durumu */
+.form-control:hover,
+.form-select:hover {
+    border-color: #e0e0e0;
+    background-color: #fafafa;
+}
+
+/* Focus Durumu (Altın Vurgu) */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--secondary-color);
+    /* Altın Çerçeve */
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgba(180, 160, 120, 0.15);
+    /* Altın Glow */
+    transform: translateY(-2px);
+    /* Hafif yukarı kalkma efekti */
+}
+
+/* Placeholder rengi */
+.form-control::placeholder {
+    color: #adadad;
+    opacity: 1;
+}
+
+/* BUTONLAR - Kahverengi/Beyaz Geçişli */
+.contact-form-wrapper .btn-primary {
+    background-color: var(--secondary-color) !important;
+    /* Kahverengi */
+    border: 2px solid var(--secondary-color) !important;
+    color: white !important;
+    border-radius: 8px;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.contact-form-wrapper .btn-primary:hover {
+    background-color: white !important;
+    color: var(--secondary-color) !important;
+    /* Yazı Kahverengi olsun */
+}
+
+.contact-form-wrapper .btn-whatsapp {
+    background-color: white !important;
+    border: 2px solid var(--secondary-color) !important;
+    color: var(--secondary-color) !important;
+    border-radius: 8px;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.contact-form-wrapper .btn-whatsapp:hover {
+    background-color: var(--secondary-color) !important;
+    color: white !important;
+}
+
+/* [YAN PANEL] */
+.contact-info-wrapper {
+    position: sticky;
+    top: 100px;
+}
+
+/* [BİLGİ KARTI] - Beyaz Premium Tasarım */
+.contact-info-card {
+    background: #ffffff;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    /* İnce Çerçeve */
+}
+
+/* Dekoratif Arka Plan (Sadece çok hafif bir dokunuş) */
+.contact-info-card::before {
+    display: none;
+    /* Arka plan desenini kaldırdım, sadelik için */
+}
+
+.contact-info-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.contact-info-card h3::after {
+    display: none;
+    /* Alt çizgiyi kaldırdım, border-bottom yeterli */
+}
+
+/* Bilgi Satırı */
+.contact-info-item {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1rem 0;
+    border-bottom: none;
+    /* Çizgi kaldırıldı */
+    transition: all 0.3s ease;
+}
+
+.contact-info-item:last-child {
+    border-bottom: none;
+}
+
+/* Bilgi İkonu */
+.info-icon {
+    width: 50px;
+    height: 50px;
+    background: #f8f9fa;
+    /* Açık Gri */
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--primary-color);
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    border: 1px solid #eeeeee;
+}
+
+.contact-info-item:hover .info-icon {
+    background: var(--secondary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(180, 160, 120, 0.3);
+    border-color: var(--secondary-color);
+}
+
+.info-content h4 {
+    font-size: 0.8rem;
+    color: #95a5a6;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-content a,
+.info-content span {
+    color: var(--dark);
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: normal;
+    word-break: break-word;
+    /* Uzun mailler taşmasın */
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+    padding-bottom: 2px;
+}
+
+.info-content a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--secondary-color);
+    /* Altın */
+    transition: width 0.3s ease;
+}
+
+.info-content a:hover::after {
+    width: 100%;
+}
+
+.info-content a:hover {
+    color: var(--secondary-color);
+}
+
+/* [WHATSAPP ÖZEL ALANI] */
+.whatsapp-highlight {
+    background: transparent;
+    margin: 0;
+    padding: 1rem 0 !important;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.whatsapp-highlight .info-icon {
+    color: #25d366;
+    background: rgba(37, 211, 102, 0.1);
+    border-color: rgba(37, 211, 102, 0.2);
+}
+
+.whatsapp-highlight:hover .info-icon {
+    background: #25d366;
+    color: white;
+    box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+}
+
+.whatsapp-highlight .info-content h4 {
+    color: #95a5a6;
+}
+
+.whatsapp-highlight .info-content a,
+.whatsapp-highlight .info-content span {
+    color: var(--dark) !important;
+    font-size: 1rem;
+}
+
+.whatsapp-highlight .info-content a:hover {
+    color: #25d366 !important;
+}
+
+/* [HİZMET BÖLGE ETİKETLERİ] */
+.service-areas-card {
+    background: transparent;
+    padding: 1.5rem 0;
+    border-top: 1px solid #f0f0f0;
+    /* Üst çizgi ile ayır */
+    margin-top: 1rem;
+}
+
+.service-areas-card h4 {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.service-areas-card h4 i {
+    color: var(--primary-color);
+    /* İkon rengi */
+    font-size: 1.2rem;
+}
+
+.service-areas-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.area-item {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    background: #ffffff;
+    color: #4a4a4a;
+    /* Koyu Gri/Siyah yazı */
+    border-radius: 8px;
+    /* Görseldeki gibi yumuşak köşe */
+    border: 1px solid #e9ecef;
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.area-item:hover {
+    background: #fff;
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Harita */
+.map-wrapper {
+    height: 450px;
+    border-radius: 0;
+    margin-top: -3rem;
+    /* Formun altına yapışık ya da yakın */
+    z-index: 0;
+    position: relative;
+    border-top: 5px solid var(--primary-color);
+}
+
+/* MOBİL UYUMLULUK DÜZELTMELERİ */
+@media (max-width: 991.98px) {
+    .contact-info-wrapper {
+        position: static;
+        margin-top: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .contact-form-wrapper,
+    .contact-info-card {
+        padding: 1.5rem;
+        /* Mobilde padding azaltıldı */
+        border-radius: 15px;
+    }
+
+    .contact-info-item {
+        gap: 1rem;
+    }
+
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    .info-content a,
+    .info-content span {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-form-wrapper {
+        padding: 1.5rem;
+    }
+
+    .page-header h1 {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .contact-form-wrapper .btn-lg {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}

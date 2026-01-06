@@ -1,0 +1,175 @@
+﻿@using boya_usta_web.Models
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var recentMessages = ViewBag.RecentMessages as List<ContactMessage> ?? new List<ContactMessage>();
+    var recentProjects = ViewBag.RecentProjects as List<Project> ?? new List<Project>();
+}
+
+@* İstatistik Satırı *@
+<div class="row g-4 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-card-icon primary">
+                <i class="bi bi-images"></i>
+            </div>
+            <div class="stat-card-value">@ViewBag.ProjectCount</div>
+            <div class="stat-card-label">Toplam Proje</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-card-icon success">
+                <i class="bi bi-chat-quote"></i>
+            </div>
+            <div class="stat-card-value">@ViewBag.ReviewCount</div>
+            <div class="stat-card-label">Müşteri Yorumu</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-card-icon warning">
+                <i class="bi bi-envelope"></i>
+            </div>
+            <div class="stat-card-value">@ViewBag.MessageCount</div>
+            <div class="stat-card-label">Toplam Mesaj</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-card-icon danger">
+                <i class="bi bi-envelope-exclamation"></i>
+            </div>
+            <div class="stat-card-value">@ViewBag.UnreadMessageCount</div>
+            <div class="stat-card-label">Okunmamış Mesaj</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    @* Son Mesajlar *@
+    <div class="col-lg-6">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2><i class="bi bi-envelope me-2"></i>Son Mesajlar</h2>
+                <a href="@ViewBag.AdminPath/mesajlar" class="btn btn-sm btn-outline-primary">Tümü</a>
+            </div>
+            <div class="admin-card-body p-0">
+                @if (recentMessages.Any())
+                {
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Ad Soyad</th>
+                                <th>Telefon</th>
+                                <th>Tarih</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var msg in recentMessages)
+                            {
+                                <tr>
+                                    <td>
+                                        <a href="@ViewBag.AdminPath/mesajlar/detay/@msg.Id">
+                                            @msg.FullName
+                                        </a>
+                                    </td>
+                                    <td>@msg.Phone</td>
+                                    <td>@msg.CreatedAt.ToString("dd.MM.yyyy")</td>
+                                    <td>
+                                        <span class="status-badge @(msg.IsRead ? "active" : "unread")">
+                                            @(msg.IsRead ? "Okundu" : "Yeni")
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-envelope-open"></i>
+                        <p>Henüz mesaj yok</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    @* Son Projeler *@
+    <div class="col-lg-6">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2><i class="bi bi-images me-2"></i>Son Projeler</h2>
+                <a href="@ViewBag.AdminPath/projeler" class="btn btn-sm btn-outline-primary">Tümü</a>
+            </div>
+            <div class="admin-card-body p-0">
+                @if (recentProjects.Any())
+                {
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Başlık</th>
+                                <th>Kategori</th>
+                                <th>Tarih</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var project in recentProjects)
+                            {
+                                <tr>
+                                    <td>@project.Title</td>
+                                    <td>@project.Category</td>
+                                    <td>@project.CreatedAt.ToString("dd.MM.yyyy")</td>
+                                    <td>
+                                        <span class="status-badge @(project.IsActive ? "active" : "inactive")">
+                                            @(project.IsActive ? "Aktif" : "Pasif")
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-folder-x"></i>
+                        <p>Henüz proje yok</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Hızlı İşlemler *@
+<div class="row g-4 mt-2">
+    <div class="col-12">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2><i class="bi bi-lightning me-2"></i>Hızlı İşlemler</h2>
+            </div>
+            <div class="admin-card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="@ViewBag.AdminPath/projeler/ekle" class="btn btn-primary">
+                        <i class="bi bi-plus-lg me-2"></i>Yeni Proje
+                    </a>
+                    <a href="@ViewBag.AdminPath/yorumlar/ekle" class="btn btn-outline-primary">
+                        <i class="bi bi-plus-lg me-2"></i>Yeni Yorum
+                    </a>
+                    <a href="@ViewBag.AdminPath/mesajlar?unreadOnly=true" class="btn btn-outline-warning">
+                        <i class="bi bi-envelope-exclamation me-2"></i>Okunmamış Mesajlar
+                    </a>
+                    <a href="@ViewBag.AdminPath/ayarlar" class="btn btn-outline-secondary">
+                        <i class="bi bi-gear me-2"></i>Site Ayarları
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,70 @@
+﻿@model boya_usta_web.Models.ViewModels.AboutSettingsVm
+@{
+    ViewData["Title"] = "Hakkımızda Ayarları";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Hakkımızda Ayarları</h2>
+        <a href="@ViewBag.AdminPath/ayarlar" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri
+        </a>
+    </div>
+    <div class="admin-card-body">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <h6><i class="bi bi-exclamation-triangle me-2"></i>Lütfen aşağıdaki hataları düzeltin:</h6>
+                <ul class="mb-0">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <form method="post" class="admin-form" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div class="row g-3">
+                @await Html.PartialAsync("~/Views/AdminSettings/Partials/_AboutGeneral.cshtml")
+                
+                @await Html.PartialAsync("~/Views/AdminSettings/Partials/_AboutExperience.cshtml")
+                
+                @await Html.PartialAsync("~/Views/AdminSettings/Partials/_AboutStory.cshtml")
+                
+                @await Html.PartialAsync("~/Views/AdminSettings/Partials/_AboutFeatures.cshtml")
+                
+                @await Html.PartialAsync("~/Views/AdminSettings/Partials/_AboutValues.cshtml")
+                
+                <div class="col-12">
+                    <hr class="my-3" />
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-check-lg me-2"></i>Kaydet
+                    </button>
+                    <a href="@ViewBag.AdminPath/ayarlar" class="btn btn-outline-secondary ms-2">İptal</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@* Hidden div - İkon listesi JavaScript için *@
+<div id="iconSelectOptionsTemplate" style="display: none;">
+    <select>
+        <partial name="_IconSelectOptions" />
+    </select>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("~/Views/AdminSettings/Partials/_AboutScripts.cshtml")
+}

@@ -1,0 +1,34 @@
+﻿@using boya_usta_web.Services
+@inject ISeoService SeoService
+@{
+    var breadcrumbs = ViewBag.Breadcrumbs as List<(string Name, string Url)>;
+    
+    if (breadcrumbs == null || !breadcrumbs.Any()) { return; }
+    
+    var siteUrl = SeoService.GetSiteUrl();
+    
+    // JSON oluştur
+    var breadcrumbsJson = new System.Text.StringBuilder();
+    for (int i = 0; i < breadcrumbs.Count; i++)
+    {
+        var item = breadcrumbs[i];
+        var url = item.Url.StartsWith("http") ? item.Url : $"{siteUrl}{item.Url}";
+        var name = item.Name.Replace("\"", "'");
+        var isLast = i == breadcrumbs.Count - 1;
+        
+        breadcrumbsJson.Append("{");
+        breadcrumbsJson.Append("\"@type\": \"ListItem\",");
+        breadcrumbsJson.Append($"\"position\": {i + 1},");
+        breadcrumbsJson.Append($"\"name\": \"{name}\",");
+        breadcrumbsJson.Append($"\"item\": \"{url}\"");
+        breadcrumbsJson.Append("}");
+        if (!isLast) breadcrumbsJson.Append(",");
+    }
+}
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "BreadcrumbList",
+    "itemListElement": [@Html.Raw(breadcrumbsJson.ToString())]
+}
+</script>

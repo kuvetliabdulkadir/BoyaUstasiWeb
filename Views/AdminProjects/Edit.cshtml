@@ -1,0 +1,327 @@
+﻿@model Project
+@{
+    ViewData["Title"] = "Proje Düzenle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Proje Düzenle</h2>
+        <a href="@ViewBag.AdminPath/projeler" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri
+        </a>
+    </div>
+    <div class="admin-card-body">
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="admin-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CreatedAt" />
+            <input type="hidden" asp-for="Slug" />
+            
+            @* Resim Yolları *@
+            <input type="hidden" asp-for="BeforeImagePath" />
+            <input type="hidden" asp-for="AfterImagePath" />
+            <input type="hidden" asp-for="VideoPath" />
+
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label asp-for="Title" class="form-label">Proje Başlığı *</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="Category" class="form-label">Kategori (Hizmet) *</label>
+                    <select asp-for="Category" class="form-select" required>
+                        <option value="">Seçiniz</option>
+                        @{
+                            var services = ViewBag.Services as List<string> ?? new List<string>();
+                        }
+                        @foreach (var service in services)
+                        {
+                            <option value="@service">@service</option>
+                        }
+                    </select>
+                    <small class="text-muted">Kategori, admin panelden eklenen aktif hizmetlerden seçilir.</small>
+                    <span asp-validation-for="Category" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label">Açıklama</label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="Location" class="form-label">Konum</label>
+                    <input asp-for="Location" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="PaintBrand" class="form-label">Boya Markası</label>
+                    <input asp-for="PaintBrand" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="PaintColor" class="form-label">Boya Rengi</label>
+                    <input asp-for="PaintColor" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="DurationDays" class="form-label">Süre (Gün)</label>
+                    <input asp-for="DurationDays" type="number" class="form-control" min="1" />
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="DisplayOrder" class="form-label">Sıralama</label>
+                    <input asp-for="DisplayOrder" type="number" class="form-control" min="0" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label d-block">Seçenekler</label>
+                    <div class="form-check form-check-inline">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label">Aktif</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input asp-for="IsFeatured" class="form-check-input" />
+                        <label asp-for="IsFeatured" class="form-check-label">Öne Çıkan</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Önce Fotoğrafı</label>
+                    @if (!string.IsNullOrEmpty(Model.BeforeImagePath))
+                    {
+                        <div class="mb-2">
+                            <img src="@Model.BeforeImagePath" class="img-fluid rounded" style="max-height: 180px;" />
+                        </div>
+                    }
+                    <input type="file" name="beforeImage" class="form-control" accept="image/*" />
+                    <small class="text-muted">Maksimum 5MB, JPG/PNG formatında</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Sonra Fotoğrafı</label>
+                    @if (!string.IsNullOrEmpty(Model.AfterImagePath))
+                    {
+                        <div class="mb-2">
+                            <img src="@Model.AfterImagePath" class="img-fluid rounded" style="max-height: 180px;" />
+                        </div>
+                    }
+                    <input type="file" name="afterImage" class="form-control" accept="image/*" />
+                    <small class="text-muted">Maksimum 5MB, JPG/PNG formatında</small>
+                </div>
+                
+                @* Video Bölümü *@
+                <div class="col-12 mt-4">
+                    <h5 class="border-bottom pb-2">Video Düzenle</h5>
+                    
+                    @if (!string.IsNullOrEmpty(Model.VideoPath) || !string.IsNullOrEmpty(Model.VideoEmbedCode))
+                    {
+                        <div class="alert alert-info">
+                            @if (!string.IsNullOrEmpty(Model.VideoPath))
+                            {
+                                <div class="mb-2">
+                                    <strong>Yüklü Video:</strong> <a href="@Model.VideoPath" target="_blank" class="alert-link">Görüntüle</a>
+                                    <span class="badge bg-success ms-2">Dosya</span>
+                                    <button type="button" class="btn btn-sm btn-danger ms-2" onclick="deleteVideo(@Model.Id, this)">
+                                        <i class="bi bi-trash"></i> Sil
+                                    </button>
+                                </div>
+                            }
+                             
+                            @if (!string.IsNullOrEmpty(Model.VideoEmbedCode))
+                            {
+                                <div>
+                                    <strong>Video Linki:</strong> 
+                                    <span class="text-truncate d-inline-block align-middle" style="max-width: 300px;">@Model.VideoEmbedCode</span>
+                                    <span class="badge bg-primary ms-2">Link</span>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Video Dosyası Yükle / Değiştir</label>
+                            <input type="file" name="videoFile" class="form-control" accept="video/mp4,video/webm" />
+                            <small class="text-muted">MP4/WebM formatında. Yeni yükleme eskini siler.</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="VideoEmbedCode" class="form-label">Video Bağlantısı (URL)</label>
+                            <input asp-for="VideoEmbedCode" class="form-control" placeholder="Örn: https://www.youtube.com/watch?v=..." />
+                            <small class="text-muted">YouTube, Vimeo veya Instagram video linki.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <hr class="my-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg me-2"></i>Değişiklikleri Kaydet
+                    </button>
+                    <a href="@ViewBag.AdminPath/projeler" class="btn btn-outline-secondary ms-2">İptal</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@* Galeri Bölümü *@
+<div class="admin-card mt-4">
+    <div class="admin-card-header">
+        <h3>Galeri Görselleri</h3>
+    </div>
+    <div class="admin-card-body">
+        <form asp-action="AddGalleryImages" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="mb-4">
+            @Html.AntiForgeryToken()
+            <div class="row align-items-end g-3">
+                <div class="col-md-8">
+                    <label class="form-label">Yeni Görsel Ekle</label>
+                    <input type="file" name="images" class="form-control" multiple accept="image/*" required />
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-plus-lg me-2"></i>Yükle
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="row g-3">
+            @if (Model.AdditionalImages != null && Model.AdditionalImages.Any())
+            {
+                @foreach (var img in Model.AdditionalImages.OrderBy(i => i.DisplayOrder))
+                {
+                    <div class="col-6 col-md-3 col-lg-2 text-center" id="gallery-image-@img.Id">
+                        <div class="card h-100">
+                            <img src="@img.ImagePath" class="card-img-top" style="height: 120px; object-fit: cover;" />
+                            <div class="card-footer p-2">
+                                <button type="button" class="btn btn-sm btn-outline-danger w-100" 
+                                        onclick="deleteGalleryImage(@img.Id, document.getElementById('gallery-image-@img.Id'))">
+                                    <i class="bi bi-trash"></i> Sil
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-4 text-muted">
+                    Henüz galeri görseli yok.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Slider başlat
+        document.addEventListener('DOMContentLoaded', function() {
+            const previewContainer = document.getElementById('adminBeforeAfterPreview');
+            if (previewContainer && typeof initBeforeAfterSlider === 'function') {
+                initBeforeAfterSlider(previewContainer);
+            }
+        });
+
+        async function deleteVideo(projectId, btnElement) {
+            if (!confirm('Yüklü video dosyasını silmek istediğinize emin misiniz?'))
+            {
+                return;
+            }
+
+            const originalHtml = btnElement.innerHTML;
+            btnElement.disabled = true;
+            btnElement.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Siliniyor...';
+
+            try {
+                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                if (!token)
+                {
+                    throw new Error('Güvenlik token bulunamadı');
+                }
+
+                const formData = new FormData();
+                formData.append('__RequestVerificationToken', token);
+
+                const response = await fetch(`/usta-panel-2024/projeler/video-sil/${projectId}`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    btnElement.closest('.mb-2').remove();
+                    showToast(result.message || 'Video başarıyla silindi.', 'success');
+                } else {
+                    throw new Error(result.message || 'Silme işlemi başarısız oldu');
+                }
+            } catch (error) {
+                console.error('Delete video error:', error);
+                showToast(`Video silinemedi: ${error.message}`, 'error');
+                btnElement.disabled = false;
+                btnElement.innerHTML = originalHtml;
+            }
+        }
+
+        async function deleteGalleryImage(imageId, containerElement) {
+            if (!confirm('Bu galeri görseli silinsin mi?'))
+            {
+                return;
+            }
+
+            const originalButton = containerElement.querySelector('button');
+            const originalHtml = originalButton.innerHTML;
+            originalButton.disabled = true;
+            originalButton.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+
+            try {
+                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                if (!token) {
+                    throw new Error('Güvenlik token bulunamadı');
+                }
+
+                const formData = new FormData();
+                formData.append('__RequestVerificationToken', token);
+
+                const response = await fetch(`/usta-panel-2024/projeler/galeri-sil/${imageId}`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    containerElement.style.transition = 'opacity 0.3s';
+                    containerElement.style.opacity = '0';
+                    setTimeout(() => {
+                        containerElement.remove();
+                        // Galeri kontrol
+                        const galleryContainer = document.querySelector('.row.g-3');
+                        if (galleryContainer && galleryContainer.children.length === 0) {
+                            const emptyMessage = document.createElement('div');
+                            emptyMessage.className = 'col-12 text-center py-4 text-muted';
+                            emptyMessage.textContent = 'Henüz galeri görseli yok.';
+                            galleryContainer.appendChild(emptyMessage);
+                        }
+                    }, 300);
+                    showToast(result.message || 'Galeri görseli başarıyla silindi.', 'success');
+                } else {
+                    throw new Error(result.message || 'Silme işlemi başarısız oldu');
+                }
+            } catch (error) {
+                console.error('Delete gallery image error:', error);
+                showToast(`Galeri görseli silinirken bir hata oluştu: ${error.message}`, 'error');
+                originalButton.disabled = false;
+                originalButton.innerHTML = originalHtml;
+            }
+        }
+    </script>
+}

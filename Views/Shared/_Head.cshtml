@@ -1,0 +1,100 @@
+@using boya_usta_web.Services
+@using boya_usta_web.Helpers
+@inject ISeoService Seo
+@inject ISettingsService SettingsService
+@{
+    var settings = await SettingsService.GetAllSettingsAsync();
+    var siteName = settings.GetSetting("SiteName");
+}
+
+    @* SEO *@
+    <title>@Html.Raw(Seo.PageTitle)</title>
+    <meta name="description" content="@Html.Raw(Seo.MetaDescription)" />
+    <meta name="keywords" content="@Html.Raw(Seo.Keywords)" />
+    <meta name="author" content="@Html.Raw(Seo.OgSiteName)" />
+    <meta name="robots" content="@Seo.RobotsContent" />
+    <meta name="theme-color" content="@Seo.GetThemeColor()" />
+    <meta name="format-detection" content="telephone=no" />
+    
+    @* Yerel SEO *@
+    <meta name="geo.region" content="@Seo.GeoRegion" />
+    <meta name="geo.placename" content="@Seo.GeoPlacename" />
+    <meta name="geo.position" content="@Seo.GeoPosition" />
+    <meta name="ICBM" content="@Seo.ICBM" />
+    
+    @* Kanonik URL *@
+    <link rel="canonical" href="@Seo.CanonicalUrl" />
+    <link rel="alternate" hreflang="tr" href="@Seo.CanonicalUrl" />
+    
+    @* Open Graph *@
+    <meta property="og:type" content="@Seo.OgType" />
+    <meta property="og:title" content="@Html.Raw(Seo.OgTitle)" />
+    <meta property="og:description" content="@Html.Raw(Seo.OgDescription)" />
+    <meta property="og:image" content="@Seo.OgImage" />
+    <meta property="og:url" content="@Seo.OgUrl" />
+    <meta property="og:locale" content="@Seo.OgLocale" />
+    <meta property="og:site_name" content="@Html.Raw(Seo.OgSiteName)" />
+    
+    @* Twitter *@
+    <meta name="twitter:card" content="@Seo.TwitterCard" />
+    <meta name="twitter:title" content="@Html.Raw(Seo.TwitterTitle)" />
+    <meta name="twitter:description" content="@Html.Raw(Seo.TwitterDescription)" />
+    <meta name="twitter:image" content="@Seo.TwitterImage" />
+    
+    @* İkonlar (Google Favicon ve Apple Touch Standartları) *@
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/logo.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png" />
+    <link rel="mask-icon" href="/images/logo.png" color="#2c3e50" />
+    
+    @* PWA Ayarları *@
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="@Seo.GetThemeColor()" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="@Html.Raw(siteName)" />
+    
+    @* Ön Bağlantılar *@
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+    
+    @* Kritik CSS *@
+    <style>
+        .loading-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;color:#1a365d;z-index:9999;display:flex;align-items:center;justify-content:center}
+        .navbar{transition:all .3s ease}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;margin:0;padding:0}
+    </style>
+    
+    @* Yazı Tipi *@
+    <style>
+        @@font-face {
+            font-display: swap;
+        }
+    </style>
+    
+    @* Bootstrap CSS *@
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
+    
+    @* İkonlar *@
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" 
+          media="print" onload="this.media='all'" onerror="this.onerror=null;this.remove();">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"></noscript>
+    
+    @* FontAwesome *@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" 
+          media="print" onload="this.media='all'" onerror="this.onerror=null;this.remove();">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+    
+    @* Genel CSS *@
+    <link rel="stylesheet" href="~/css/variables.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/components.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/utilities.css" asp-append-version="true" />
+    
+    @* Animasyonlar *@
+    <link rel="stylesheet" href="~/css/animations.css" asp-append-version="true" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="~/css/animations.css" asp-append-version="true"></noscript>

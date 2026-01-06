@@ -1,0 +1,214 @@
+﻿@using boya_usta_web.Models
+@using boya_usta_web.Helpers
+@using boya_usta_web.Models.ViewModels
+@using System.IO
+@model SimulatorIndexViewModel
+@{
+    ViewData["Title"] = "Renk Simülatörü";
+    var settings = Model.Settings;
+    var colorsByCategory = Model.ColorsByCategory;
+    var allColors = Model.AllColors;
+    var simulatorImagePath = Model.SimulatorImagePath;
+    var whatsapp = settings.GetSetting("WhatsApp", "+90 532 XXX XX XX").Replace(" ", "").Replace("+", "");
+}
+
+
+
+@* Sayfa Başlığı *@
+<section class="page-header">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="fade-in">
+                @if (!string.IsNullOrEmpty(simulatorImagePath))
+                {
+                    <img src="@simulatorImagePath" alt="Renk Simülatörü" class="simulator-image me-2" style="width: 60px; height: 60px; object-fit: contain; vertical-align: middle;" />
+                }
+                else
+                {
+                    <i class="bi bi-palette-fill me-2"></i>
+                }
+                Renk Simülatörü
+            </h1>
+            <p class="fade-in">@Model.PageHeaderSubtitle</p>
+            <nav aria-label="breadcrumb" class="fade-in">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item active">Renk Simülatörü</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+@* Simülatör Bölümü *@
+<section class="simulator-section">
+    <div class="container">
+        <div class="row g-4">
+            @* Oda Önizleme *@
+            <div class="col-lg-8">
+                <div class="simulator-preview-wrapper fade-in">
+                    <div class="preview-header">
+                        <h3>Önizleme</h3>
+                        <div class="preview-actions">
+                            <button class="btn btn-outline-secondary btn-sm" id="resetBtn">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>Sıfırla
+                            </button>
+                            <button class="btn btn-primary btn-sm" id="downloadBtn">
+                                <i class="bi bi-download me-1"></i>İndir
+                            </button>
+                        </div>
+                    </div>
+                    
+                    @* Canvas Container (çizim için görünür kalacak) *@
+                    <div id="canvasContainer">
+                        <div class="preview-container">
+                            <canvas id="roomCanvas" width="800" height="600"></canvas>
+                            <div class="canvas-loading" id="canvasLoading">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Yükleniyor...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Öncesi/Sonrası Slider (resim yüklendikten sonra gösterilecek) *@
+                    <div id="beforeAfterContainer" style="display: none;">
+                        <div class="before-after-container" id="beforeAfter">
+                            <img id="afterImage" alt="Sonra" />
+                            <div class="before-image">
+                                <img id="beforeImage" alt="Önce" />
+                            </div>
+                            <div class="slider-handle"></div>
+                            <div class="before-label">ÖNCE</div>
+                            <div class="after-label">SONRA</div>
+                        </div>
+                    </div>
+
+                    @* Kendi Fotoğrafını Yükle *@
+                    <div class="upload-section">
+                        <h4><i class="bi bi-cloud-upload me-2"></i>Kendi Fotoğrafınızı Yükleyin</h4>
+                        <p class="text-muted small">Fotoğrafınız sunucuya yüklenmez, tarayıcınızda işlenir.</p>
+                        <div class="upload-area" id="uploadArea">
+                            <input type="file" id="photoUpload" accept="image/*" hidden />
+                            <i class="bi bi-cloud-arrow-up"></i>
+                            <span>Sürükle bırak veya tıkla</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Renk Paleti *@
+            <div class="col-lg-4">
+                <div class="color-palette-wrapper fade-in-right">
+                    <h3>Renk Seçin</h3>
+
+                    @* Renk Girişi *@
+                    <div class="color-input-group mb-4">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="form-label small">HEX Kodu</label>
+                                <input type="text" id="hexInput" class="form-control" placeholder="#FFFFFF" maxlength="7" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small">Renk Seçici</label>
+                                <input type="color" id="colorPicker" class="form-control form-control-color w-100" value="#2563eb" />
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Seçili Renk Gösterimi *@
+                    <div class="selected-color-display mb-4">
+                        <div class="selected-color-preview" id="selectedColorPreview" style="background-color: #2563eb;"></div>
+                        <div class="selected-color-info">
+                            <span class="color-name" id="selectedColorName">Seçili Renk</span>
+                            <span class="color-hex" id="selectedColorHex">#2563eb</span>
+                        </div>
+                    </div>
+
+                    @* Renk Kategorileri *@
+                    <div class="color-categories">
+                        @foreach (var category in colorsByCategory)
+                        {
+                            <div class="color-category">
+                                <h4>@category.Key Tonlar</h4>
+                                <div class="color-swatches">
+                                    @foreach (var color in category.Value)
+                                    {
+                                        <button class="color-swatch-btn" 
+                                                data-color="@color.HexCode" 
+                                                data-name="@color.Name"
+                                                style="background-color: @color.HexCode;"
+                                                title="@color.Name">
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    @* Boyama Araçları (yüklenen fotolar için) *@
+                    <div class="brush-tools" id="brushTools" style="display: none;">
+                        <h4>Boyama Araçları</h4>
+                        
+                        @* Tool Selection *@
+                        <div class="tool-selection mb-3">
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="brushTool" id="toolBrush" value="brush" checked>
+                                <label class="btn btn-outline-primary" for="toolBrush">
+                                    <i class="bi bi-brush"></i> Fırça
+                                </label>
+                                
+                                <input type="radio" class="btn-check" name="brushTool" id="toolEraser" value="eraser">
+                                <label class="btn btn-outline-primary" for="toolEraser">
+                                    <i class="bi bi-eraser"></i> Silgi
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="brush-size-control mb-3">
+                            <label class="form-label small">Fırça Boyutu: <span id="brushSizeValue">20</span>px</label>
+                            <input type="range" id="brushSize" class="form-range" min="5" max="100" value="20" />
+                        </div>
+                        
+                        <div class="opacity-control mb-3">
+                            <label class="form-label small">Renk Opaklığı: <span id="opacityValue">65</span>%</label>
+                            <input type="range" id="colorOpacity" class="form-range" min="30" max="100" value="65" />
+                            <small class="text-muted">Düşük değer daha şeffaf, yüksek değer daha opak görünüm sağlar</small>
+                        </div>
+                        
+                        <div class="brush-actions">
+                            <button class="btn btn-outline-secondary btn-sm w-100 mb-2" id="undoBtn">
+                                <i class="bi bi-arrow-counterclockwise"></i> Geri Al
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm w-100" id="clearMaskBtn">
+                                <i class="bi bi-eraser"></i> Tümünü Temizle
+                            </button>
+                        </div>
+                    </div>
+
+                    @* Eylem Çağrısı (CTA) *@
+                    <div class="simulator-cta mt-4">
+                        <a href="#" id="whatsappQuoteBtn" 
+                           data-whatsapp="@whatsapp"
+                           target="_blank" class="btn btn-whatsapp w-100 btn-lg">
+                            <i class="bi bi-whatsapp me-2"></i>Bu Renkle Teklif Al
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+<link rel="stylesheet" href="~/css/simulator.css" asp-append-version="true" />
+}
+
+@section Scripts {
+<script src="~/js/simulator.js" asp-append-version="true"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script>
+    // İlave scriptler buraya eklenebilir
+</script>
+}
+

@@ -1,0 +1,51 @@
+﻿@model boya_usta_web.Models.ViewModels.SeoSettingsVm
+@{
+    ViewData["Title"] = "Genel SEO Ayarları";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2><i class="bi bi-gear me-2"></i>Genel SEO Ayarları (Fallback)</h2>
+        <div class="d-flex gap-2">
+            <a href="@ViewBag.AdminPath/ayarlar/seo" class="btn btn-primary">
+                <i class="bi bi-arrow-left me-2"></i>Sayfa SEO Yönetimi
+            </a>
+        </div>
+    </div>
+    <div class="admin-card-body">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="alert alert-warning mb-4">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <strong>Not:</strong> Bu sayfadaki ayarlar <strong>varsayılan değerlerdir</strong>. 
+            Her sayfa için benzersiz SEO ayarları tanımlamak için 
+            <a href="@ViewBag.AdminPath/ayarlar/seo/sayfalar" class="alert-link">Sayfa SEO Yönetimi</a>'ni kullanın.
+        </div>
+
+        <form method="post" action="@ViewBag.AdminPath/ayarlar/seo/genel" class="admin-form">
+            @Html.AntiForgeryToken()
+            
+            <partial name="~/Views/AdminSettings/Partials/_SeoBasic.cshtml" model="Model" />
+            <partial name="~/Views/AdminSettings/Partials/_SeoSocial.cshtml" model="Model" />
+            <partial name="~/Views/AdminSettings/Partials/_SeoTheme.cshtml" model="Model" />
+            <partial name="~/Views/AdminSettings/Partials/_SeoLocal.cshtml" model="Model" />
+            <partial name="~/Views/AdminSettings/Partials/_SeoAnalytics.cshtml" model="Model" />
+            <partial name="~/Views/AdminSettings/Partials/_SeoPreview.cshtml" model="Model" />
+
+            <hr class="my-4" />
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary btn-lg" type="submit">
+                    <i class="bi bi-check-lg me-2"></i>Kaydet
+                </button>
+                <a href="@ViewBag.AdminPath/ayarlar" class="btn btn-outline-secondary btn-lg">İptal</a>
+            </div>
+        </form>
+    </div>
+</div>

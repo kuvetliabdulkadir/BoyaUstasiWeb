@@ -1,0 +1,164 @@
+﻿@{
+    ViewData["Title"] = "Sayfa Bulunamadı";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="error-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="error-content">
+                    <div class="error-illustration">
+                        <div class="error-icon-wrapper">
+                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="60" cy="60" r="55" stroke="var(--primary-color)" stroke-width="3" stroke-dasharray="8 4" opacity="0.3"/>
+                                <circle cx="60" cy="60" r="40" stroke="var(--primary-color)" stroke-width="4"/>
+                                <path d="M40 40L80 80M80 40L40 80" stroke="var(--primary-color)" stroke-width="5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <h1 class="error-code">404</h1>
+                    </div>
+
+                    <h2 class="error-title">Sayfa Bulunamadı</h2>
+                    <p class="error-description">
+                        Aradığınız sayfa mevcut değil veya taşınmış olabilir. Lütfen URL adresini kontrol edin veya ana sayfaya dönün.
+                    </p>
+
+                    <div class="error-actions">
+                        <a href="/" class="btn btn-primary btn-lg">
+                            <i class="bi bi-house-fill me-2"></i>Ana Sayfaya Dön
+                        </a>
+                        <a asp-controller="Contact" asp-action="Index" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-envelope-fill me-2"></i>İletişime Geç
+                        </a>
+                    </div>
+
+                    <div class="error-links mt-5">
+                        <p class="text-muted mb-3">Hızlı Erişim:</p>
+                        <div class="d-flex gap-3 justify-content-center flex-wrap">
+                            <a asp-controller="Services" asp-action="Index" class="text-decoration-none">
+                                <i class="bi bi-tools me-1"></i>Hizmetler
+                            </a>
+                            <a asp-controller="Projects" asp-action="Index" class="text-decoration-none">
+                                <i class="bi bi-images me-1"></i>Projeler
+                            </a>
+                            <a asp-controller="Simulator" asp-action="Index" class="text-decoration-none">
+                                <i class="bi bi-palette-fill me-1"></i>Renk Simülatörü
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .error-page {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        padding: 5rem 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    }
+
+    .error-content {
+        padding: 3rem 2rem;
+    }
+
+    .error-illustration {
+        margin-bottom: 2.5rem;
+    }
+
+    .error-icon-wrapper {
+        margin-bottom: 1.5rem;
+        animation: fadeInScale 0.8s ease-out;
+    }
+
+    .error-icon-wrapper svg {
+        filter: drop-shadow(0 4px 12px rgba(44, 95, 140, 0.15));
+    }
+
+    .error-code {
+        font-size: 7rem;
+        font-weight: 800;
+        font-family: var(--font-heading);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0;
+        line-height: 1;
+        letter-spacing: -0.02em;
+    }
+
+    .error-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 1rem;
+        font-family: var(--font-heading);
+    }
+
+    .error-description {
+        font-size: 1.125rem;
+        color: var(--gray);
+        margin-bottom: 2.5rem;
+        line-height: 1.7;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .error-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+    }
+
+    .error-links {
+        padding-top: 2rem;
+        border-top: 1px solid var(--light-dark);
+    }
+
+    .error-links a {
+        color: var(--primary-color);
+        font-weight: 500;
+        transition: color 0.2s ease;
+    }
+
+    .error-links a:hover {
+        color: var(--secondary-color);
+    }
+
+    @@keyframes fadeInScale {
+        0% {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .error-code {
+            font-size: 5rem;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+        }
+
+        .error-description {
+            font-size: 1rem;
+        }
+
+        .error-content {
+            padding: 2rem 1rem;
+        }
+    }
+</style>

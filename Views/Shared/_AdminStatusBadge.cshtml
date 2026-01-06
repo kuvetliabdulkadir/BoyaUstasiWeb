@@ -1,0 +1,12 @@
+﻿@* Admin durum rozeti *@
+@{
+    var isActive = ViewData["IsActive"] is bool active ? active : false;
+    var itemId = ViewData["ItemId"] is int id ? id : 0;
+    var toggleUrl = ViewData["ToggleUrl"] as string ?? "";
+    var entityName = ViewData["EntityName"] as string ?? "Öğe";
+}
+
+<span class="status-badge @(isActive ? "active" : "inactive")" style="cursor: pointer;" onclick="toggleActiveAjax(@itemId, '@toggleUrl', '@entityName', this)" title="Durumu değiştirmek için tıklayın">
+    @(isActive ? "Aktif" : "Pasif")
+</span>
+

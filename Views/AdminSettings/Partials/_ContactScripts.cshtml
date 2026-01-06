@@ -1,0 +1,524 @@
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Telefon ve WhatsApp senkronizasyonu
+        const phoneInput = document.getElementById('phoneInput');
+        const whatsappInput = document.getElementById('whatsappInput');
+        
+        if (phoneInput && whatsappInput) {
+            // Telefon değiştiğinde WhatsApp'ı güncelle
+            phoneInput.addEventListener('input', function() {
+                whatsappInput.value = this.value;
+            });
+            
+            // WhatsApp değiştiğinde Telefon'u güncelle
+            whatsappInput.addEventListener('input', function() {
+                phoneInput.value = this.value;
+            });
+            
+            // Sayfa yüklendiğinde eğer biri boşsa diğerini doldur
+            if (!phoneInput.value && whatsappInput.value) {
+                phoneInput.value = whatsappInput.value;
+            } else if (phoneInput.value && !whatsappInput.value) {
+                whatsappInput.value = phoneInput.value;
+            }
+        }
+        
+        // Saat seçicileri
+        flatpickr('.flatpickr-time', {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            locale: "tr",
+            allowInput: true,
+            allowInvalidPreSelection: false,
+            onChange: updateWorkingHours
+        });
+        
+        // Saat alanlarının required attribute'unu kaldır ve validation'ı devre dışı bırak
+        document.querySelectorAll('.flatpickr-time').forEach(input => {
+            input.removeAttribute('required');
+            input.setAttribute('data-required', 'false');
+            input.setAttribute('data-val', 'false');
+            input.setAttribute('data-val-required', 'false');
+            
+            // jQuery Validation varsa kuralı kaldır
+            if (typeof jQuery !== 'undefined' && jQuery.validator) {
+                const form = input.closest('form');
+                if (form) {
+                    jQuery(form).validate();
+                    jQuery(input).rules('remove', 'required');
+                }
+            }
+        });
+        
+        // Hafta günleri checkbox'ları
+        document.querySelectorAll('.working-day').forEach(cb => {
+            cb.addEventListener('change', updateWorkingHours);
+        });
+        
+        // Mevcut değeri parse et ve formu doldur
+        // Sayfa yüklendiğinde mevcut değeri parse et
+        setTimeout(() => {
+            const currentValue = document.getElementById('workingHoursResult').value;
+            if (currentValue && currentValue.trim() !== '') {
+                parseWorkingHours(currentValue);
+                // Parse sonrası tekrar güncelle (saatler de varsa)
+                updateWorkingHours();
+            }
+        }, 100);
+        
+        function updateWorkingHours() {
+            const selectedDays = Array.from(document.querySelectorAll('.working-day:checked'))
+                .map(cb => {
+                    const dayIndex = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'].indexOf(cb.value);
+                    return { value: cb.value, index: dayIndex };
+                })
+                .sort((a, b) => a.index - b.index)
+                .map(d => d.value);
+            
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            
+            let result = '';
+            if (selectedDays.length > 0) {
+                // Günler seçilmiş
+                let daysText = '';
+                const days = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
+                
+                if (selectedDays.length === 1) {
+                    daysText = selectedDays[0];
+                } else {
+                    // Günlerin aralıksız olup olmadığını kontrol et
+                    let isConsecutive = true;
+                    for (let i = 0; i < selectedDays.length - 1; i++) {
+                        const currentIndex = days.indexOf(selectedDays[i]);
+                        const nextIndex = days.indexOf(selectedDays[i + 1]);
+                        if (nextIndex !== currentIndex + 1) {
+                            isConsecutive = false;
+                            break;
+                        }
+                    }
+                    
+                    if (isConsecutive && selectedDays.length > 1) {
+                        // Aralıksız günler: "Pazartesi - Cumartesi"
+                        daysText = selectedDays[0] + ' - ' + selectedDays[selectedDays.length - 1];
+                    } else {
+                        // Aralıklı günler: "Pazartesi, Çarşamba, Cuma"
+                        daysText = selectedDays.join(', ');
+                    }
+                }
+                
+                // Saatler de seçilmişse ekle
+                if (startTime && endTime) {
+                    result = daysText + ': ' + startTime + ' - ' + endTime;
+                } else if (startTime) {
+                    result = daysText + ': ' + startTime + ' - ...';
+                } else if (endTime) {
+                    result = daysText + ': ... - ' + endTime;
+                } else {
+                    // Sadece günler
+                    result = daysText;
+                }
+            }
+            
+            document.getElementById('workingHoursResult').value = result;
+        }
+        
+        function parseWorkingHours(value) {
+            if (!value || value.trim() === '')
+            {
+                return;
+            }
+            
+            // Önce tüm checkbox'ları temizle
+            document.querySelectorAll('.working-day').forEach(cb => cb.checked = false);
+            
+            // Saatleri parse et
+            const timeMatch = value.match(/(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})/);
+            if (timeMatch) {
+                document.getElementById('startTime').value = timeMatch[1];
+                document.getElementById('endTime').value = timeMatch[2];
+            }
+            
+            // Günleri parse et
+            const daysPart = value.split(':')[0].trim();
+            if (!daysPart)
+            {
+                return;
+            }
+            
+            const days = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
+            
+            if (daysPart.includes(' - ')) {
+                // Aralık formatı: "Pazartesi - Cumartesi"
+                const [startDay, endDay] = daysPart.split(' - ').map(d => d.trim());
+                const startIndex = days.indexOf(startDay);
+                const endIndex = days.indexOf(endDay);
+                
+                if (startIndex !== -1 && endIndex !== -1 && startIndex <= endIndex) {
+                    for (let i = startIndex; i <= endIndex; i++) {
+                        const checkbox = document.getElementById('day' + (i + 1));
+                        if (checkbox)
+                        {
+                            checkbox.checked = true;
+                        }
+                    }
+                }
+            } else if (daysPart.includes(',')) {
+                // Virgülle ayrılmış günler: "Pazartesi, Çarşamba, Cuma"
+                const selectedDays = daysPart.split(',').map(d => d.trim());
+                selectedDays.forEach(day => {
+                    const dayIndex = days.indexOf(day);
+                    if (dayIndex !== -1) {
+                        const checkbox = document.getElementById('day' + (dayIndex + 1));
+                        if (checkbox)
+                        {
+                            checkbox.checked = true;
+                        }
+                    }
+                });
+            } else {
+                // Tek gün
+                const dayIndex = days.indexOf(daysPart);
+                if (dayIndex !== -1) {
+                    const checkbox = document.getElementById('day' + (dayIndex + 1));
+                    if (checkbox)
+                    {
+                        checkbox.checked = true;
+                    }
+                }
+            }
+        }
+        
+        // Google Maps Embed alanı için validation'ı devre dışı bırak
+        const googleMapsField = document.getElementById('GoogleMapsEmbed');
+        if (googleMapsField) {
+            // jQuery Validation varsa
+            if (typeof jQuery !== 'undefined' && jQuery.validator) {
+                const form = googleMapsField.closest('form');
+                if (form) {
+                    jQuery(form).validate();
+                    jQuery(googleMapsField).rules('remove', 'required');
+                }
+            }
+            
+            // HTML5 validation'ı devre dışı bırak
+            googleMapsField.removeAttribute('required');
+            googleMapsField.setAttribute('data-val', 'false');
+            googleMapsField.setAttribute('data-val-required', 'false');
+        }
+        
+        // Hizmet İlleri yönetimi
+        updateServiceCitiesHidden();
+        
+        // Enter tuşu ile ekleme
+        const serviceCityInput = document.getElementById('serviceCityInput');
+        if (serviceCityInput) {
+            serviceCityInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addServiceCity();
+                }
+            });
+        }
+        
+        // İl eklendiğinde il-ilçe grubu oluştur
+        const originalAddServiceCity = window.addServiceCity;
+        window.addServiceCity = function() {
+            const cityInput = document.getElementById('serviceCityInput');
+            const cityName = cityInput.value.trim();
+            if (cityName) {
+                originalAddServiceCity();
+                // Yeni il için grup oluştur
+                setTimeout(() => {
+                    updateCityDistrictsManager();
+                }, 100);
+            }
+        };
+        
+        // İl silindiğinde il-ilçe grubunu kaldır
+        const originalRemoveServiceCity = window.removeServiceCity;
+        window.removeServiceCity = function(button) {
+            const badge = button.closest('.badge');
+            const cityName = badge.querySelector('span:first-child').textContent.trim();
+            originalRemoveServiceCity(button);
+            removeCityGroup(cityName);
+        };
+        
+        // Form submit edilmeden önce JSON'u güncelle
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                updateCityDistrictsMapJson();
+            });
+        }
+        
+        // İlçe input'larına Enter tuşu desteği
+        document.querySelectorAll('.district-input').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const city = this.dataset.city;
+                    addDistrict(city);
+                }
+            });
+        });
+        
+        // İlk yüklemede JSON'u güncelle ve eksik il gruplarını oluştur
+        updateCityDistrictsMapJson();
+        
+        // Sayfa yüklendiğinde eksik il gruplarını oluştur
+        const cities = Array.from(document.querySelectorAll('#serviceCitiesTags .badge span:first-child'))
+            .map(el => el.textContent.trim())
+            .filter(city => city.length > 0);
+        
+        const existingGroups = Array.from(document.querySelectorAll('.city-district-group'))
+            .map(group => group.dataset.city);
+        
+        cities.forEach(city => {
+            if (!existingGroups.includes(city)) {
+                createCityGroup(city);
+        }
+        });
+    });
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Hizmet İlleri fonksiyonları
+    function addServiceCity() {
+        const input = document.getElementById('serviceCityInput');
+        const value = input.value.trim();
+        
+        if (!value) {
+            return;
+        }
+        
+        // Zaten var mı kontrol et
+        const existingCities = Array.from(document.querySelectorAll('#serviceCitiesTags .badge span:first-child'))
+            .map(el => el.textContent.trim());
+        
+        if (existingCities.includes(value)) {
+            alert('Bu il zaten eklenmiş!');
+            input.focus();
+            return;
+        }
+        
+        // Yeni tag oluştur
+        const tagsContainer = document.getElementById('serviceCitiesTags');
+        const badge = document.createElement('span');
+        badge.className = 'badge bg-success d-flex align-items-center gap-2';
+        badge.style.cssText = 'font-size: 0.9rem; padding: 0.5rem 0.75rem;';
+        badge.innerHTML = `
+            <span>${escapeHtml(value)}</span>
+            <button type="button" class="btn-close btn-close-white" style="font-size: 0.7rem;" onclick="removeServiceCity(this)" aria-label="Kaldır"></button>
+        `;
+        tagsContainer.appendChild(badge);
+        
+        // Input'u temizle
+        input.value = '';
+        input.focus();
+        
+        // Hidden input'u güncelle
+        updateServiceCitiesHidden();
+    }
+    
+    function removeServiceCity(button) {
+        const badge = button.closest('.badge');
+        if (badge) {
+            badge.remove();
+            updateServiceCitiesHidden();
+        }
+    }
+    
+    function updateServiceCitiesHidden() {
+        const cities = Array.from(document.querySelectorAll('#serviceCitiesTags .badge span:first-child'))
+            .map(el => el.textContent.trim())
+            .filter(city => city.length > 0);
+        
+        const hiddenInput = document.getElementById('serviceCitiesHidden');
+        if (hiddenInput) {
+            hiddenInput.value = cities.join(', ');
+        }
+    }
+    
+    // İl-İlçe Yönetimi Fonksiyonları
+    function updateCityDistrictsManager() {
+        const cities = Array.from(document.querySelectorAll('#serviceCitiesTags .badge span:first-child'))
+            .map(el => el.textContent.trim())
+            .filter(city => city.length > 0);
+        
+        const manager = document.getElementById('cityDistrictsManager');
+        const existingCities = Array.from(manager.querySelectorAll('.city-district-group'))
+            .map(group => group.dataset.city);
+        
+        // Yeni eklenen iller için grup oluştur
+        cities.forEach(city => {
+            if (!existingCities.includes(city)) {
+                createCityGroup(city);
+            }
+        });
+        
+        // Silinen illerin gruplarını kaldır
+        existingCities.forEach(city => {
+            if (!cities.includes(city)) {
+                const group = manager.querySelector(`[data-city="${city}"]`);
+                if (group) {
+                    group.remove();
+                }
+            }
+        });
+        
+        updateCityDistrictsMapJson();
+    }
+    
+    function createCityGroup(city) {
+        const manager = document.getElementById('cityDistrictsManager');
+        const cityId = city.replace(/\s+/g, '_');
+        
+        const group = document.createElement('div');
+        group.className = 'city-district-group mb-3 p-3 border rounded';
+        group.dataset.city = city;
+        group.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="mb-0">
+                    <i class="bi bi-geo-alt-fill text-primary me-2"></i>${escapeHtml(city)}
+                </h6>
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeCityGroup('${escapeHtml(city)}')">
+                    <i class="bi bi-trash"></i> İli Sil
+                </button>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mb-2" id="districts_${cityId}">
+            </div>
+            <div class="input-group">
+                <input type="text" class="form-control district-input" data-city="${escapeHtml(city)}" placeholder="İlçe adı yazın ve Enter'a basın" />
+                <button type="button" class="btn btn-outline-primary" onclick="addDistrict('${escapeHtml(city)}')">
+                    <i class="bi bi-plus-lg"></i> İlçe Ekle
+                </button>
+            </div>
+        `;
+        
+        manager.appendChild(group);
+        
+        // Enter tuşu desteği ekle
+        const input = group.querySelector('.district-input');
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addDistrict(city);
+            }
+        });
+        
+        updateCityDistrictsMapJson();
+    }
+    
+    function addDistrict(city) {
+        const group = document.querySelector(`[data-city="${city}"]`);
+        if (!group)
+        {
+            return;
+        }
+        
+        const input = group.querySelector('.district-input');
+        const value = input.value.trim();
+        
+        if (!value) {
+            return;
+        }
+        
+        const cityId = city.replace(/\s+/g, '_');
+        const districtsContainer = document.getElementById(`districts_${cityId}`);
+        
+        // Zaten var mı kontrol et
+        const existingDistricts = Array.from(districtsContainer.querySelectorAll('.badge span:first-child'))
+            .map(el => el.textContent.trim());
+        
+        if (existingDistricts.includes(value)) {
+            alert('Bu ilçe zaten eklenmiş!');
+            input.focus();
+            return;
+        }
+        
+        // Yeni tag oluştur
+        const badge = document.createElement('span');
+        badge.className = 'badge bg-primary d-flex align-items-center gap-2';
+        badge.style.cssText = 'font-size: 0.9rem; padding: 0.5rem 0.75rem;';
+        badge.innerHTML = `
+            <span>${escapeHtml(value)}</span>
+            <button type="button" class="btn-close btn-close-white" style="font-size: 0.7rem;" onclick="removeDistrict('${escapeHtml(city)}', '${escapeHtml(value)}')" aria-label="Kaldır"></button>
+        `;
+        districtsContainer.appendChild(badge);
+        
+        // Input'u temizle
+        input.value = '';
+        input.focus();
+        
+        updateCityDistrictsMapJson();
+    }
+    
+    function removeDistrict(city, district) {
+        const cityId = city.replace(/\s+/g, '_');
+        const districtsContainer = document.getElementById(`districts_${cityId}`);
+        const badges = districtsContainer.querySelectorAll('.badge');
+        
+        badges.forEach(badge => {
+            const districtName = badge.querySelector('span:first-child').textContent.trim();
+            if (districtName === district) {
+                badge.remove();
+            }
+        });
+        
+        updateCityDistrictsMapJson();
+    }
+    
+    function removeCityGroup(city) {
+        if (!confirm(`"${city}" ilini ve tüm ilçelerini silmek istediğinizden emin misiniz?`)) {
+            return;
+        }
+        
+        const group = document.querySelector(`[data-city="${city}"]`);
+        if (group) {
+            group.remove();
+        }
+        
+        // İl tag'ını da kaldır
+        const cityTags = document.querySelectorAll('#serviceCitiesTags .badge');
+        cityTags.forEach(badge => {
+            const cityName = badge.querySelector('span:first-child').textContent.trim();
+            if (cityName === city) {
+                badge.remove();
+                updateServiceCitiesHidden();
+            }
+        });
+        
+        updateCityDistrictsMapJson();
+    }
+    
+    function updateCityDistrictsMapJson() {
+        const map = {};
+        const groups = document.querySelectorAll('.city-district-group');
+        
+        groups.forEach(group => {
+            const city = group.dataset.city;
+            const cityId = city.replace(/\s+/g, '_');
+            const districtsContainer = document.getElementById(`districts_${cityId}`);
+            
+            if (districtsContainer) {
+                const districts = Array.from(districtsContainer.querySelectorAll('.badge span:first-child'))
+                    .map(el => el.textContent.trim())
+                    .filter(d => d.length > 0);
+                
+                map[city] = districts;
+            }
+        });
+        
+        const jsonInput = document.getElementById('cityDistrictsMapJson');
+        if (jsonInput) {
+            jsonInput.value = JSON.stringify(map);
+        }
+    }
+</script>

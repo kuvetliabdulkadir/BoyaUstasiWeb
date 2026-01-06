@@ -1,0 +1,346 @@
+﻿@using boya_usta_web.Helpers
+@{
+    ViewData["Title"] = "Hakkımızda";
+    var settings = ViewBag.Settings as Dictionary<string, string?> ?? new Dictionary<string, string?>();
+    var statistics = ViewBag.Statistics as List<Statistic> ?? new List<Statistic>();
+    // OPTİMİZASYON: Sahte/default değerler kaldırıldı - Sadece admin panelinden gelen gerçek değerler kullanılıyor
+    var experienceBadgeYears = settings.GetSetting("ExperienceBadgeYears");
+    var experienceBadgeLabel = settings.GetSetting("ExperienceBadgeLabel");
+    var phone = settings.GetSetting("Phone");
+    var phoneDigits = !string.IsNullOrEmpty(phone) 
+        ? phone.Replace(" ", "").Replace("+", "").Replace("-", "").Replace("(", "").Replace(")", "") 
+        : "";
+}
+
+@* Sayfa Başlığı *@
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content text-center">
+            <h1 class="fade-in">Hakkımızda</h1>
+            <p class="fade-in">@{
+                // OPTİMİZASYON: Sahte/default değerler kaldırıldı
+                var experienceYears = settings.GetSetting("ExperienceYears");
+                var aboutTitleRaw = settings.GetSetting("AboutTitle");
+                var aboutTitle = !string.IsNullOrEmpty(aboutTitleRaw) 
+                    ? aboutTitleRaw.Replace("{years}", experienceYears ?? "") 
+                    : "";
+                if (!string.IsNullOrEmpty(aboutTitle))
+                {
+                    @Html.Raw(HtmlSanitizerHelper.Sanitize(aboutTitle));
+                }
+            }</p>
+            <nav aria-label="breadcrumb" class="fade-in">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item active">Hakkımızda</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+@* Hakkımızda Bölümü *@
+<section class="about-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 fade-in-left">
+                <div class="about-image">
+                    @{
+                        var aboutImagePath = settings.GetSetting("AboutImagePath");
+                        var aboutImageIcon = settings.GetSetting("AboutImageIcon", "bi bi-brush-fill");
+                    }
+                    @if (!string.IsNullOrEmpty(aboutImagePath))
+                    {
+                        <img src="@aboutImagePath" alt="Hikayemiz" class="about-image-content" style="width: 100%; height: auto; border-radius: var(--radius-xl);" />
+                    }
+                    else
+                    {
+                        <div class="image-placeholder">
+                            <i class="@aboutImageIcon"></i>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(experienceBadgeYears) || !string.IsNullOrEmpty(experienceBadgeLabel))
+                    {
+                    <div class="experience-badge">
+                            @if (!string.IsNullOrEmpty(experienceBadgeYears))
+                            {
+                        <span class="years">@Html.Raw(experienceBadgeYears)</span>
+                            }
+                            @if (!string.IsNullOrEmpty(experienceBadgeLabel))
+                            {
+                        <span class="text">@Html.Raw(experienceBadgeLabel)</span>
+                            }
+                    </div>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-6 fade-in-right">
+                <div class="about-content">
+                    <span class="section-subtitle">Hikayemiz</span>
+                    <h2>Kalite ve Güvenin Adresi</h2>
+                    @{
+                        // OPTİMİZASYON: Sahte/default değerler kaldırıldı - Sadece admin panelinden gelen gerçek metin kullanılıyor
+                        var aboutText = settings.GetSetting("AboutText");
+                    }
+                    @if (!string.IsNullOrEmpty(aboutText))
+                    {
+                        <p>@Html.Raw(aboutText)</p>
+                    }
+                    @{
+                        // OPTİMİZASYON: Sahte/default değerler kaldırıldı - Sadece admin panelinden gelen gerçek metin kullanılıyor
+                        var aboutText2 = settings.GetSetting("AboutText2");
+                    }
+                    @if (!string.IsNullOrEmpty(aboutText2))
+                    {
+                        <p>@Html.Raw(aboutText2)</p>
+                    }
+                    
+                    @{
+                        // Dinamik özellikler - JSON formatından yükle
+                        var featuresJson = settings.GetSetting("AboutFeatures");
+                        var activeFeatures = new List<(string Text, string Icon)>();
+                        
+                        if (!string.IsNullOrEmpty(featuresJson))
+                        {
+                            try
+                            {
+                                using var doc = System.Text.Json.JsonDocument.Parse(featuresJson);
+                                foreach (var element in doc.RootElement.EnumerateArray())
+                                {
+                                    var isActive = element.TryGetProperty("IsActive", out var isActiveProp) && isActiveProp.GetBoolean();
+                                    var text = element.TryGetProperty("Text", out var textProp) ? textProp.GetString() : "";
+                                    var icon = element.TryGetProperty("Icon", out var iconProp) ? iconProp.GetString() : "bi bi-check2-circle";
+                                    
+                                    if (isActive && !string.IsNullOrEmpty(text))
+                                    {
+                                        activeFeatures.Add((text ?? "", icon ?? "bi bi-check2-circle"));
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                // JSON parse hatası - eski formata geç
+                            }
+                        }
+                        
+                        // Geriye dönük uyumluluk - Eski format (AboutFeature1-4)
+                        if (!activeFeatures.Any())
+                        {
+                            var aboutFeature1 = settings.GetSetting("AboutFeature1");
+                            var aboutFeature2 = settings.GetSetting("AboutFeature2");
+                            var aboutFeature3 = settings.GetSetting("AboutFeature3");
+                            var aboutFeature4 = settings.GetSetting("AboutFeature4");
+                            var aboutFeature1Icon = settings.GetSetting("AboutFeature1Icon", "bi bi-check2-circle") ?? "bi bi-check2-circle";
+                            var aboutFeature2Icon = settings.GetSetting("AboutFeature2Icon", "bi bi-check2-circle") ?? "bi bi-check2-circle";
+                            var aboutFeature3Icon = settings.GetSetting("AboutFeature3Icon", "bi bi-check2-circle") ?? "bi bi-check2-circle";
+                            var aboutFeature4Icon = settings.GetSetting("AboutFeature4Icon", "bi bi-check2-circle") ?? "bi bi-check2-circle";
+                            var aboutFeature1IsActive = settings.GetSetting("AboutFeature1IsActive", "true") == "true";
+                            var aboutFeature2IsActive = settings.GetSetting("AboutFeature2IsActive", "true") == "true";
+                            var aboutFeature3IsActive = settings.GetSetting("AboutFeature3IsActive", "true") == "true";
+                            var aboutFeature4IsActive = settings.GetSetting("AboutFeature4IsActive", "true") == "true";
+                            
+                            if (aboutFeature1IsActive && !string.IsNullOrEmpty(aboutFeature1))
+                            {
+                                activeFeatures.Add((aboutFeature1, aboutFeature1Icon));
+                            }
+                            if (aboutFeature2IsActive && !string.IsNullOrEmpty(aboutFeature2))
+                            {
+                                activeFeatures.Add((aboutFeature2, aboutFeature2Icon));
+                            }
+                            if (aboutFeature3IsActive && !string.IsNullOrEmpty(aboutFeature3))
+                            {
+                                activeFeatures.Add((aboutFeature3, aboutFeature3Icon));
+                            }
+                            if (aboutFeature4IsActive && !string.IsNullOrEmpty(aboutFeature4))
+                            {
+                                activeFeatures.Add((aboutFeature4, aboutFeature4Icon));
+                            }
+                        }
+                    }
+                    @if (activeFeatures.Any())
+                    {
+                        <div class="about-features">
+                            @foreach (var feature in activeFeatures)
+                            {
+                                <div class="about-feature">
+                                    <i class="@feature.Icon"></i>
+                                    <span>@Html.Raw(feature.Text)</span>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <a href="tel:@phoneDigits" 
+                       data-contact-url="@Url.Action("Index", "Contact")" 
+                       data-phone="@phoneDigits"
+                       class="btn btn-primary btn-lg mt-3 phone-call-btn">
+                        <i class="bi bi-telephone-fill me-2"></i>Bize Ulaşın
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* Değerlerimiz Bölümü *@
+@{
+    var valuesTitle = settings.GetSetting("ValuesTitle", "Neden Biz?");
+    var valuesSubtitle = settings.GetSetting("ValuesSubtitle", "Değerlerimiz");
+            var valuesJson = settings.GetSetting("AboutValues");
+            var activeValues = new List<(string Title, string Description, string Icon, string? ImagePath)>();
+            
+            if (!string.IsNullOrEmpty(valuesJson))
+            {
+                try
+                {
+                    using var doc = System.Text.Json.JsonDocument.Parse(valuesJson);
+                    foreach (var element in doc.RootElement.EnumerateArray())
+                    {
+                        var isActive = element.TryGetProperty("IsActive", out var isActiveProp) && isActiveProp.GetBoolean();
+                        var title = element.TryGetProperty("Title", out var titleProp) ? titleProp.GetString() : "";
+                        var description = element.TryGetProperty("Description", out var descProp) ? descProp.GetString() : "";
+                        var icon = element.TryGetProperty("Icon", out var iconProp) ? iconProp.GetString() : "bi bi-heart-fill";
+                        var imagePath = element.TryGetProperty("ImagePath", out var imagePathProp) ? imagePathProp.GetString() : null;
+                        
+                        if (isActive && !string.IsNullOrEmpty(title))
+                        {
+                            activeValues.Add((title ?? "", description ?? "", icon ?? "bi bi-heart-fill", imagePath));
+                        }
+                    }
+                }
+                catch
+                {
+                    // JSON parse hatası - boş liste kullan
+                }
+            }
+    
+    // Eğer dinamik değerler yoksa ve varsayılan değerler gösterilmek isteniyorsa buraya eklenebilir
+}
+
+@if (!string.IsNullOrEmpty(valuesTitle) || activeValues.Any())
+{
+<section class="values-section bg-light-custom">
+    <div class="container">
+        <div class="section-header text-center fade-in">
+            @if (!string.IsNullOrEmpty(valuesSubtitle))
+            {
+                <span class="section-subtitle">@Html.Raw(valuesSubtitle)</span>
+            }
+            @if (!string.IsNullOrEmpty(valuesTitle))
+            {
+                <h2 class="section-title">@Html.Raw(valuesTitle)</h2>
+            }
+        </div>
+        @if (activeValues.Any())
+        {
+            <div class="row g-4 stagger-container">
+                @foreach (var value in activeValues)
+                {
+                    <div class="col-md-4">
+                        <div class="value-card fade-in hover-lift text-center">
+                            <div class="value-icon">
+                                @if (!string.IsNullOrEmpty(value.ImagePath))
+                                {
+                                    <img src="@value.ImagePath" alt="@Html.Raw(value.Title)" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;" />
+                                }
+                                else
+                                {
+                                    <i class="@value.Icon"></i>
+                                }
+                            </div>
+                            <h3>@Html.Raw(value.Title)</h3>
+                            @if (!string.IsNullOrEmpty(value.Description))
+                            {
+                                <p>@Html.Raw(value.Description)</p>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+}
+
+@* İstatistikler Bölümü *@
+@if (statistics.Any())
+{
+    <section class="about-stats-section">
+        <div class="container">
+            <div class="row g-4 stagger-container">
+                @foreach (var stat in statistics)
+                {
+                    var numericPart = new string((stat.Value ?? "").Where(char.IsDigit).ToArray());
+                    var isNumeric = !string.IsNullOrWhiteSpace(numericPart);
+                    <div class="col-6 col-md-3">
+                        <div class="about-stat-card fade-in text-center">
+                            @if (!string.IsNullOrEmpty(stat.IconClass))
+                            {
+                                <div class="stat-icon">
+                                    <i class="@(stat.IconClass.StartsWith("bi ") || stat.IconClass.StartsWith("fas ") || stat.IconClass.StartsWith("fa ") ? stat.IconClass : "bi bi-" + stat.IconClass)"></i>
+                                </div>
+                            }
+                            <div class="stat-value">
+                                @if (isNumeric)
+                                {
+                                    <span class="counter-value" data-target="@numericPart">0</span>
+                                    <span class="counter-suffix">@Html.Raw(stat.Suffix)</span>
+                                }
+                                else
+                                {
+                                    <span class="stat-text">@Html.Raw(stat.Value)</span>
+                                    @if (!string.IsNullOrWhiteSpace(stat.Suffix))
+                                    {
+                                        <span class="counter-suffix">@Html.Raw(stat.Suffix)</span>
+                                    }
+                                }
+                            </div>
+                            <div class="stat-label">@Html.Raw(stat.Title)</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+@* Hizmet Bölgeleri *@
+<section class="service-areas-section bg-light-custom">
+    <div class="container">
+        <div class="section-header text-center fade-in">
+            @{
+                var serviceAreasTitle = settings.GetSetting("ServiceAreasTitle", "Bursa Genelinde Hizmet");
+                var serviceAreasSubtitle = settings.GetSetting("ServiceAreasSubtitle", "Hizmet Bölgelerimiz");
+            }
+            <span class="section-subtitle">@Html.Raw(serviceAreasSubtitle)</span>
+            <h2 class="section-title">@Html.Raw(serviceAreasTitle)</h2>
+        </div>
+        <div class="service-areas-grid fade-in">
+            @{
+                // Helper kullanarak il-ilçe mapping'i al
+                var cities = settings.GetSetting("Cities")?
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(c => c.Trim())
+                    .Where(c => !string.IsNullOrWhiteSpace(c))
+                    .OrderBy(c => c)
+                    .ToList() ?? new List<string>();
+                
+                var cityDistrictsMap = CityDistrictsHelper.GetCityDistrictsMap(settings, cities);
+                var allDistricts = CityDistrictsHelper.GetAllDistrictsAsList(cityDistrictsMap);
+            }
+            @if (allDistricts.Any())
+            {
+                @foreach (var area in allDistricts)
+                {
+                    <div class="area-badge">
+                        <i class="bi bi-geo-alt-fill me-2"></i>@Html.Raw(area)
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/about.css" asp-append-version="true" />
+}

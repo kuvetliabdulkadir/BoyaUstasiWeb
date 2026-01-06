@@ -1,0 +1,16 @@
+@model boya_usta_web.Models.ViewModels.ContactSettingsVm
+
+<div class="col-12">
+    <label asp-for="GoogleMapsEmbed" class="form-label">Google Maps Embed Kodu <span class="text-muted small">(Opsiyonel)</span></label>
+    <textarea name="GoogleMapsEmbed" id="GoogleMapsEmbed" class="form-control" rows="4" placeholder="&lt;iframe src=&quot;...&quot;&gt;&lt;/iframe&gt;" data-val="false" data-val-required="false">@(Model.GoogleMapsEmbed ?? "")</textarea>
+    <div class="text-muted small mt-1">Google Maps'ten "Haritayı paylaş" › "HTML'ye yerleştir" ile alacağınız iframe kodunu buraya yapıştırın. Bu alan opsiyoneldir, boş bırakabilirsiniz.</div>
+    <span asp-validation-for="GoogleMapsEmbed" class="text-danger"></span>
+</div>
+<div class="col-12">
+    <label class="form-label">Google Places API Key <span class="text-muted small">(Opsiyonel - Google Yorumları için)</span></label>
+    <input type="text" name="GooglePlacesAPIKey" id="GooglePlacesAPIKey" class="form-control" placeholder="AIzaSy..." value="@ViewBag.GooglePlacesAPIKey" data-val="false" data-val-required="false" />
+    <div class="text-muted small mt-1">
+        Google İşletmeler yorumlarını otomatik çekmek için API key gerekir. 
+        <a href="https://console.cloud.google.com/google/maps-apis" target="_blank">Google Cloud Console'dan API Key alın</a>
+    </div>
+</div>

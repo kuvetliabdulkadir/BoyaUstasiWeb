@@ -1,0 +1,100 @@
+﻿@model Review
+@{
+    ViewData["Title"] = "Yeni Yorum";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Yeni Yorum</h2>
+        <a href="@ViewBag.AdminPath/yorumlar" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri
+        </a>
+    </div>
+    <div class="admin-card-body">
+        <form method="post" enctype="multipart/form-data" class="admin-form">
+            @Html.AntiForgeryToken()
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="CustomerName" class="form-label">Müşteri Adı *</label>
+                    <input asp-for="CustomerName" class="form-control" placeholder="örn: Ahmet B." />
+                    <span asp-validation-for="CustomerName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Location" class="form-label">Konum</label>
+                    <input asp-for="Location" class="form-control" placeholder="örn: Nilüfer" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Rating" class="form-label">Puan *</label>
+                    <select asp-for="Rating" class="form-select">
+                        <option value="5">5</option>
+                        <option value="4">4</option>
+                        <option value="3">3</option>
+                        <option value="2">2</option>
+                        <option value="1">1</option>
+                    </select>
+                    <span asp-validation-for="Rating" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Source" class="form-label">Kaynak</label>
+                    <input asp-for="Source" class="form-control" placeholder="Google / WhatsApp" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="DisplayOrder" class="form-label">Sıra</label>
+                    <input asp-for="DisplayOrder" type="number" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="Comment" class="form-label">Yorum *</label>
+                    <textarea asp-for="Comment" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Comment" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ReviewDate" class="form-label">Tarih</label>
+                    <input asp-for="ReviewDate" type="text" class="form-control flatpickr-datetime" data-value="@Model.ReviewDate.ToLocalTime().ToString("yyyy-MM-dd HH:mm")" placeholder="Tarih ve saat seçin" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Kaynak Logosu (opsiyonel)</label>
+                    <input type="file" name="sourceLogo" class="form-control" accept="image/*" />
+                </div>
+                <div class="col-md-6 d-flex align-items-center gap-3">
+                    <div class="form-check mt-4">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label">Aktif</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr class="my-3" />
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-check-lg me-2"></i>Kaydet
+                    </button>
+                    <a href="@ViewBag.AdminPath/yorumlar" class="btn btn-outline-secondary ms-2">İptal</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const picker = flatpickr('.flatpickr-datetime', {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true,
+                locale: "tr",
+                defaultDate: document.querySelector('.flatpickr-datetime')?.dataset.value || new Date(),
+                onChange: function(selectedDates, dateStr) {
+                    // Formatı düzelt
+                    const input = document.querySelector('.flatpickr-datetime');
+                    if (input && dateStr) {
+                        input.value = dateStr;
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+

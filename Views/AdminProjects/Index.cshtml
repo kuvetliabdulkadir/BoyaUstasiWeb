@@ -1,0 +1,102 @@
+﻿@model List<Project>
+@{
+    ViewData["Title"] = "Projeler";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Tüm Projeler</h2>
+        <a href="@ViewBag.AdminPath/projeler/ekle" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-2"></i>Yeni Proje
+        </a>
+    </div>
+    <div class="admin-card-body p-0">
+        @Html.AntiForgeryToken()
+        @if (Model.Any())
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Sıra</th>
+                        <th>Görsel</th>
+                        <th>Başlık</th>
+                        <th class="d-none d-lg-table-cell">Kategori</th>
+                        <th class="d-none d-lg-table-cell">Konum</th>
+                        <th>Durum</th>
+                        <th class="d-none d-md-table-cell">Tarih</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ var orderedProjects = Model.OrderBy(p => p.DisplayOrder).ToList(); int projectIndex = 0; }
+                    @foreach (var project in orderedProjects)
+                    {
+                        <tr data-item-id="@project.Id" data-display-order="@project.DisplayOrder">
+                            <td>
+                                @{
+                                    ViewData["ItemId"] = project.Id;
+                                    ViewData["UpdateOrderUrl"] = $"{ViewBag.AdminPath}/projeler/sira-guncelle";
+                                    ViewData["IsFirst"] = projectIndex == 0;
+                                    ViewData["IsLast"] = projectIndex == orderedProjects.Count - 1;
+                                }
+                                <partial name="_AdminTableSortButtons" view-data="ViewData" />
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(project.AfterImagePath))
+                                {
+                                    <img src="@project.AfterImagePath" alt="@project.Title" class="image-preview" />
+                                }
+                                else
+                                {
+                                    <div class="image-preview bg-light d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-image text-muted"></i>
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                <strong>@project.Title</strong>
+                                @if (project.IsFeatured)
+                                {
+                                    <span class="badge bg-warning ms-1">Öne Çıkan</span>
+                                }
+                            </td>
+                            <td class="d-none d-lg-table-cell">@project.Category</td>
+                            <td class="d-none d-lg-table-cell">@(project.Location ?? "-")</td>
+                            <td>
+                                @{
+                                    ViewData["IsActive"] = project.IsActive;
+                                    ViewData["ItemId"] = project.Id;
+                                    ViewData["ToggleUrl"] = $"{ViewBag.AdminPath}/projeler/aktif-pasif/{project.Id}";
+                                    ViewData["EntityName"] = "Proje";
+                                }
+                                <partial name="_AdminStatusBadge" view-data="ViewData" />
+                            </td>
+                            <td class="d-none d-md-table-cell">@project.CreatedAt.ToString("dd.MM.yyyy")</td>
+                            <td>
+                                @{
+                                    ViewData["EditUrl"] = $"{ViewBag.AdminPath}/projeler/duzenle/{project.Id}";
+                                    ViewData["DeleteUrl"] = $"{ViewBag.AdminPath}/projeler/sil/{project.Id}";
+                                    ViewData["EntityName"] = "Proje";
+                                }
+                                <partial name="_AdminTableRowActions" view-data="ViewData" />
+                            </td>
+                        </tr>
+                        projectIndex++;
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            {
+                ViewData["Icon"] = "bi-folder-x";
+                ViewData["Message"] = "Henüz proje eklenmemiş";
+                ViewData["CreateUrl"] = $"{ViewBag.AdminPath}/projeler/ekle";
+                ViewData["CreateButtonText"] = "İlk Projeyi Ekle";
+            }
+            <partial name="_AdminEmptyState" view-data="ViewData" />
+        }
+    </div>
+</div>
+

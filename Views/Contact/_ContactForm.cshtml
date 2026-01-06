@@ -1,0 +1,164 @@
+﻿@using boya_usta_web.Helpers
+@using boya_usta_web.Models.ViewModels
+@model ContactIndexViewModel
+@{
+    var formModel = Model.FormModel ?? new ContactMessage();
+    var cities = Model.Cities;
+    var serviceTypes = Model.ServiceTypes;
+    var defaultCity = Model.DefaultCity;
+    var settings = Model.Settings;
+    var whatsapp = settings.GetSetting("WhatsApp");
+    var whatsappMessage = settings.GetSetting("WhatsAppDefaultMessage", "Merhaba, boya hizmeti hakkında bilgi almak istiyorum.");
+    var shouldShowCaptcha = Model.Captcha.ShouldShow;
+    var turnstileSiteKey = Model.Captcha.SiteKey;
+    var submissionCount = Model.Captcha.SubmissionCount;
+}
+
+@* İletişim Formu *@
+<div class="col-lg-7">
+    <div class="contact-form-wrapper fade-in">
+        <h2>Teklif Formu</h2>
+        <p class="text-muted mb-4">Formu doldurun, size en kısa sürede dönüş yapalım.</p>
+
+        <form asp-action="Submit" method="post" enctype="multipart/form-data" id="contactForm" novalidate>
+            @Html.AntiForgeryToken()
+            @* Spam Koruması (Honeypot) *@
+            <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true" />
+            @* Yükleme zamanı *@
+            <input type="hidden" name="formLoadTime" id="formLoadTime" value="" />
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Ad Soyad *</label>
+                        <input type="text" asp-for="FormModel.FullName" class="form-control" placeholder="Örn: Ahmet Yılmaz" required />
+                        <span asp-validation-for="FormModel.FullName" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Telefon *</label>
+                        <input type="tel" asp-for="FormModel.Phone" class="form-control" placeholder="05XX XXX XX XX" required onkeyup="formatPhoneNumberInput(this)" />
+                        <span asp-validation-for="FormModel.Phone" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">E-posta <span class="text-muted small">(İsteğe Bağlı)</span></label>
+                        <input type="email" asp-for="FormModel.Email" class="form-control" placeholder="Örn: ahmet@example.com" />
+                        <span asp-validation-for="FormModel.Email" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">İl *</label>
+                        <select asp-for="FormModel.City" id="citySelect" class="form-select" required>
+                            <option value="">Seçiniz</option>
+                            @foreach (var city in cities)
+                            {
+                                @if (city.Equals(defaultCity, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <option value="@city" selected>@city</option>
+                                }
+                                else
+                                {
+                                    <option value="@city">@city</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="FormModel.City" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">İlçe *</label>
+                        <select asp-for="FormModel.District" id="districtSelect" class="form-select" required>
+                            <option value="">Önce il seçiniz</option>
+                        </select>
+                        <span asp-validation-for="FormModel.District" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Hizmet Türü *</label>
+                        <select asp-for="FormModel.ServiceType" class="form-select" required>
+                            <option value="">Seçiniz</option>
+                            @foreach (var service in serviceTypes)
+                            {
+                                <option value="@service">@service</option>
+                            }
+                        </select>
+                        <span asp-validation-for="FormModel.ServiceType" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Tahmini Metrekare (Min)</label>
+                        <input type="number" asp-for="FormModel.MinSquareMeters" class="form-control" placeholder="Örn: 50" min="1" max="99999" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                        <div class="text-muted small mt-1">Minimum 1, maksimum 99.999 m²</div>
+                        <span asp-validation-for="FormModel.MinSquareMeters" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Tahmini Metrekare (Max)</label>
+                        <input type="number" asp-for="FormModel.MaxSquareMeters" class="form-control" placeholder="Örn: 150" min="1" max="100000" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                        <div class="text-muted small mt-1">Minimum 1, maksimum 100.000 m² (Min değerinden büyük olmalı)</div>
+                        <span asp-validation-for="FormModel.MaxSquareMeters" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label">Açıklama *</label>
+                        <textarea asp-for="FormModel.Message" class="form-control" rows="4" placeholder="Projeniz hakkında detay verebilirsiniz..." required maxlength="2000" id="messageTextarea"></textarea>
+                        <div class="text-muted small mt-1">Maksimum 2000 karakter. <span id="messageCharCount">0</span>/2000</div>
+                        <span asp-validation-for="FormModel.Message" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label">Fotoğraf Ekle (İsteğe bağlı - En fazla 5 adet)</label>
+                        <input type="file" name="attachments" id="attachmentsInput" class="form-control" accept=".jpg,.jpeg,.png,.webp" multiple />
+                        <small class="text-muted">Maksimum 5 adet resim, her biri maksimum 5MB, JPG/PNG/WebP formatında</small>
+                        <div id="filePreview" class="mt-3"></div>
+                        <div id="fileError" class="text-danger small mt-2" style="display: none;"></div>
+                    </div>
+                </div>
+                @if (shouldShowCaptcha && !string.IsNullOrEmpty(turnstileSiteKey))
+                {
+                <div class="col-12">
+                    <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                        <i class="bi bi-shield-exclamation me-2 fs-5"></i>
+                        <div>
+                            <strong>Güvenlik Doğrulaması Gerekli</strong>
+                            <p class="mb-0 small">Son @submissionCount form gönderiminiz nedeniyle spam koruması aktif. Lütfen aşağıdaki doğrulamayı tamamlayın.</p>
+                        </div>
+                    </div>
+                    <div id="turnstile-widget" style="min-height: 65px; padding: 10px 0;">
+                        <div class="text-muted small text-center">
+                            <i class="bi bi-hourglass-split me-2"></i>Güvenlik doğrulaması yükleniyor...
+                        </div>
+                    </div>
+                    <div class="text-danger small mt-2" id="captcha-error" style="display: none;">
+                        <i class="bi bi-exclamation-circle me-1"></i>
+                        <span>Lütfen güvenlik doğrulamasını tamamlayın.</span>
+                    </div>
+                </div>
+                }
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary btn-lg" onclick="console.log('Submit button clicked'); return true;">
+                        <i class="bi bi-send me-2"></i>Formu Gönder
+                    </button>
+                    <span class="ms-3 text-muted">veya</span>
+                    @if (!string.IsNullOrEmpty(whatsapp))
+                    {
+                    <a href="@boya_usta_web.Helpers.UrlHelperExtensions.GetWhatsAppLink(whatsapp, whatsappMessage)" target="_blank" class="btn btn-whatsapp btn-lg ms-2">
+                        <i class="bi bi-whatsapp me-2"></i>WhatsApp'tan Yaz
+                    </a>
+                    }
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+

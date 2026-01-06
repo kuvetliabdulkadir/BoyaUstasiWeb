@@ -1,0 +1,17 @@
+﻿@* Admin işlem butonları *@
+@{
+    var editUrl = ViewData["EditUrl"] as string ?? "";
+    var deleteUrl = ViewData["DeleteUrl"] as string ?? "";
+    var entityName = ViewData["EntityName"] as string ?? "Öğe";
+    var itemId = ViewData["ItemId"] is int id ? id : 0;
+}
+
+<div class="action-btns">
+    <a class="btn-action edit" href="@editUrl" title="Düzenle">
+        <i class="bi bi-pencil"></i>
+    </a>
+    <button type="button" class="btn-action delete" title="Sil" onclick="deleteItemAjax(@itemId, '@deleteUrl', '@entityName', this.closest('tr'))">
+        <i class="bi bi-trash"></i>
+    </button>
+</div>
+

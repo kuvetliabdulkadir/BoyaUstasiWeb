@@ -1,0 +1,75 @@
+﻿@using boya_usta_web.Helpers
+@{
+    var settings = ViewBag.Settings as Dictionary<string, string?> ?? new Dictionary<string, string?>();
+    var whatsapp = settings.GetSetting("WhatsApp");
+    var whatsappMessage = settings.GetSetting("WhatsAppDefaultMessage", "Merhaba, boya hizmeti hakkında bilgi almak istiyorum.");
+}
+
+@* İletişim Bilgileri *@
+<div class="col-lg-5">
+    <div class="contact-info-wrapper fade-in-right">
+        <div class="contact-info-card">
+            <h3>İletişim Bilgileri</h3>
+            
+            <div class="contact-info-item">
+                <div class="info-icon">
+                    <i class="bi bi-telephone-fill"></i>
+                </div>
+                <div class="info-content">
+                    <h4>Telefon</h4>
+                    <span>@settings.GetSetting("Phone")</span>
+                </div>
+            </div>
+
+            <div class="contact-info-item whatsapp-highlight">
+                <div class="info-icon">
+                    <i class="bi bi-whatsapp"></i>
+                </div>
+                <div class="info-content">
+                    <h4>WhatsApp</h4>
+                    @if (!string.IsNullOrEmpty(whatsapp))
+                    {
+                    <a href="@boya_usta_web.Helpers.UrlHelperExtensions.GetWhatsAppLink(whatsapp, whatsappMessage)" target="_blank">Hemen Yazın</a>
+                    }
+                    else
+                    {
+                    <span>Yapılandırılmamış</span>
+                    }
+                </div>
+            </div>
+
+            <div class="contact-info-item">
+                <div class="info-icon">
+                    <i class="bi bi-envelope-fill"></i>
+                </div>
+                <div class="info-content">
+                    <h4>E-posta</h4>
+                    <a href="mailto:@settings.GetSetting("Email")">@settings.GetSetting("Email")</a>
+                </div>
+            </div>
+
+            <div class="contact-info-item">
+                <div class="info-icon">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
+                <div class="info-content">
+                    <h4>Adres</h4>
+                    <span>@settings.GetSetting("Address")</span>
+                </div>
+            </div>
+
+            <div class="contact-info-item">
+                <div class="info-icon">
+                    <i class="bi bi-clock-fill"></i>
+                </div>
+                <div class="info-content">
+                    <h4>Çalışma Saatleri</h4>
+                    <span>@settings.GetSetting("WorkingHours")</span>
+                </div>
+            </div>
+        </div>
+
+        @await Html.PartialAsync("_ServiceAreas")
+    </div>
+</div>
+

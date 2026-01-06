@@ -1,0 +1,55 @@
+﻿@model Faq
+@{
+    ViewData["Title"] = "Yeni SSS";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Yeni SSS</h2>
+        <a href="@ViewBag.AdminPath/sss" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri
+        </a>
+    </div>
+    <div class="admin-card-body">
+        <form method="post" class="admin-form">
+            @Html.AntiForgeryToken()
+
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="Question" class="form-label">Soru *</label>
+                    <input asp-for="Question" class="form-control" />
+                    <span asp-validation-for="Question" class="text-danger small"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Answer" class="form-label">Cevap *</label>
+                    <textarea asp-for="Answer" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Answer" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="DisplayOrder" class="form-label">Sıra</label>
+                    <input asp-for="DisplayOrder" type="number" class="form-control" />
+                </div>
+                <div class="col-md-8 d-flex align-items-center">
+                    <div class="form-check mt-4">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label">Aktif</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr class="my-3" />
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-check-lg me-2"></i>Kaydet
+                    </button>
+                    <a href="@ViewBag.AdminPath/sss" class="btn btn-outline-secondary ms-2">İptal</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+
+}
+
+

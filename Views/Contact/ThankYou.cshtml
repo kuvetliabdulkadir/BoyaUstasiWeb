@@ -1,0 +1,300 @@
+﻿@{
+    ViewData["Title"] = "Mesajınız Gonderildi";
+    var contactName = ViewBag.ContactName as string ?? "Değerli Müşterimiz";
+    var whatsappLink = ViewBag.WhatsAppLink as string;
+}
+
+@* Page Header *@
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content text-center">
+            <h1 class="fade-in">Teşekkürler!</h1>
+            <p class="fade-in">Mesajınız başarıyla ulaştı</p>
+            <nav aria-label="breadcrumb" class="fade-in">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item active">Teşekkürler</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+@* Thank You Section *@
+<section class="thank-you-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="thank-you-card text-center">
+                    <div class="thank-you-icon">
+                        <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="60" cy="60" r="60" fill="#E8F5E9" opacity="0.3"/>
+                            <circle cx="60" cy="60" r="50" fill="#E8F5E9"/>
+                            <path d="M40 60L52 72L80 44" stroke="#27AE60" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    
+                    <h2 class="thank-you-title">Mesajınız Başarıyla Gonderildi!</h2>
+                    
+                    <p class="thank-you-message">
+                        Merhaba <strong>@contactName</strong>,
+                    </p>
+                    
+                    <p class="thank-you-description">
+                        İletişim formunuzu aldık ve en kısa sürede size dönüş yapacağımız. 
+                        Ekibimiz tarafından inceleniyor ve en kısa sürede size ulaşacağımız.
+                    </p>
+                    
+                    <div class="thank-you-info">
+                        <div class="info-item">
+                            <i class="bi bi-clock-history"></i>
+                            <span>Genellikle 24 saat içinde yanıt veriyoruz</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="bi bi-shield-check"></i>
+                            <span>Mesajınız güvenli bir şekilde saklanıyor</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="bi bi-envelope-check"></i>
+                            <span>E-posta bildirimi gönderildi</span>
+                        </div>
+                    </div>
+                    
+                    @if (!string.IsNullOrEmpty(whatsappLink))
+                    {
+                        <div class="alert alert-info mb-4" role="alert">
+                            <i class="bi bi-whatsapp me-2"></i>
+                            <strong>Hızlı İletişim:</strong> Mesajınızı WhatsApp üzerinden de gönderebilirsiniz.
+                        </div>
+                    }
+                    
+                    <div class="thank-you-actions mt-4">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg me-3">
+                            <i class="bi bi-house-fill me-2"></i>Ana Sayfaya Dön
+                        </a>
+                        @if (!string.IsNullOrEmpty(whatsappLink))
+                        {
+                            <a href="@whatsappLink" target="_blank" class="btn btn-success btn-lg me-3" onclick="setTimeout(function() { window.location.reload(); }, 500);">
+                                <i class="bi bi-whatsapp me-2"></i>WhatsApp ile Gonder
+                            </a>
+                        }
+                        <a asp-controller="Contact" asp-action="Index" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-arrow-left me-2"></i>İletişim Sayfasına Dön
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .thank-you-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+    }
+
+    .thank-you-card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 60px 40px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .thank-you-icon {
+        margin-bottom: 30px;
+        animation: scaleIn 0.8s ease-out;
+    }
+
+    @@keyframes scaleIn {
+        from {
+            transform: scale(0);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+
+    .thank-you-title {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        font-family: var(--font-heading);
+    }
+
+    .thank-you-message {
+        font-size: 1.3rem;
+        color: var(--dark);
+        margin-bottom: 15px;
+        font-weight: 500;
+    }
+
+    .thank-you-description {
+        font-size: 1.1rem;
+        color: var(--gray);
+        line-height: 1.8;
+        margin-bottom: 30px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .thank-you-info {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 30px 0;
+        text-align: left;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        font-size: 1rem;
+        color: var(--dark);
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .info-item i {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        margin-right: 15px;
+        min-width: 30px;
+    }
+
+    .thank-you-actions {
+        margin-top: 40px;
+    }
+
+    .thank-you-actions .btn {
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .thank-you-actions .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .thank-you-actions .btn-success {
+        background-color: #25d366 !important;
+        border-color: #25d366 !important;
+        color: #fff !important;
+    }
+
+    .thank-you-actions .btn-success:hover,
+    .thank-you-actions .btn-success:active,
+    .thank-you-actions .btn-success:focus {
+        background-color: #128c7e !important;
+        border-color: #128c7e !important;
+        color: #fff !important;
+        box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4) !important;
+    }
+
+    @@media (max-width: 768px) {
+        .thank-you-card {
+            padding: 40px 25px;
+        }
+
+        .thank-you-title {
+            font-size: 2rem;
+        }
+
+        .thank-you-message {
+            font-size: 1.1rem;
+        }
+
+        .thank-you-description {
+            font-size: 1rem;
+        }
+
+        .thank-you-actions {
+            flex-direction: column;
+        }
+
+        .thank-you-actions .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .thank-you-actions .btn.me-3 {
+            margin-right: 0 !important;
+        }
+    }
+</style>
+
+@section Scripts {
+<script>
+    // POST-redirect-GET pattern: Geri tuşuna basıldığında form sayfasına dönmeyi engelle
+    (function() {
+        // ThankYou sayfasına geldiğinde, history'yi tamamen temizle
+        if (window.history && window.history.replaceState) {
+            // History'deki önceki entry'yi (POST request) replace et
+            // Boylece geri tuşuna basıldığında form sayfasına de gitmeyecek, ondan önceki sayfaya gider
+            window.history.replaceState({ page: 'thankyou', preventBack: true }, '', window.location.href);
+            
+            // Eğer referrer form submit sayfası ise, history'yi düzenle
+            if (document.referrer && document.referrer.includes('/Contact/Submit')) {
+                // History'deki POST entry'sini kaldırmak için, önceki sayfayı (form sayfası) replace et
+                // Ana sayfayÄ± history'ye ekle
+                window.history.pushState({ page: 'home' }, '', '@Url.Action("Index", "Home")');
+                // Sonra tekrar ThankYou sayfasÄ±na dÃ¶n
+                window.history.pushState({ page: 'thankyou', preventBack: true }, '', window.location.href);
+            }
+        }
+        
+        // Geri tuşuna basıldığında kontrol et
+        var isNavigating = false;
+        window.addEventListener('popstate', function(event) {
+            if (isNavigating) return;
+            
+            // Eğer form submit sayfasına gidiyorsa, ana sayfaya yönlendir
+            if (window.location.pathname.includes('/Contact/Submit')) {
+                isNavigating = true;
+                window.location.href = '@Url.Action("Index", "Home")';
+                return;
+            }
+            
+            // Eğer ThankYou sayfasından çıkıyorsa, ana sayfaya yönlendir
+            if (event.state && event.state.preventBack) {
+                // Geri tuşuna basıldığında, ana sayfaya yönlendir
+                isNavigating = true;
+                window.location.href = '@Url.Action("Index", "Home")';
+            } else if (!event.state || (event.state.page !== 'thankyou' && event.state.page !== 'home')) {
+                // ThankYou sayfasından başka bir yere gidiyorsa, ana sayfaya yönlendir
+                isNavigating = true;
+                window.location.href = '@Url.Action("Index", "Home")';
+            }
+        });
+        
+        // Sayfa yüklendiğinde history state'i set et (tekrar)
+        setTimeout(function() {
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState({ page: 'thankyou', preventBack: true }, '', window.location.href);
+            }
+        }, 100);
+    })();
+</script>
+}
+

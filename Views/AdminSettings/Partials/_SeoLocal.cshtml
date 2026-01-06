@@ -1,0 +1,36 @@
+@model boya_usta_web.Models.ViewModels.SeoSettingsVm
+
+@* Yerel SEO (Geo Tags) *@
+<div class="card mb-4">
+    <div class="card-header bg-success text-white">
+        <i class="bi bi-geo-alt me-2"></i>Yerel SEO (Geo Tags)
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info mb-3">
+            <i class="bi bi-info-circle me-2"></i>
+            Bu bilgiler Google Haritalar ve yerel arama sonuçlarında sıralamanızı iyileştirir.
+        </div>
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label asp-for="GeoRegion" class="form-label"></label>
+                <input asp-for="GeoRegion" class="form-control" placeholder="TR-16" />
+                <div class="form-text">ISO 3166-2 bölge kodu</div>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="GeoPlacename" class="form-label"></label>
+                <input asp-for="GeoPlacename" class="form-control" placeholder="Bursa" />
+                <div class="form-text">Şehir adı</div>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="GeoLatitude" class="form-label"></label>
+                <input asp-for="GeoLatitude" class="form-control" placeholder="40.1885" />
+                <div class="form-text">Enlem koordinatı</div>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="GeoLongitude" class="form-label"></label>
+                <input asp-for="GeoLongitude" class="form-control" placeholder="29.0610" />
+                <div class="form-text">Boylam koordinatı</div>
+            </div>
+        </div>
+    </div>
+</div>

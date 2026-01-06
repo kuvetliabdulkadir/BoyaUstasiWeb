@@ -1,0 +1,259 @@
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/tr.js"></script>
+    <script>
+        // Kenar Menü Aç/Kapa
+        document.getElementById('sidebarToggle')?.addEventListener('click', function() {
+            document.querySelector('.admin-wrapper').classList.toggle('sidebar-collapsed');
+        });
+        
+        // Bildirim Sistemi
+        function showToast(message, type = 'success') {
+            // Bootstrap Kontrolü
+            if (typeof bootstrap === 'undefined' || !bootstrap.Toast) {
+                // Yedeğe düş
+                console.warn('Bootstrap yüklenmedi, alert kullanılıyor:', message);
+                alert(message);
+                return;
+            }
+            
+            const container = document.querySelector('.toast-container');
+            const template = document.getElementById('toastTemplate');
+            
+            if (!container || !template) {
+                console.warn('Toast container veya template bulunamadı, alert kullanılıyor:', message);
+                alert(message);
+                return;
+            }
+            
+            const toastElement = template.cloneNode(true);
+            toastElement.id = 'toast-' + Date.now();
+            toastElement.style.display = 'block';
+            
+            const icon = toastElement.querySelector('.toast-icon');
+            const title = toastElement.querySelector('.toast-title');
+            const messageEl = toastElement.querySelector('.toast-message');
+            
+            if (!icon || !title || !messageEl) {
+                console.warn('Toast elementleri bulunamadı, alert kullanılıyor:', message);
+                alert(message);
+                return;
+            }
+            
+            messageEl.textContent = message;
+            
+            if (type === 'success') {
+                icon.className = 'bi bi-check-circle-fill text-success me-2';
+                title.textContent = 'Başarılı';
+                toastElement.classList.add('bg-success', 'text-white');
+            } else if (type === 'error') {
+                icon.className = 'bi bi-exclamation-circle-fill text-danger me-2';
+                title.textContent = 'Hata';
+                toastElement.classList.add('bg-danger', 'text-white');
+            } else if (type === 'warning') {
+                icon.className = 'bi bi-exclamation-triangle-fill text-warning me-2';
+                title.textContent = 'Uyarı';
+                toastElement.classList.add('bg-warning', 'text-dark');
+            } else {
+                icon.className = 'bi bi-info-circle-fill text-info me-2';
+                title.textContent = 'Bilgi';
+                toastElement.classList.add('bg-info', 'text-white');
+            }
+            
+            container.appendChild(toastElement);
+            
+            try {
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+            
+            toastElement.addEventListener('hidden.bs.toast', function() {
+                toastElement.remove();
+            });
+            } catch (error) {
+                console.error('Toast oluşturulurken hata:', error);
+                // Fallback: basit bir alert göster
+                alert(message);
+                toastElement.remove();
+            }
+        }
+        
+        // AJAX Yardımcıları
+        async function moveItemUp(id, endpoint, rowElement) {
+            const prevRow = rowElement.previousElementSibling;
+            if (!prevRow)
+            {
+                return;
+            }
+            
+            await swapRows(id, prevRow, endpoint, rowElement);
+        }
+        
+        async function moveItemDown(id, endpoint, rowElement) {
+            const nextRow = rowElement.nextElementSibling;
+            if (!nextRow)
+            {
+                return;
+            }
+            
+            await swapRows(id, nextRow, endpoint, rowElement);
+        }
+        
+        function updateSortButtonStates(tbody) {
+            const rows = Array.from(tbody.children).filter(r => r.tagName === 'TR');
+            rows.forEach((row, index) => {
+                const upBtn = row.querySelector('button[title="Yukarı"]');
+                const downBtn = row.querySelector('button[title="Aşağı"]');
+                
+                if (upBtn) upBtn.disabled = (index === 0);
+                if (downBtn) downBtn.disabled = (index === rows.length - 1);
+            });
+        }
+
+        async function swapRows(id, targetRow, endpoint, rowElement) {
+            try {
+                const targetId = parseInt(targetRow.dataset.itemId);
+                const currentOrder = parseInt(rowElement.dataset.displayOrder);
+                const targetOrder = parseInt(targetRow.dataset.displayOrder);
+                
+                const orderMap = {};
+                orderMap[id] = targetOrder;
+                orderMap[targetId] = currentOrder;
+                
+                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                if (!token) {
+                    throw new Error('Güvenlik token bulunamadı');
+                }
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify(orderMap)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Sıralamayı Değiştir
+                    const parent = rowElement.parentNode;
+                    
+                    if (rowElement.nextElementSibling === targetRow) {
+                        parent.insertBefore(targetRow, rowElement);
+                    } else if (targetRow.nextElementSibling === rowElement) {
+                        parent.insertBefore(rowElement, targetRow);
+                    }
+                    
+                    // Verileri Güncelle
+                    rowElement.dataset.displayOrder = targetOrder;
+                    targetRow.dataset.displayOrder = currentOrder;
+                    
+                    // Buton durumlarını güncelle
+                    updateSortButtonStates(parent);
+                    
+                    showToast('Sıralama güncellendi.', 'success');
+                } else {
+                    throw new Error(result.message || 'Sıralama güncellenemedi');
+                }
+            } catch (error) {
+                console.error('Move error:', error);
+                showToast(`Sıralama güncellenirken bir hata oluştu: ${error.message}`, 'error');
+            }
+        }
+        
+        async function toggleActiveAjax(id, endpoint, itemName, badgeElement) {
+            try {
+                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                if (!token) {
+                    throw new Error('Güvenlik token bulunamadı');
+                }
+                
+                const formData = new FormData();
+                formData.append('__RequestVerificationToken', token);
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Rozeti Güncelle
+                    if (result.isActive) {
+                        badgeElement.className = 'status-badge active';
+                        badgeElement.textContent = 'Aktif';
+                    } else {
+                        badgeElement.className = 'status-badge inactive';
+                        badgeElement.textContent = 'Pasif';
+                    }
+                    showToast(result.message || `${itemName} durumu güncellendi.`, 'success');
+                } else {
+                    throw new Error(result.message || 'Durum güncellenemedi');
+                }
+            } catch (error) {
+                console.error('Toggle error:', error);
+                showToast(`${itemName} durumu güncellenirken bir hata oluştu: ${error.message}`, 'error');
+            }
+        }
+        
+        async function deleteItemAjax(id, endpoint, itemName, rowElement) {
+            if (!confirm(`${itemName} silinsin mi?`)) {
+                return;
+            }
+            
+            const originalButton = rowElement.querySelector('.btn-action.delete');
+            const originalHtml = originalButton.innerHTML;
+            originalButton.disabled = true;
+            originalButton.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+            
+            try {
+                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                if (!token) {
+                    throw new Error('Güvenlik token bulunamadı');
+                }
+                
+                const formData = new FormData();
+                formData.append('__RequestVerificationToken', token);
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Silme Animasyonu
+                    rowElement.style.transition = 'opacity 0.3s';
+                    rowElement.style.opacity = '0';
+                    setTimeout(() => {
+                        rowElement.remove();
+                        // Boş Tablo Kontrolü
+                        const tbody = document.querySelector('tbody');
+                        if (tbody && tbody.children.length === 0) {
+                            location.reload();
+                        }
+                    }, 300);
+                    showToast(result.message || `${itemName} başarıyla silindi.`, 'success');
+                } else {
+                    throw new Error(result.message || 'Silme işlemi başarısız oldu');
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                showToast(`${itemName} silinirken bir hata oluştu: ${error.message}`, 'error');
+                originalButton.disabled = false;
+                originalButton.innerHTML = originalHtml;
+            }
+        }
+        
+    </script>
+    <script src="~/js/admin-image-modal.js" asp-append-version="true"></script>

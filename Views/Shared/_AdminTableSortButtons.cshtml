@@ -1,0 +1,17 @@
+﻿@* Admin sıralama butonları *@
+@{
+    var itemId = ViewData["ItemId"] is int id ? id : 0;
+    var updateOrderUrl = ViewData["UpdateOrderUrl"] as string ?? "";
+    var isFirst = ViewData["IsFirst"] is bool first ? first : false;
+    var isLast = ViewData["IsLast"] is bool last ? last : false;
+}
+
+<div class="d-flex flex-column gap-1">
+    <button type="button" class="btn btn-sm btn-outline-secondary p-0" style="width: 24px; height: 24px;" @(isFirst ? "disabled" : "") onclick="moveItemUp(@itemId, '@updateOrderUrl', this.closest('tr'))" title="Yukarı">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-secondary p-0" style="width: 24px; height: 24px;" @(isLast ? "disabled" : "") onclick="moveItemDown(@itemId, '@updateOrderUrl', this.closest('tr'))" title="Aşağı">
+        <i class="bi bi-arrow-down"></i>
+    </button>
+</div>
+

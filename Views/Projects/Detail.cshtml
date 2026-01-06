@@ -1,0 +1,269 @@
+﻿@model Project
+@using System.Text.RegularExpressions
+@functions {
+    public string GetEmbedUrl(string url) {
+        if (string.IsNullOrEmpty(url))
+        {
+            return "";
+        }
+        // Youtube linki ise
+        if (url.Contains("youtube.com/watch?v="))
+        {
+            url = url.Replace("youtube.com/watch?v=", "youtube.com/embed/");
+            if (url.Contains("&"))
+            {
+                url = url.Split('&')[0];
+            }
+        }
+        else if (url.Contains("youtu.be/"))
+        {
+            url = url.Replace("youtu.be/", "www.youtube.com/embed/");
+            if (url.Contains("?"))
+            {
+                url = url.Split('?')[0];
+            }
+        }
+        return url;
+    }
+}
+@{
+    ViewData["Title"] = Model.Title;
+    var similar = ViewBag.SimilarProjects as List<Project> ?? new List<Project>();
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content text-center">
+            <h1 class="fade-in">@Html.Raw(Model.Title)</h1>
+            <p class="fade-in">@Html.Raw(Model.Category) @(!string.IsNullOrEmpty(Model.Location) ? $" • {Model.Location}" : "")</p>
+            <nav aria-label="breadcrumb" class="fade-in">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Projects" asp-action="Index">Projeler</a></li>
+                    <li class="breadcrumb-item active">@Html.Raw(Model.Title)</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="project-detail-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="detail-card fade-in">
+                    @if (!string.IsNullOrEmpty(Model.BeforeImagePath) && !string.IsNullOrEmpty(Model.AfterImagePath))
+                    {
+                        <div class="before-after-container" id="beforeAfter">
+                            <img src="@Model.AfterImagePath" 
+                                 alt="@Model.Title - Sonra" 
+                                 onerror="this.onerror=null; this.style.display='none'; this.parentElement.querySelector('.image-error-placeholder')?.classList.remove('d-none');" />
+                            <div class="image-error-placeholder d-none">
+                                <i class="fas fa-image" style="font-size: 3rem;"></i>
+                                <p class="mb-0">Resim yüklenemedi</p>
+                            </div>
+                            <div class="before-image-wrapper">
+                                <img src="@Model.BeforeImagePath" 
+                                     alt="@Model.Title - Önce" 
+                                     onerror="this.onerror=null; this.style.display='none'; this.parentElement.querySelector('.image-error-placeholder')?.classList.remove('d-none');" />
+                                <div class="image-error-placeholder d-none">
+                                    <i class="fas fa-image" style="font-size: 3rem;"></i>
+                                    <p class="mb-0">Resim yüklenemedi</p>
+                                </div>
+                            </div>
+                            <div class="slider-handle"></div>
+                            <div class="before-label">ÖNCE</div>
+                            <div class="after-label">SONRA</div>
+                        </div>
+                    }
+                    else if (!string.IsNullOrEmpty(Model.AfterImagePath))
+                    {
+                        <div class="single-image-wrapper">
+                            <img class="single-image" 
+                                 src="@Model.AfterImagePath" 
+                                 alt="@Model.Title" 
+                                 loading="lazy"
+                                 onerror="this.onerror=null; this.style.display='none'; this.parentElement.querySelector('.image-error-placeholder')?.classList.remove('d-none');" />
+                            <div class="image-error-placeholder d-none">
+                                <i class="fas fa-image" style="font-size: 3rem;"></i>
+                                <p class="mb-0">Resim yüklenemedi</p>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="placeholder">
+                            <i class="fas fa-paint-roller" style="font-size: 3rem;"></i>
+                            <p class="mb-0">Bu proje için görsel eklenmemiş.</p>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.VideoPath) || !string.IsNullOrEmpty(Model.VideoEmbedCode))
+                    {
+                        <div class="project-video mt-4 mb-4 fade-in">
+                            <h3 class="h5 mb-3">Proje Videosu</h3>
+                            @if (!string.IsNullOrEmpty(Model.VideoPath))
+                            {
+                                <div class="mb-4">
+                                    <video controls class="w-100 rounded shadow-sm" style="max-height: 500px; background: #000;" preload="metadata">
+                                        <source src="@Model.VideoPath" type="video/mp4">
+                                        Tarayıcınız video etiketini desteklemiyor.
+                                    </video>
+                                </div>
+                            }
+                            
+                            @if (!string.IsNullOrEmpty(Model.VideoEmbedCode))
+                            {
+                                <div class="ratio ratio-16x9 rounded shadow-sm overflow-hidden">
+                                    <iframe src="@GetEmbedUrl(Model.VideoEmbedCode)" title="@Model.Title Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <div class="meta-grid mt-4">
+                        <div class="meta-item">
+                            <span class="meta-label">Kategori</span>
+                            <span class="meta-value">@Html.Raw(Model.Category)</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.Location))
+                        {
+                            <div class="meta-item">
+                                <span class="meta-label">Konum</span>
+                                <span class="meta-value">@Html.Raw(Model.Location)</span>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.PaintBrand))
+                        {
+                            <div class="meta-item">
+                                <span class="meta-label">Boya Markası</span>
+                                <span class="meta-value">@Html.Raw(Model.PaintBrand)</span>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.PaintColor))
+                        {
+                            <div class="meta-item">
+                                <span class="meta-label">Renk</span>
+                                <span class="meta-value">@Html.Raw(Model.PaintColor)</span>
+                            </div>
+                        }
+                        @if (Model.DurationDays.HasValue)
+                        {
+                            <div class="meta-item">
+                                <span class="meta-label">Süre</span>
+                                <span class="meta-value">@Model.DurationDays gün</span>
+                            </div>
+                        }
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <hr class="my-4" />
+                        <h3>Proje Açıklaması</h3>
+                        <p class="detail-text">@Html.Raw(Model.Description)</p>
+                    }
+
+                    @if (Model.AdditionalImages != null && Model.AdditionalImages.Any())
+                    {
+                        <hr class="my-4" />
+                        <h3>Diğer Fotoğraflar</h3>
+                        <div class="row g-3 gallery-grid">
+                            @foreach (var img in Model.AdditionalImages.OrderBy(x => x.DisplayOrder))
+                            {
+                                <div class="col-6 col-md-4">
+                                    <div class="gallery-item-wrapper">
+                                        <img class="gallery-img" 
+                                             src="@img.ImagePath" 
+                                             alt="@img.Caption ?? Model.Title" 
+                                             loading="lazy"
+                                             data-gallery-image="@img.ImagePath"
+                                             data-gallery-caption="@(img.Caption ?? Model.Title)"
+                                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.querySelector('.image-error-placeholder')?.classList.remove('d-none');" />
+                                        <div class="image-error-placeholder d-none">
+                                            <i class="fas fa-image"></i>
+                                            <p class="mb-0 small">Resim yüklenemedi</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <div class="mt-4 d-flex gap-2 flex-wrap">
+                        <a asp-controller="Contact" asp-action="Index" class="btn btn-secondary btn-lg">
+                            <i class="bi bi-calendar-check me-2"></i>Bu Proje Gibi Teklif Al
+                        </a>
+                        <a asp-controller="Projects" asp-action="Index" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-arrow-left me-2"></i>Projeler
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="side-card fade-in-right">
+                    <h4>Hızlı Teklif</h4>
+                    <p class="text-muted mb-3">Ücretsiz keşif için iletişime geçin.</p>
+                    <a asp-controller="Contact" asp-action="Index" class="btn btn-primary w-100 mb-2">
+                        <i class="bi bi-envelope me-2"></i>Form
+                    </a>
+                    <a asp-controller="Simulator" asp-action="Index" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-palette-fill me-2"></i>Renk Simülatörü
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        @if (similar.Any())
+        {
+            <div class="mt-5">
+                <div class="section-header text-center fade-in">
+                    <span class="section-subtitle">Benzer Projeler</span>
+                    <h2 class="section-title">Diğer Çalışmalarımız</h2>
+                </div>
+                <div class="row g-4">
+                    @foreach (var p in similar)
+                    {
+                        <div class="col-md-6 col-lg-4">
+                            <a class="project-link" asp-route="project-detail" asp-route-slug="@p.Slug">
+                                <div class="project-card hover-lift">
+                                    <div class="project-image">
+                                        @if (!string.IsNullOrEmpty(p.AfterImagePath))
+                                        {
+                                            <img src="@p.AfterImagePath" alt="@Html.Raw(p.Title)" loading="lazy" />
+                                        }
+                                        else
+                                        {
+                                            <div class="placeholder small">
+                                                <i class="fas fa-paint-roller" style="font-size: 3rem;"></i>
+                                            </div>
+                                        }
+                                        <div class="project-overlay">
+                                            <span class="project-category">@Html.Raw(p.Category)</span>
+                                        </div>
+                                    </div>
+                                    <div class="project-content">
+                                        <h3>@Html.Raw(p.Title)</h3>
+                                        @if (!string.IsNullOrEmpty(p.Location))
+                                        {
+                                            <p class="project-location"><i class="bi bi-geo-alt-fill me-1"></i>@Html.Raw(p.Location)</p>
+                                        }
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+
+@section Scripts {
+    <script src="~/js/projects.js" asp-append-version="true" defer></script>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/project-detail.css" asp-append-version="true" />
+}

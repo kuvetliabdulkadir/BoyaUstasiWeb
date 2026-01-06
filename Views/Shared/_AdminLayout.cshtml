@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    @await Html.PartialAsync("_AdminHead")
+    
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+@using boya_usta_web.Services
+@inject ISettingsService SettingsService
+<body>
+    <div class="admin-wrapper">
+        
+        @await Html.PartialAsync("_AdminSidebar")
+
+        @* Ana İçerik *@
+        <main class="admin-main">
+            
+            @await Html.PartialAsync("_AdminTopbar")
+
+            @* İçerik *@
+            <div class="admin-content">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-circle-fill me-2"></i>@TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @RenderBody()
+            </div>
+            
+            @* Bildirim Kutusu *@
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+                <div id="toastTemplate" class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
+                    <div class="toast-header">
+                        <i class="toast-icon me-2"></i>
+                        <strong class="me-auto toast-title">Bildirim</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body toast-message"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    @* Resim Modalı *@
+    @await Html.PartialAsync("_AdminImageModal")
+
+    @await Html.PartialAsync("_AdminScripts")
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

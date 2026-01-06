@@ -1,0 +1,317 @@
+﻿/*
+  DOSYA: utilities.css
+  KONUM: wwwroot/css/utilities.css
+  KULLANIM: Global (Tüm Sayfalar)
+  
+  AÇIKLAMA: Sık kullanılan yardımcı sınıflar (Utility Classes).
+  Bu dosya, her seferinde yeni CSS yazmak yerine, HTML içinde hızlıca stil vermenizi sağlar.
+  Örn: "text-center" yazarak bir yazıyı ortalayabilirsiniz.
+ */
+
+/* 
+   [METİN VE YAZI TİPİ AYARLARI] - Typography
+   Yazıların hizalanması, kalınlığı ve kesilmesi işlemleri.
+ */
+
+/* Metni iki yana yasla (Gazete düzeni gibi) */
+.text-justify {
+    text-align: justify !important;
+}
+
+/* Yazının satır sonuna gelince alt satıra geçmesini engelle (Tek satırda kalır) */
+.text-nowrap {
+    white-space: nowrap !important;
+}
+
+/* Eğer yazı sığmazsa, taşan kısmı "..." (üç nokta) ile göster */
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* FONT KALINLIKLARI (İnce'den Kalın'a) */
+.fw-light {
+    font-weight: 300 !important;
+}
+
+/* Çok İnce */
+.fw-normal {
+    font-weight: 400 !important;
+}
+
+/* Normal */
+.fw-medium {
+    font-weight: 500 !important;
+}
+
+/* Orta */
+.fw-semibold {
+    font-weight: 600 !important;
+}
+
+/* Yarı Kalın */
+.fw-bold {
+    font-weight: 700 !important;
+}
+
+/* Kalın */
+.fw-extrabold {
+    font-weight: 800 !important;
+}
+
+/* Ekstra Kalın */
+
+/* 
+   [RENK YARDIMCILARI] - Colors
+   Yazı Rengi (Color) ve Arka Plan Rengi (Background-Color) ayarları.
+ */
+
+/* YAZI RENKLERİ */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+/* Ana Mavi */
+.text-secondary {
+    color: var(--secondary-color) !important;
+}
+
+/* Altın/Turuncu */
+.text-success {
+    color: var(--success) !important;
+}
+
+/* Yeşil (Başarılı) */
+.text-danger {
+    color: var(--danger) !important;
+}
+
+/* Kırmızı (Hata) */
+.text-warning {
+    color: var(--warning) !important;
+}
+
+/* Sarı (Uyarı) */
+.text-info {
+    color: #0dcaf0 !important;
+}
+
+/* Açık Mavi (Bilgi) */
+.text-light {
+    color: var(--light) !important;
+}
+
+/* Açık Gri (Koyu zeminde) */
+.text-dark {
+    color: var(--dark) !important;
+}
+
+/* Koyu Gri (Okunabilirlik) */
+.text-white {
+    color: #fff !important;
+}
+
+/* Beyaz */
+
+/* ARKA PLAN RENKLERİ */
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.bg-secondary {
+    background-color: var(--secondary-color) !important;
+}
+
+.bg-success {
+    background-color: var(--success) !important;
+}
+
+.bg-danger {
+    background-color: var(--danger) !important;
+}
+
+.bg-light {
+    background-color: var(--light) !important;
+}
+
+/* Sayfa zemini */
+.bg-dark {
+    background-color: var(--dark) !important;
+}
+
+/* Footer zemini */
+.bg-white {
+    background-color: #fff !important;
+}
+
+/* Kart zemini */
+
+/* 
+   [BOYUTLANDIRMA] - Sizing
+   Kutuların genişlik (width) ve yükseklik (height) ayarları.
+    */
+
+/* GENİŞLİK (Width) - Ebeveynin yüzdesine göre */
+.w-25 {
+    width: 25% !important;
+}
+
+/* Çeyrek genişlik */
+.w-50 {
+    width: 50% !important;
+}
+
+/* Yarım genişlik */
+.w-75 {
+    width: 75% !important;
+}
+
+/* Üç çeyrek genişlik */
+.w-100 {
+    width: 100% !important;
+}
+
+/* Tam genişlik (Satırı kapla) */
+.w-auto {
+    width: auto !important;
+}
+
+/* İçeriği kadar genişle */
+
+/* YÜKSEKLİK (Height) - Ebeveynin yüzdesine göre */
+.h-25 {
+    height: 25% !important;
+}
+
+.h-50 {
+    height: 50% !important;
+}
+
+.h-75 {
+    height: 75% !important;
+}
+
+.h-100 {
+    height: 100% !important;
+}
+
+.h-auto {
+    height: auto !important;
+}
+
+/* 
+   [GÖRÜNÜRLÜK VE DÜZEN] - Display & Layout
+   Elementin sayfada nasıl yer kaplayacağını belirler.
+    */
+
+/* Gizle (Yer kaplamaz, görünmez) */
+.d-none {
+    display: none !important;
+}
+
+/* Blok (Tek satırda yer kaplar, alt satıra iter) */
+.d-block {
+    display: block !important;
+}
+
+/* Flex (Esnek kutu - Yanyana dizmek için ideal) */
+.d-flex {
+    display: flex !important;
+}
+
+/* Grid (Izgara sistemi - Satır/Sütun düzeni için) */
+.d-grid {
+    display: grid !important;
+}
+
+/* Sadece Erişilebilirlik İçin Gizleme (Ekran okuyucular okur, göz görmez) */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* 
+   [KENARLIKLAR VE KÖŞELER] - Borders & Radius
+    */
+
+/* Köşeleri Yuvarlat (Varsayılan --radius değeri kadar) */
+.rounded {
+    border-radius: var(--radius) !important;
+}
+
+/* Tam Daire Yap (Eğer kare ise) veya Elips */
+.rounded-circle {
+    border-radius: 50% !important;
+}
+
+/* Hap Şekli (Butonlar için ideal) */
+.rounded-pill {
+    border-radius: 50rem !important;
+}
+
+/* Köşeleri Keskinleştir (Yuvarlatmayı kaldır) */
+.rounded-0 {
+    border-radius: 0 !important;
+}
+
+/* 
+   [GÖLGE VE EFEKTLER] - Shadows & Opacity
+   Derinlik hissi ve saydamlık ayarları.
+    */
+
+/* GÖLGELER (Shadows) */
+.shadow-sm {
+    box-shadow: var(--shadow-sm) !important;
+}
+
+/* Hafif gölge */
+.shadow {
+    box-shadow: var(--shadow) !important;
+}
+
+/* Orta gölge (Kartlar için) */
+.shadow-lg {
+    box-shadow: var(--shadow-lg) !important;
+}
+
+/* Derin gölge (Modal/Pop-up) */
+.shadow-none {
+    box-shadow: none !important;
+}
+
+/* Gölgeyi kaldır */
+
+/* SAYDAMLIK (Opacity) */
+.opacity-0 {
+    opacity: 0 !important;
+}
+
+/* Tamamen şeffaf (Görünmez ama tıklanabilir) */
+.opacity-25 {
+    opacity: 0.25 !important;
+}
+
+/* %25 Görünür */
+.opacity-50 {
+    opacity: 0.5 !important;
+}
+
+/* %50 Yarı şeffaf */
+.opacity-75 {
+    opacity: 0.75 !important;
+}
+
+/* %75 Görünür */
+.opacity-100 {
+    opacity: 1 !important;
+}
+
+/* Tamamen görünür (Varsayılan) */

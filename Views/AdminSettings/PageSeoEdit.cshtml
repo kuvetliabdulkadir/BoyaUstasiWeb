@@ -1,0 +1,365 @@
+﻿@model boya_usta_web.Models.ViewModels.PageSeoSettingVm
+@{
+    ViewData["Title"] = "Sayfa SEO Düzenle - " + Model.PageName;
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2><i class="bi bi-pencil me-2"></i>@Model.PageName - SEO Düzenle</h2>
+        <a href="@ViewBag.AdminPath/ayarlar/seo/sayfalar" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri
+        </a>
+    </div>
+    <div class="admin-card-body">
+        <form method="post" class="admin-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="IsSystemPage" />
+
+            @* Sayfa Bilgileri *@
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-file-earmark me-2"></i>Sayfa Bilgileri
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="PagePath" class="form-label"></label>
+                            @if (Model.IsSystemPage)
+                            {
+                                <input asp-for="PagePath" class="form-control" readonly />
+                                <div class="form-text text-warning">
+                                    <i class="bi bi-lock-fill me-1"></i>Sistem sayfası - yol değiştirilemez
+                                </div>
+                            }
+                            else
+                            {
+                                <input asp-for="PagePath" class="form-control" placeholder="/ornek-sayfa" />
+                                <div class="form-text">Sayfa URL yolu (/ ile başlamalı)</div>
+                            }
+                            <span asp-validation-for="PagePath" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="PageName" class="form-label"></label>
+                            @if (Model.IsSystemPage)
+                            {
+                                <input asp-for="PageName" class="form-control" readonly />
+                            }
+                            else
+                            {
+                                <input asp-for="PageName" class="form-control" placeholder="Sayfa Adı" />
+                            }
+                            <span asp-validation-for="PageName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* SEO Ayarları *@
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-search me-2"></i>SEO Ayarları
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" maxlength="70" id="titleInput" />
+                            <div class="form-text">
+                                Arama sonuçlarında görünecek başlık. <strong>50-60 karakter</strong> ideal.
+                                <span class="float-end"><span id="titleCount">0</span>/70</span>
+                            </div>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="MetaDescription" class="form-label"></label>
+                            <textarea asp-for="MetaDescription" class="form-control" rows="3" maxlength="160" id="descInput"></textarea>
+                            <div class="form-text">
+                                Arama sonuçlarında görünecek açıklama. <strong>150-160 karakter</strong> ideal.
+                                <span class="float-end"><span id="descCount">0</span>/160</span>
+                            </div>
+                            <span asp-validation-for="MetaDescription" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Keywords" class="form-label"></label>
+                            @* Hidden input for form submission *@
+                            <input type="hidden" asp-for="Keywords" id="keywordsHidden" />
+                            
+                            @* Tag Input UI *@
+                            <div class="keywords-container">
+                                <div class="keywords-tags" id="keywordsTags"></div>
+                                <div class="input-group mt-2">
+                                    <input type="text" class="form-control" id="keywordInput" 
+                                           placeholder="Anahtar kelime yazın ve Enter'a basın..." />
+                                    <button type="button" class="btn btn-outline-primary" id="addKeywordBtn">
+                                        <i class="bi bi-plus-lg"></i> Ekle
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-text">
+                                <span id="keywordCount">0</span> anahtar kelime
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Open Graph & Robots *@
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <i class="bi bi-share me-2"></i>Sosyal Medya & İndeksleme
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="OgImage" class="form-label"></label>
+                            <input asp-for="OgImage" class="form-control" placeholder="/images/og-image.jpg" />
+                            <div class="form-text">Sosyal medyada paylaşıldığında görünecek görsel</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="OgType" class="form-label"></label>
+                            <select asp-for="OgType" class="form-select">
+                                <option value="website">website</option>
+                                <option value="article">article</option>
+                                <option value="product">product</option>
+                                <option value="profile">profile</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="Robots" class="form-label"></label>
+                            <select asp-for="Robots" class="form-select">
+                                <option value="index, follow">index, follow</option>
+                                <option value="noindex, follow">noindex, follow</option>
+                                <option value="index, nofollow">index, nofollow</option>
+                                <option value="noindex, nofollow">noindex, nofollow</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Diğer Ayarlar *@
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <i class="bi bi-gear me-2"></i>Diğer Ayarlar
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label asp-for="DisplayOrder" class="form-label"></label>
+                            <input asp-for="DisplayOrder" type="number" class="form-control" min="0" />
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check form-switch mt-4">
+                                <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                                <label asp-for="IsActive" class="form-check-label"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Google Önizleme *@
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white">
+                    <i class="bi bi-eye me-2"></i>Google Arama Önizlemesi
+                </div>
+                <div class="card-body bg-light">
+                    <div class="google-preview p-3 bg-white rounded border">
+                        <div class="preview-title text-primary" style="font-size: 18px; font-family: Arial, sans-serif;" id="previewTitle">
+                            @(string.IsNullOrEmpty(Model.Title) ? "Sayfa Başlığı" : Model.Title)
+                        </div>
+                        <div class="preview-url text-success small" id="previewUrl">
+                            example.com@Model.PagePath
+                        </div>
+                        <div class="preview-desc text-muted" style="font-size: 14px;" id="previewDesc">
+                            @(string.IsNullOrEmpty(Model.MetaDescription) ? "Meta açıklama buraya gelecek." : Model.MetaDescription)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4" />
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary btn-lg" type="submit">
+                    <i class="bi bi-check-lg me-2"></i>Kaydet
+                </button>
+                <a href="@ViewBag.AdminPath/ayarlar/seo/sayfalar" class="btn btn-outline-secondary btn-lg">İptal</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+<style>
+    .keywords-container {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        padding: 0.75rem;
+    }
+    .keywords-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        min-height: 38px;
+    }
+    .keyword-tag {
+        display: inline-flex;
+        align-items: center;
+        background: linear-gradient(135deg, #198754 0%, #157347 100%);
+        color: white;
+        padding: 0.35rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(25, 135, 84, 0.3);
+    }
+    .keyword-tag .tag-text { margin-right: 0.5rem; }
+    .keyword-tag .tag-remove {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 0.75rem;
+        transition: all 0.2s;
+        padding: 0;
+    }
+    .keyword-tag .tag-remove:hover {
+        background: rgba(255, 255, 255, 0.4);
+    }
+    .keywords-tags:empty::before {
+        content: 'Henüz anahtar kelime eklenmedi...';
+        color: #6c757d;
+        font-style: italic;
+    }
+</style>
+}
+
+@section Scripts {
+<script>
+(function () {
+    // Karakter sayaçları
+    function setupCounter(inputId, counterId, maxLength) {
+        const input = document.getElementById(inputId);
+        const counter = document.getElementById(counterId);
+        if (!input || !counter) return;
+        
+        function update() {
+            const len = (input.value || '').length;
+            counter.textContent = len;
+            counter.className = len > maxLength * 0.9 ? 'text-warning' : '';
+            if (len > maxLength) counter.className = 'text-danger';
+        }
+        update();
+        input.addEventListener('input', update);
+    }
+    
+    setupCounter('titleInput', 'titleCount', 70);
+    setupCounter('descInput', 'descCount', 160);
+    
+    // Google önizleme
+    const titleInput = document.getElementById('titleInput');
+    const descInput = document.getElementById('descInput');
+    const previewTitle = document.getElementById('previewTitle');
+    const previewDesc = document.getElementById('previewDesc');
+    
+    if (titleInput && previewTitle) {
+        titleInput.addEventListener('input', function() {
+            previewTitle.textContent = this.value || 'Sayfa Başlığı';
+        });
+    }
+    if (descInput && previewDesc) {
+        descInput.addEventListener('input', function() {
+            previewDesc.textContent = this.value || 'Meta açıklama buraya gelecek.';
+        });
+    }
+    
+    // Anahtar kelime tag sistemi
+    const keywordsHidden = document.getElementById('keywordsHidden');
+    const keywordsTags = document.getElementById('keywordsTags');
+    const keywordInput = document.getElementById('keywordInput');
+    const addKeywordBtn = document.getElementById('addKeywordBtn');
+    const keywordCount = document.getElementById('keywordCount');
+    
+    let keywords = [];
+    
+    function loadExistingKeywords() {
+        const existingValue = keywordsHidden.value || '';
+        if (existingValue.trim()) {
+            keywords = existingValue.split(',').map(k => k.trim()).filter(k => k.length > 0);
+            renderTags();
+        }
+    }
+    
+    function renderTags() {
+        keywordsTags.innerHTML = '';
+        keywords.forEach((keyword, index) => {
+            const tag = document.createElement('span');
+            tag.className = 'keyword-tag';
+            tag.innerHTML = `
+                <span class="tag-text">${escapeHtml(keyword)}</span>
+                <button type="button" class="tag-remove" data-index="${index}">
+                    <i class="bi bi-x"></i>
+                </button>
+            `;
+            keywordsTags.appendChild(tag);
+        });
+        updateHiddenInput();
+        keywordCount.textContent = keywords.length;
+    }
+    
+    function updateHiddenInput() {
+        keywordsHidden.value = keywords.join(', ');
+    }
+    
+    function addKeyword(keyword) {
+        keyword = keyword.trim().toLowerCase();
+        if (!keyword || keywords.some(k => k.toLowerCase() === keyword)) return false;
+        keywords.push(keyword);
+        renderTags();
+        return true;
+    }
+    
+    function removeKeyword(index) {
+        keywords.splice(index, 1);
+        renderTags();
+    }
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    addKeywordBtn.addEventListener('click', function() {
+        if (addKeyword(keywordInput.value)) {
+            keywordInput.value = '';
+            keywordInput.focus();
+        }
+    });
+    
+    keywordInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (addKeyword(this.value)) this.value = '';
+        }
+    });
+    
+    keywordsTags.addEventListener('click', function(e) {
+        const removeBtn = e.target.closest('.tag-remove');
+        if (removeBtn) removeKeyword(parseInt(removeBtn.dataset.index));
+    });
+    
+    loadExistingKeywords();
+})();
+</script>
+}
+

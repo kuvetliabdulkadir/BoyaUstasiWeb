@@ -1,0 +1,31 @@
+@model boya_usta_web.Models.ViewModels.SeoSettingsVm
+
+@* Analytics *@
+<div class="card mb-4">
+    <div class="card-header bg-info text-white">
+        <i class="bi bi-graph-up me-2"></i>Analytics & Tracking
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info mb-3">
+            <i class="bi bi-info-circle me-2"></i>
+            Google Analytics ile ziyaretçi istatistiklerinizi takip edin. 
+            <a href="https://analytics.google.com" target="_blank" class="alert-link">Google Analytics</a> hesabınızdan Measurement ID'yi alın (örn: G-XXXXXXXXXX).
+        </div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="GoogleAnalyticsId" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="GoogleAnalyticsId" class="form-control" placeholder="G-XXXXXXXXXX" />
+                    @if (!string.IsNullOrEmpty(Model.GoogleAnalyticsId))
+                    {
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAnalyticsModal" title="Temizle">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    }
+                </div>
+                <div class="form-text">Google Analytics Measurement ID (G- ile başlar)</div>
+                <span asp-validation-for="GoogleAnalyticsId" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</div>

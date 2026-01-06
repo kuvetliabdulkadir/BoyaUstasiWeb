@@ -1,0 +1,30 @@
+@model boya_usta_web.Models.ViewModels.ContactSettingsVm
+
+<div class="col-md-6">
+    <label asp-for="Phone" class="form-label">Telefon (Gösterim)</label>
+    <input asp-for="Phone" class="form-control" id="phoneInput" placeholder="+90 532 XXX XX XX" />
+    <div class="text-muted small mt-1">Sitede gösterilecek telefon numarası.</div>
+    <span asp-validation-for="Phone" class="text-danger"></span>
+</div>
+<div class="col-md-6">
+    <label asp-for="WhatsApp" class="form-label">WhatsApp Numarası</label>
+    <input asp-for="WhatsApp" class="form-control" id="whatsappInput" placeholder="+90 532 XXX XX XX" required />
+    <div class="text-muted small mt-1">WhatsApp iletişim için kullanılacak numara. Telefon numarası ile aynı olacak.</div>
+    <span asp-validation-for="WhatsApp" class="text-danger"></span>
+</div>
+<div class="col-12">
+    <label asp-for="WhatsAppDefaultMessage" class="form-label">WhatsApp Varsayılan Mesajı</label>
+    <textarea asp-for="WhatsAppDefaultMessage" class="form-control" rows="3" placeholder="Merhaba, boya hizmeti hakkında bilgi almak istiyorum."></textarea>
+    <div class="text-muted small mt-1">WhatsApp butonlarına tıklandığında otomatik olarak yazılacak mesaj. Maksimum 500 karakter.</div>
+    <span asp-validation-for="WhatsAppDefaultMessage" class="text-danger"></span>
+</div>
+<div class="col-md-6">
+    <label asp-for="Email" class="form-label"></label>
+    <input asp-for="Email" type="email" class="form-control" placeholder="info@example.com" />
+    <span asp-validation-for="Email" class="text-danger"></span>
+</div>
+<div class="col-md-6">
+    <label asp-for="Address" class="form-label"></label>
+    <input asp-for="Address" class="form-control" placeholder="Görükle, Bursa" />
+    <span asp-validation-for="Address" class="text-danger"></span>
+</div>

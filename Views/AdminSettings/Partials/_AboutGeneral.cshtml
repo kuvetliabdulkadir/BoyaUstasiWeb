@@ -1,0 +1,26 @@
+@model boya_usta_web.Models.ViewModels.AboutSettingsVm
+
+<div class="col-12">
+    <h5 class="border-bottom pb-2 mb-3">Sayfa Başlığı</h5>
+</div>
+<div class="col-12">
+    <label asp-for="AboutTitle" class="form-label">Hakkımızda - Üst Başlık <span class="text-danger">*</span></label>
+    <input asp-for="AboutTitle" class="form-control" placeholder="{years} Yıllık Tecrübe ile Yanınızdayız" required />
+    <div class="text-muted small mt-1">{years} yazarsanız tecrübe yılı otomatik eklenecektir.</div>
+    <span asp-validation-for="AboutTitle" class="text-danger"></span>
+</div>
+<div class="col-12">
+    <h5 class="border-bottom pb-2 mb-3 mt-4">İçerik Metinleri</h5>
+</div>
+<div class="col-12">
+    <label asp-for="AboutText" class="form-label">Ana Metin (İlk Paragraf) <span class="text-danger">*</span></label>
+    <textarea asp-for="AboutText" class="form-control" rows="4" placeholder="2009 yılından bu yana Bursa'da profesyonel boya hizmetleri sunuyoruz..." required></textarea>
+    <div class="text-muted small mt-1">Hakkımızda sayfasındaki ana metin.</div>
+    <span asp-validation-for="AboutText" class="text-danger"></span>
+</div>
+<div class="col-12">
+    <label asp-for="AboutText2" class="form-label">İkinci Paragraf <span class="text-muted small">(Opsiyonel)</span></label>
+    <textarea asp-for="AboutText2" class="form-control" rows="3" placeholder="Her projede titiz çalışma anlayışımız..." data-val="false" data-val-required="false"></textarea>
+    <div class="text-muted small mt-1">Hakkımızda sayfasındaki ikinci paragraf metni. Boş bırakılabilir.</div>
+    <span asp-validation-for="AboutText2" class="text-danger"></span>
+</div>

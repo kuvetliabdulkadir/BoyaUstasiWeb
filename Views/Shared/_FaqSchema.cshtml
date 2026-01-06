@@ -1,0 +1,33 @@
+﻿@using boya_usta_web.Models
+@{
+    var faqs = ViewBag.Faqs as List<Faq> ?? new List<Faq>();
+    
+    if (!faqs.Any()) { return; }
+    
+    // JSON oluştur
+    var faqsJson = new System.Text.StringBuilder();
+    for (int i = 0; i < faqs.Count; i++)
+    {
+        var faq = faqs[i];
+        var question = (faq.Question ?? "").Replace("\"", "'").Replace("\r", "").Replace("\n", " ");
+        var answer = (faq.Answer ?? "").Replace("\"", "'").Replace("\r", "").Replace("\n", " ");
+        var isLast = i == faqs.Count - 1;
+        
+        faqsJson.Append("{");
+        faqsJson.Append("\"@type\": \"Question\",");
+        faqsJson.Append($"\"name\": \"{question}\",");
+        faqsJson.Append("\"acceptedAnswer\": {");
+        faqsJson.Append("\"@type\": \"Answer\",");
+        faqsJson.Append($"\"text\": \"{answer}\"");
+        faqsJson.Append("}");
+        faqsJson.Append("}");
+        if (!isLast) faqsJson.Append(",");
+    }
+}
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "FAQPage",
+    "mainEntity": [@Html.Raw(faqsJson.ToString())]
+}
+</script>

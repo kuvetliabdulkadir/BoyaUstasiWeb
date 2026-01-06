@@ -1,0 +1,58 @@
+@model boya_usta_web.Models.ViewModels.AboutSettingsVm
+
+<div class="col-12">
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
+        <h5 class="mb-0 border-bottom pb-2 flex-grow-1">Özellikler</h5>
+        <button type="button" class="btn btn-success btn-sm ms-3" onclick="addFeature()">
+            <i class="bi bi-plus-circle me-2"></i>Yeni Özellik Ekle
+        </button>
+    </div>
+</div>
+<div id="featuresContainer" class="col-12">
+    @if (Model.Features != null && Model.Features.Any())
+    {
+        @for (int i = 0; i < Model.Features.Count; i++)
+        {
+            var feature = Model.Features[i];
+            <div class="feature-card card border mb-3" data-feature-id="@feature.Id">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 text-primary">Özellik @(i + 1)</h6>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteFeature('@feature.Id', this)">
+                        <i class="bi bi-trash"></i> Sil
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label">Metin</label>
+                            <input type="text" name="Features[@i].Text" value="@feature.Text" class="form-control feature-text-input" placeholder="Örn: Premium kalite boya markaları" />
+                            <input type="hidden" name="Features[@i].Id" value="@feature.Id" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">İkon</label>
+                            <div class="row g-2 align-items-end">
+                                <div class="col-8">
+                                    <select name="Features[@i].Icon" class="form-select icon-select" data-preview-id="preview-@feature.Id" data-initial-value="@(feature.Icon ?? "")">
+                                        <partial name="_IconSelectOptions" />
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <div class="border rounded d-flex align-items-center justify-content-center" style="height: 38px; background: #fff;">
+                                        <i id="preview-@feature.Id" class="@(feature.Icon ?? "bi bi-check2-circle")" style="font-size: 1.4rem;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="Features[@i].IsActive" value="@(feature.IsActive ? "true" : "false")" class="feature-active-hidden" />
+                                <input type="checkbox" class="form-check-input feature-active-checkbox" @(feature.IsActive ? "checked" : "") id="featureActive-@feature.Id" onchange="updateFeatureActive(this, '@i')" />
+                                <label class="form-check-label" for="featureActive-@feature.Id">Aktif</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

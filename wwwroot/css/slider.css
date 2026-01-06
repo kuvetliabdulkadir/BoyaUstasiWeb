@@ -1,0 +1,92 @@
+/* [YATAY KAYDIRMALI SLIDER] - Horizontal Scroll Slider
+   Projelerin yan yana dizilmesini ve oklarla kaydırılmasını sağlar.
+ */
+
+.project-slider-container {
+    position: relative;
+    padding: 0 1rem;
+}
+
+/* Slider Alanı (Kaydırılabilir Kısım) */
+.project-slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 1.5rem;
+    padding: 1rem 0 2rem;
+    /* Alttan boşluk (gölge kesilmesin diye) */
+    -ms-overflow-style: none;
+    /* IE ve Edge için scrollbar gizleme */
+    scrollbar-width: none;
+    /* Firefox için scrollbar gizleme */
+    scroll-snap-type: x mandatory;
+    /* Kartların tam durması için */
+}
+
+/* Chrome, Safari ve Opera için scrollbar gizleme */
+.project-slider::-webkit-scrollbar {
+    display: none;
+}
+
+/* Slider İçindeki Kart Sarmalayıcı */
+.project-slider .col-md-6 {
+    flex: 0 0 auto;
+    /* Esnemesin, boyutunu korusun */
+    width: 350px;
+    /* Sabit kart genişliği */
+    scroll-snap-align: start;
+    /* Kaydırma durunca başa hizala */
+}
+
+/* Mobilde kartlar biraz daha dar olabilir */
+@media (max-width: 576px) {
+    .project-slider .col-md-6 {
+        width: 85vw;
+        /* Ekranın %85'i */
+    }
+}
+
+/* [NAVIGASYON OKLARI] - Sağ/Sol Butonlar */
+.slider-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    color: var(--primary-color);
+}
+
+.slider-nav-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.slider-prev {
+    left: -20px;
+}
+
+.slider-next {
+    right: -20px;
+}
+
+/* Eğer ekran çok darsa okları içeri al */
+@media (max-width: 768px) {
+    .slider-prev {
+        left: 0;
+    }
+
+    .slider-next {
+        right: 0;
+    }
+}

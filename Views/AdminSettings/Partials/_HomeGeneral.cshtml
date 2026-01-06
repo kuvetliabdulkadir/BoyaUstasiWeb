@@ -1,0 +1,89 @@
+@model boya_usta_web.Models.ViewModels.HomeSettingsVm
+
+<div class="col-12">
+    <h5 class="border-bottom pb-2 mb-3 mt-4">Genel Ayarlar</h5>
+</div>
+<div class="col-md-6">
+    <label asp-for="ExperienceYears" class="form-label"></label>
+    <input asp-for="ExperienceYears" class="form-control" placeholder="15" />
+    <div class="text-muted small mt-1">Bu değer tüm sayfalarda otomatik olarak kullanılacaktır. Örnek: 15, 5, 20</div>
+    <span asp-validation-for="ExperienceYears" class="text-danger"></span>
+</div>
+<div class="col-md-6">
+    <label asp-for="FooterAboutShort" class="form-label"></label>
+    <textarea asp-for="FooterAboutShort" class="form-control" rows="3"></textarea>
+    <div class="text-muted small mt-1">Footer'da görünecek kısa açıklama. {years} yazarsanız tecrübe yılı otomatik eklenecektir.</div>
+    <span asp-validation-for="FooterAboutShort" class="text-danger"></span>
+</div>
+
+<div class="col-12">
+    <h5 class="border-bottom pb-2 mb-3 mt-4">CTA (Çağrı) Bölümü</h5>
+</div>
+<div class="col-12">
+    <label asp-for="CtaTitle" class="form-label">CTA Başlık</label>
+    <input asp-for="CtaTitle" class="form-control" placeholder="Hemen Ücretsiz Keşif İçin İletişime Geçin" />
+    <div class="text-muted small mt-1">Ana sayfa alt kısmındaki CTA bölümünün başlığı.</div>
+    <span asp-validation-for="CtaTitle" class="text-danger"></span>
+</div>
+<div class="col-12">
+    <label asp-for="CtaDescription" class="form-label">CTA Açıklama</label>
+    <textarea asp-for="CtaDescription" class="form-control" rows="2" placeholder="WhatsApp'tan yazın veya telefon ile arayın. Size en uygun çözümü sunalım."></textarea>
+    <div class="text-muted small mt-1">CTA bölümündeki açıklama metni.</div>
+    <span asp-validation-for="CtaDescription" class="text-danger"></span>
+</div>
+
+<div class="col-12">
+    <h5 class="border-bottom pb-2 mb-3 mt-4">Projeler CTA Bölümü</h5>
+</div>
+<div class="col-12">
+    <label asp-for="ProjectsCtaTitle" class="form-label">Projeler CTA Başlık</label>
+    <input asp-for="ProjectsCtaTitle" class="form-control" placeholder="Sizin projeniz de burada olabilir." />
+    <div class="text-muted small mt-1">Projeler sayfasındaki CTA bölümünün başlığı.</div>
+    <span asp-validation-for="ProjectsCtaTitle" class="text-danger"></span>
+</div>
+<div class="col-12">
+    <label asp-for="ProjectsCtaDescription" class="form-label">Projeler CTA Açıklama</label>
+    <textarea asp-for="ProjectsCtaDescription" class="form-control" rows="2" placeholder="Ücretsiz keşif için iletişime geçin."></textarea>
+    <div class="text-muted small mt-1">Projeler sayfasındaki CTA bölümünün açıklama metni.</div>
+    <span asp-validation-for="ProjectsCtaDescription" class="text-danger"></span>
+</div>
+
+<div class="col-12">
+    <h5 class="border-bottom pb-2 mb-3 mt-4">Sayfa Başlıkları</h5>
+</div>
+<div class="col-12">
+    <label asp-for="ContactPageHeaderSubtitle" class="form-label">İletişim Sayfası - Alt Başlık</label>
+    <input asp-for="ContactPageHeaderSubtitle" class="form-control" placeholder="Ücretsiz keşif için iletişime geçin" />
+    <div class="text-muted small mt-1">İletişim sayfasının üst kısmındaki alt başlık metni.</div>
+    <span asp-validation-for="ContactPageHeaderSubtitle" class="text-danger"></span>
+</div>
+<div class="col-12">
+    <label asp-for="ProjectsPageHeaderSubtitle" class="form-label">Projeler Sayfası - Alt Başlık</label>
+    <input asp-for="ProjectsPageHeaderSubtitle" class="form-control" placeholder="Tamamladığımız işlerden örnekler" />
+    <div class="text-muted small mt-1">Projeler sayfasının üst kısmındaki alt başlık metni.</div>
+    <span asp-validation-for="ProjectsPageHeaderSubtitle" class="text-danger"></span>
+</div>
+<div class="col-12">
+    <label asp-for="ServicesPageHeaderSubtitle" class="form-label">Hizmetler Sayfası - Alt Başlık</label>
+    <input asp-for="ServicesPageHeaderSubtitle" class="form-control" placeholder="Profesyonel boya çözümleri ile yaşam alanlarınızı güzelleştiriyoruz" />
+    <div class="text-muted small mt-1">Hizmetler sayfasının üst kısmındaki alt başlık metni.</div>
+    <span asp-validation-for="ServicesPageHeaderSubtitle" class="text-danger"></span>
+</div>
+<div class="col-12">
+    <label asp-for="SimulatorPageHeaderSubtitle" class="form-label">Simülatör Sayfası - Alt Başlık</label>
+    <input asp-for="SimulatorPageHeaderSubtitle" class="form-control" placeholder="Duvarlarınızın yeni rengini boyamadan önce görün." />
+    <div class="text-muted small mt-1">Simülatör sayfasının üst kısmındaki alt başlık metni.</div>
+    <span asp-validation-for="SimulatorPageHeaderSubtitle" class="text-danger"></span>
+</div>
+<div class="col-12">
+    <label asp-for="ServiceAreasSubtitle" class="form-label">Hizmet Bölgeleri - Alt Başlık</label>
+    <input asp-for="ServiceAreasSubtitle" class="form-control" placeholder="Hizmet Bölgelerimiz" />
+    <div class="text-muted small mt-1">Hakkımızda sayfasındaki "Hizmet Bölgeleri" bölümünün alt başlığı.</div>
+    <span asp-validation-for="ServiceAreasSubtitle" class="text-danger"></span>
+</div>
+<div class="col-12">
+    <label asp-for="ServiceAreasTitle" class="form-label">Hizmet Bölgeleri - Başlık</label>
+    <input asp-for="ServiceAreasTitle" class="form-control" placeholder="Bursa Genelinde Hizmet" />
+    <div class="text-muted small mt-1">Hakkımızda sayfasındaki "Hizmet Bölgeleri" bölümünün ana başlığı.</div>
+    <span asp-validation-for="ServiceAreasTitle" class="text-danger"></span>
+</div>

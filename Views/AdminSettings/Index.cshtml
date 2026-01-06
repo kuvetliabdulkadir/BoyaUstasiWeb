@@ -1,0 +1,165 @@
+﻿@model List<SiteSetting>
+@{
+    ViewData["Title"] = "Ayarlar";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var popup = ViewBag.Popup as PopupSetting;
+
+    // Site sahibi için başlıklar
+    var labels = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["SiteName"] = "Site Adı",
+        ["SiteSlogan"] = "Site Sloganı",
+        ["MetaDescription"] = "Meta Açıklama (SEO)",
+        ["FooterAboutShort"] = "Footer Kısa Açıklama",
+        ["HeroExperienceBadge"] = "Ana Sayfa - Tecrübe Rozeti",
+        ["HeroDescription"] = "Ana Sayfa - Açıklama",
+
+        ["WhyUsSubtitle"] = "Ana Sayfa - Neden Biz Alt Başlık",
+        ["WhyUsTitle"] = "Ana Sayfa - Neden Biz Başlık",
+        ["WhyUsExperienceDescription"] = "Ana Sayfa - Neden Biz Açıklama",
+        ["WhyUsCard1Title"] = "Ana Sayfa - Kart 1 Başlık",
+        ["WhyUsCard1Desc"] = "Ana Sayfa - Kart 1 Açıklama",
+        ["WhyUsCard1Icon"] = "Ana Sayfa - Kart 1 İkon",
+        ["WhyUsCard2Title"] = "Ana Sayfa - Kart 2 Başlık",
+        ["TeamExperienceDescription"] = "Ana Sayfa - Kart 2 Açıklama",
+        ["WhyUsCard2Icon"] = "Ana Sayfa - Kart 2 İkon",
+        ["WhyUsCard3Title"] = "Ana Sayfa - Kart 3 Başlık",
+        ["WhyUsCard3Desc"] = "Ana Sayfa - Kart 3 Açıklama",
+        ["WhyUsCard3Icon"] = "Ana Sayfa - Kart 3 İkon",
+        ["WhyUsCard4Title"] = "Ana Sayfa - Kart 4 Başlık",
+        ["WhyUsCard4Desc"] = "Ana Sayfa - Kart 4 Açıklama",
+        ["WhyUsCard4Icon"] = "Ana Sayfa - Kart 4 İkon",
+
+        ["HeroFeature1Icon"] = "Ana Sayfa - Hero İkon 1",
+        ["HeroFeature2Icon"] = "Ana Sayfa - Hero İkon 2",
+        ["HeroFeature3Icon"] = "Ana Sayfa - Hero İkon 3",
+
+        ["AboutTitle"] = "Hakkımızda - Üst Başlık",
+        ["AboutText"] = "Hakkımızda - Ana Metin (İlk Paragraf)",
+        ["AboutText2"] = "Hakkımızda - İkinci Paragraf",
+        ["ExperienceBadgeYears"] = "Hakkımızda - Tecrübe Rozeti (Yıl)",
+        ["ExperienceBadgeLabel"] = "Hakkımızda - Tecrübe Rozeti (Etiket)",
+        ["AboutFeature1"] = "Hakkımızda - Özellik 1 Metin",
+        ["AboutFeature1Icon"] = "Hakkımızda - Özellik 1 İkon",
+        ["AboutFeature1IsActive"] = "Hakkımızda - Özellik 1 Aktif/Pasif",
+        ["AboutFeature2"] = "Hakkımızda - Özellik 2 Metin",
+        ["AboutFeature2Icon"] = "Hakkımızda - Özellik 2 İkon",
+        ["AboutFeature2IsActive"] = "Hakkımızda - Özellik 2 Aktif/Pasif",
+        ["AboutFeature3"] = "Hakkımızda - Özellik 3 Metin",
+        ["AboutFeature3Icon"] = "Hakkımızda - Özellik 3 İkon",
+        ["AboutFeature3IsActive"] = "Hakkımızda - Özellik 3 Aktif/Pasif",
+        ["AboutFeature4"] = "Hakkımızda - Özellik 4 Metin",
+        ["AboutFeature4Icon"] = "Hakkımızda - Özellik 4 İkon",
+        ["AboutFeature4IsActive"] = "Hakkımızda - Özellik 4 Aktif/Pasif",
+
+        ["Phone"] = "Telefon (gösterim)",
+        ["WhatsApp"] = "WhatsApp Numarası",
+        ["Email"] = "E-posta",
+        ["Address"] = "Adres",
+        ["WorkingHours"] = "Çalışma Saatleri",
+        ["GoogleMapsEmbed"] = "Google Maps Embed Kodu",
+
+        ["Facebook"] = "Facebook Linki",
+        ["Instagram"] = "Instagram Linki",
+        ["YouTube"] = "YouTube Linki",
+
+
+
+        ["LogoPath"] = "Logo",
+        ["FaviconPath"] = "Favicon",
+        ["OgImagePath"] = "Sosyal Paylaşım Görseli (OG)",
+        
+        ["FooterLinkText"] = "Footer - Link Metni",
+        ["FooterLinkUrl"] = "Footer - Link URL"
+    };
+
+    string GetSettingTitle(SiteSetting s)
+    {
+        if (!string.IsNullOrWhiteSpace(s.Description))
+        {
+            return s.Description!;
+        }
+        if (labels.TryGetValue(s.Key, out var label))
+        {
+            return label;
+        }
+        return s.Key;
+    }
+}
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2>Site Ayarları</h2>
+                <a class="btn btn-outline-primary" href="@ViewBag.AdminPath/ayarlar/popup">
+                    <i class="bi bi-window me-2"></i>Pop-up Düzenle
+                </a>
+            </div>
+            <div class="admin-card-body p-0">
+                @if (Model.Any())
+                {
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Grup</th>
+                                <th>Ayar</th>
+                                <th>Değer</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var s in Model)
+                            {
+                                <tr>
+                                    <td>@(s.Group ?? "-")</td>
+                                    <td style="max-width: 320px;">
+                                        <strong>@GetSettingTitle(s)</strong>
+                                        <div class="text-muted small d-none d-lg-block">Kod: <code>@s.Key</code></div>
+                                    </td>
+                                    <td style="max-width: 480px;">
+                                        <span class="text-muted small">@((s.Value?.Length ?? 0) > 140 ? s.Value!.Substring(0, 140) + "..." : (s.Value ?? "-"))</span>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-primary" href="@ViewBag.AdminPath/ayarlar/duzenle/@s.Id">
+                                            <i class="bi bi-pencil me-1"></i>Düzenle
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-gear"></i>
+                        <p>Henüz ayar yok</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2>Pop-up</h2>
+            </div>
+            <div class="admin-card-body">
+                @if (popup != null)
+                {
+                    <div class="mb-2"><span class="text-muted small d-block">Başlık</span><strong>@popup.Title</strong></div>
+                    <div class="mb-2"><span class="text-muted small d-block">Aktif</span><strong>@(popup.IsActive ? "Evet" : "Hayır")</strong></div>
+                    <div class="mb-2"><span class="text-muted small d-block">Gecikme</span><strong>@popup.DelaySeconds sn</strong></div>
+                    <div class="mb-2"><span class="text-muted small d-block">Buton</span><strong>@popup.ButtonText</strong> <span class="text-muted small">(@popup.ButtonUrl)</span></div>
+                    <div><span class="text-muted small d-block">Güncelleme</span><strong>@popup.UpdatedAt.ToString("dd.MM.yyyy HH:mm")</strong></div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Pop-up ayarı bulunamadı.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

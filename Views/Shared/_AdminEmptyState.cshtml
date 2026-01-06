@@ -1,0 +1,19 @@
+﻿@* Admin boş durum *@
+@{
+    var icon = ViewData["Icon"] as string ?? "bi-inbox";
+    var message = ViewData["Message"] as string ?? "Henüz öğe yok";
+    var createUrl = ViewData["CreateUrl"] as string;
+    var createButtonText = ViewData["CreateButtonText"] as string ?? "Yeni Ekle";
+}
+
+<div class="empty-state">
+    <i class="bi @icon"></i>
+    <p>@message</p>
+    @if (!string.IsNullOrEmpty(createUrl))
+    {
+        <a href="@createUrl" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-2"></i>@createButtonText
+        </a>
+    }
+</div>
+

@@ -1,0 +1,123 @@
+﻿@model boya_usta_web.Models.ViewModels.PageSeoListVm
+@{
+    ViewData["Title"] = "SEO Yönetimi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2><i class="bi bi-search me-2"></i>SEO Yönetimi</h2>
+        <div class="d-flex gap-2">
+            <a href="@ViewBag.AdminPath/ayarlar/seo/genel" class="btn btn-outline-info">
+                <i class="bi bi-gear me-2"></i>Genel Ayarlar
+            </a>
+            <a href="@ViewBag.AdminPath/ayarlar/seo/sayfalar/ekle" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-2"></i>Yeni Sayfa Ekle
+            </a>
+        </div>
+    </div>
+    <div class="admin-card-body">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                <i class="bi bi-exclamation-circle me-2"></i>@TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="alert alert-info mb-4">
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>Sayfa bazlı SEO:</strong> Her sayfa için benzersiz başlık, açıklama ve anahtar kelimeler tanımlayarak 
+            arama motorlarında daha iyi sıralama elde edin.
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th style="width: 50px;">Sıra</th>
+                        <th>Sayfa</th>
+                        <th>Yol</th>
+                        <th>Başlık</th>
+                        <th style="width: 80px;">Durum</th>
+                        <th style="width: 120px;">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Pages)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge bg-secondary">@item.DisplayOrder</span>
+                            </td>
+                            <td>
+                                <strong>@item.PageName</strong>
+                                @if (item.IsSystemPage)
+                                {
+                                    <span class="badge bg-info ms-2" title="Sistem sayfası - silinemez">
+                                        <i class="bi bi-lock-fill"></i>
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                <code class="text-primary">@item.PagePath</code>
+                            </td>
+                            <td>
+                                <small class="text-muted" style="max-width: 300px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    @(item.Title ?? "-")
+                                </small>
+                            </td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge bg-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Pasif</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="@ViewBag.AdminPath/ayarlar/seo/sayfalar/duzenle/@item.Id" 
+                                       class="btn btn-outline-primary" title="Düzenle">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    @if (!item.IsSystemPage)
+                                    {
+                                        <form asp-action="PageSeoDelete" asp-route-id="@item.Id" method="post" 
+                                              onsubmit="return confirm('Bu sayfa SEO ayarlarını silmek istediğinize emin misiniz?');"
+                                              style="display: inline;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-outline-danger" title="Sil">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (!Model.Pages.Any())
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-file-earmark-x display-1 text-muted"></i>
+                <p class="text-muted mt-3">Henüz sayfa SEO ayarı bulunmuyor.</p>
+                <a href="@ViewBag.AdminPath/ayarlar/seo/sayfalar/ekle" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-2"></i>İlk Sayfayı Ekle
+                </a>
+            </div>
+        }
+    </div>
+</div>

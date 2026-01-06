@@ -1,0 +1,21 @@
+﻿@using System.IO
+@using boya_usta_web.Helpers
+@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+@await Html.PartialAsync("_HeroSection")
+@await Html.PartialAsync("_ServicesSection")
+@await Html.PartialAsync("_WhyUsSection")
+@await Html.PartialAsync("_FeaturedProjectsSection")
+@await Html.PartialAsync("_ReviewsSection")
+@await Html.PartialAsync("_FaqSection")
+@await Html.PartialAsync("_CtaSection")
+
+@section Styles {
+<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/home.js" asp-append-version="true" defer></script>
+}

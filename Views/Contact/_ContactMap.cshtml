@@ -1,0 +1,22 @@
+﻿@using boya_usta_web.Helpers
+@{
+    var settings = ViewBag.Settings as Dictionary<string, string?> ?? new Dictionary<string, string?>();
+    var googleMapsEmbed = settings.GetSetting("GoogleMapsEmbed");
+    // XSS koruması: Google Maps embed kodunu sanitize et
+    var sanitizedEmbed = !string.IsNullOrEmpty(googleMapsEmbed) 
+        ? HtmlSanitizerHelper.Sanitize(googleMapsEmbed) 
+        : "";
+}
+
+@if (!string.IsNullOrEmpty(sanitizedEmbed))
+{
+    @* Harita Bölümü *@
+    <section class="map-section">
+        <div class="container-fluid p-0">
+            <div class="map-wrapper">
+                @Html.Raw(sanitizedEmbed)
+            </div>
+        </div>
+    </section>
+}
+

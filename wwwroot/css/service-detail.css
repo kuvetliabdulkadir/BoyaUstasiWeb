@@ -1,0 +1,230 @@
+﻿/*
+ * DOSYA: service-detail.css
+ * KULLANIM: Views/Services/Detail.cshtml
+ * 
+ * AÇIKLAMA: Hizmet detay sayfasının (örneğin "İç Cephe Boyama") tasarım dosyası.
+ * Yan menü sabitleme (Sticky sidebar) ve içerik kartı stilleri.
+ */
+
+/* [SAYFA BAŞLIĞI] - Standart Mavi */
+
+
+/* Breadcrumb Stilleri */
+.page-header .breadcrumb {
+    margin-bottom: 0;
+}
+
+.page-header .breadcrumb-item,
+.page-header .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.page-header .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.95);
+    text-decoration: none;
+}
+
+.page-header .breadcrumb-item a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.page-header .breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.service-detail-section {
+    padding: 0 0 5rem;
+}
+
+/* [ANA İÇERİK KARTI] - Sol taraftaki büyük açıklama alanı */
+.detail-card {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    padding: 3rem;
+    /* Geniş iç boşluk */
+    box-shadow: var(--shadow);
+}
+
+/* Kartın Başlık Kısmı */
+.detail-header {
+    display: flex;
+    /* İkon ve yazıyı yan yana koy */
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--light);
+    /* Alt çizgi */
+}
+
+/* Büyük İkon Kutusu */
+.detail-icon {
+    width: 64px;
+    height: 64px;
+    /* Biraz küçültüldü */
+    background: #464646;
+    /* Koyu Gri */
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e0e0e0;
+    font-size: 2rem;
+    margin-right: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+}
+
+/* Fiyat Etiketi (Özel Fiyat) */
+.price-pill {
+    display: inline-flex;
+    align-items: center;
+    background: #fdf2e9;
+    /* Turuncumsu Bej */
+    color: #d35400;
+    /* Koyu Turuncu/Kahve */
+    padding: .4rem 1rem;
+    border-radius: var(--radius-full);
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-top: .25rem;
+}
+
+/* Ana Metin */
+.detail-text {
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+
+/* Özellik Listesi */
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.feature-list li {
+    padding: .6rem 0;
+    display: flex;
+    gap: .75rem;
+    align-items: center;
+    color: #444;
+    font-weight: 500;
+}
+
+.feature-list i {
+    color: #27ae60;
+    /* Yeşil Check */
+    font-size: 1.1rem;
+}
+
+/* [YAN KART] - Sağ taraftaki "Hemen Teklif Al" kutusu */
+.side-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 100px;
+    border: 1px solid #eee;
+}
+
+.side-card h4 {
+    font-size: 1.5rem;
+    /* Başlık Büyütüldü */
+    font-weight: 800;
+    /* Daha kalın */
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.side-card p {
+    font-size: 1.05rem;
+    /* Açıklama Büyütüldü */
+    line-height: 1.6;
+}
+
+/* [BUTONLAR] - Yeni Gold Temalı Butonlar (Hover Efektli) */
+.btn-gold {
+    background-color: #6D5843 !important;
+    /* Koyulaştırıldı */
+    border: 2px solid #6D5843 !important;
+    color: white !important;
+    font-weight: 700;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-gold:hover {
+    background-color: white !important;
+    /* Hover'da Beyaz */
+    color: #6D5843 !important;
+    /* Yazı Kahve */
+    border-color: #6D5843 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(109, 88, 67, 0.2);
+}
+
+.btn-outline-gold {
+    background-color: transparent !important;
+    border: 2px solid #6D5843 !important;
+    color: #6D5843 !important;
+    font-weight: 700;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-outline-gold:hover {
+    background-color: #6D5843 !important;
+    /* Hover'da Kahve */
+    color: white !important;
+    /* Yazı Beyaz */
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(109, 88, 67, 0.2);
+}
+
+.action-buttons .btn {
+    min-width: 160px;
+}
+
+/* MOBİL & TABLET UYARLAMALARI */
+@media (max-width: 991.98px) {
+    .side-card {
+        position: static;
+        margin-top: 2rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .service-detail-section .container {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        max-width: 100% !important;
+    }
+
+    .detail-card {
+        padding: 1.5rem !important;
+    }
+
+    .detail-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+        margin-right: 1rem;
+    }
+
+    .btn-lg,
+    .btn-gold,
+    .btn-outline-gold {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+}

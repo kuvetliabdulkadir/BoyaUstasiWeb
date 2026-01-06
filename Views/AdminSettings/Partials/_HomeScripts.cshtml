@@ -1,0 +1,63 @@
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.icon-select').forEach(function(select) {
+            const previewId = select.getAttribute('data-preview-id');
+            const preview = document.getElementById(previewId);
+            if (!preview) return;
+
+            // asp-for ile set edilmiş değeri al - önce data-initial-value'dan, sonra select.value'dan
+            let currentValue = select.getAttribute('data-initial-value') || select.value || (select.querySelector('option[selected]')?.value) || '';
+            
+            // Trim yap
+            if (currentValue) {
+                currentValue = currentValue.trim();
+            }
+            
+            // Eğer değer boş değilse ve select'te bu option yoksa, ekle
+            if (currentValue) {
+                const trimmedValue = currentValue;
+                const hasOption = Array.from(select.options).some(o => {
+                    const optValue = (o.value || '').trim();
+                    return optValue === trimmedValue;
+                });
+                
+                if (!hasOption) {
+                    // Özel değer - select'e ekle ve seç
+                    const opt = document.createElement('option');
+                    opt.value = trimmedValue;
+                    opt.textContent = 'Mevcut (özel): ' + trimmedValue;
+                    opt.selected = true;
+                    select.insertBefore(opt, select.firstChild);
+                    currentValue = trimmedValue;
+                } else {
+                    // Normal değer - sadece seç (asp-for ile set edilmiş olmalı ama emin olmak için tekrar set ediyoruz)
+                    select.value = trimmedValue;
+                    // Tüm option'ların selected attribute'unu kaldır
+                    Array.from(select.options).forEach(o => o.selected = false);
+                    // Doğru option'ı seç
+                    const correctOption = Array.from(select.options).find(o => (o.value || '').trim() === trimmedValue);
+                    if (correctOption) {
+                        correctOption.selected = true;
+                    }
+                    currentValue = trimmedValue;
+                }
+            }
+
+            function apply(val) {
+                if (preview && val) {
+                    preview.className = val.trim() || 'bi bi-stars';
+                }
+            }
+
+            // İlk yüklemede preview'ı güncelle
+            apply(currentValue);
+            
+            // Değişiklik olduğunda preview'ı güncelle
+            select.addEventListener('change', function () {
+                apply(this.value);
+            });
+        });
+    });
+
+
+</script>

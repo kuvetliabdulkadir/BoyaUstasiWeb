@@ -1,0 +1,73 @@
+﻿@{
+    var services = ViewBag.Services as List<Service> ?? new List<Service>();
+}
+
+@if (services.Any())
+{
+    //Hizmetler
+    <section class="services-section bg-light-custom">
+    <div class="container">
+            <div class="section-header text-center fade-in">
+                <span class="section-subtitle">Hizmetlerimiz</span>
+                <h2 class="section-title">Profesyonel Boya Çözümleri</h2>
+                <p class="section-description">Her ihtiyacınıza uygun kaliteli hizmetler sunuyoruz</p>
+            </div>
+            <div class="services-scroll-container">
+                <div class="services-scroll-wrapper">
+                    @foreach (var service in services)
+                    {
+                        <div class="service-card-wrapper">
+                            <div class="service-card fade-in hover-lift">
+                                <div class="service-card-content">
+                                    @if (!string.IsNullOrEmpty(service.ImagePath))
+                                    {
+                                        <div class="service-image">
+                                            <img src="@service.ImagePath" alt="@service.Title" loading="lazy" />
+                                        </div>
+                                    }
+                                    @if (string.IsNullOrEmpty(service.ImagePath))
+                                    {
+                                        <div class="service-icon">
+                                            @{
+                                                var randomIcons = new[] { 
+                                                    "fas fa-paint-roller", "fas fa-paint-brush", "fas fa-spray-can",
+                                                    "bi bi-brush-fill", "bi bi-palette-fill", "bi bi-bucket-fill",
+                                                    "bi bi-paint-bucket", "fas fa-hammer", "fas fa-tools",
+                                                    "bi bi-tools", "fas fa-hard-hat", "bi bi-award"
+                                                };
+                                                var iconToShow = !string.IsNullOrEmpty(service.IconClass) 
+                                                    ? service.IconClass 
+                                                    : randomIcons[service.Id % randomIcons.Length];
+                                            }
+                                            <i class="@iconToShow"></i>
+                                        </div>
+                                    }
+                                    <h3>@Html.Raw(service.Title)</h3>
+                                    @if (!string.IsNullOrEmpty(service.ShortDescription))
+                                    {
+                                        <p>@Html.Raw(service.ShortDescription)</p>
+                                    }
+                                    @if (!string.IsNullOrEmpty(service.PriceInfo))
+                                    {
+                                        <div class="service-price">
+                                            <span>@Html.Raw(service.PriceInfo)</span>
+                                        </div>
+                                    }
+                                </div>
+                                <a asp-route="service-detail" asp-route-slug="@service.Slug" class="btn btn-outline-primary btn-sm mt-auto">
+                                    Detaylı Bilgi <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="text-center mt-5 fade-in">
+                <a asp-controller="Services" asp-action="Index" class="btn btn-primary btn-lg services-view-all-btn">
+                    Tüm Hizmetlerimizi Görüntüle <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+}
+

@@ -1,0 +1,17 @@
+@model boya_usta_web.Models.ViewModels.AboutSettingsVm
+
+<div class="col-12">
+    <h5 class="border-bottom pb-2 mb-3 mt-4">Tecrübe Rozeti</h5>
+</div>
+<div class="col-md-6">
+    <label asp-for="ExperienceBadgeYears" class="form-label">Yıl</label>
+    <input asp-for="ExperienceBadgeYears" class="form-control" placeholder="15+" />
+    <div class="text-muted small mt-1">Tecrübe rozetinde gösterilecek yıl değeri.</div>
+    <span asp-validation-for="ExperienceBadgeYears" class="text-danger"></span>
+</div>
+<div class="col-md-6">
+    <label asp-for="ExperienceBadgeLabel" class="form-label">Etiket</label>
+    <input asp-for="ExperienceBadgeLabel" class="form-control" placeholder="Yıl Tecrübe" />
+    <div class="text-muted small mt-1">Tecrübe rozetinde gösterilecek etiket metni.</div>
+    <span asp-validation-for="ExperienceBadgeLabel" class="text-danger"></span>
+</div>

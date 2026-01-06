@@ -1,0 +1,576 @@
+﻿/* Global İskelet ve Yerleşim (Navbar, Footer, Header) */
+
+/* Navbar */
+html,
+body {
+    overflow-x: hidden;
+    /* Mobilde yatay taşmayı engelle */
+    width: 100%;
+}
+
+.navbar {
+    background: rgba(33, 37, 41, 0.95) !important;
+    /* Daha koyu, neredeyse opak zemin */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: none;
+    /* Alt çizgi kaldırıldı */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+    transition: all var(--transition);
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.navbar::after {
+    display: none;
+}
+
+/* Mobil Menü Butonu (Hamburger) - Kenarlık Kaldırma */
+.navbar-toggler {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0.25rem 0.5rem;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none !important;
+    outline: none;
+}
+
+/* Masaüstünde (LG ve üzeri) Toggle butonunu KESİN olarak gizle */
+@media (min-width: 992px) {
+    .navbar-toggler {
+        display: none !important;
+    }
+}
+
+.navbar.scrolled {
+    background: rgba(44, 62, 80, 0.85) !important;
+    backdrop-filter: blur(15px);
+    padding: 0.75rem 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: var(--text-light) !important;
+    transition: all var(--transition);
+    text-shadow: none;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+    color: var(--accent-gold) !important;
+}
+
+.brand-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    background: transparent;
+    margin-right: 0.75rem;
+    position: relative;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.brand-icon img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+}
+
+/* Navbar Link Efekti (Footer ile Aynı) */
+.navbar-nav .nav-link {
+    font-family: var(--font-body);
+    color: var(--text-light) !important;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.5rem 1rem !important;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    /* Yazıya biraz daha yakın */
+    left: 1rem;
+    /* Padding kadar içerden başla */
+    width: 0;
+    height: 2px;
+    background: #8E735B;
+    /* Footer Rengi */
+    transition: width 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover::after {
+    width: calc(100% - 2rem);
+    /* Padding hariç genişlik */
+}
+
+/* Active class'ında çizgi çıkmasın (sadece renk değişsin) */
+.navbar-nav .nav-link.active::after {
+    width: 0;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: var(--accent-gold) !important;
+}
+
+
+/* Highlight Link (Renk Simülatörü) */
+.highlight-link {
+    background: #975f2600;
+    /* Daha koyu kahverengi (Kullanıcı İsteği) */
+    border: 1px solid #8E735B;
+    color: white !important;
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem !important;
+    font-weight: 700;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    margin-right: 1rem;
+}
+
+.navbar-nav .nav-link.highlight-link:hover,
+.navbar-nav .nav-link.highlight-link.active {
+    background: #6d5843;
+    /* Hover'da daha da koyu */
+    color: white !important;
+    border-color: #6d5843;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(223, 203, 203, 0.15);
+}
+
+.highlight-link::after {
+    display: none !important;
+}
+
+/* Navbar WhatsApp Butonu */
+.btn-whatsapp {
+    background-color: #25d366;
+    color: white !important;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-whatsapp:hover {
+    background-color: #128c7e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
+.btn-whatsapp i {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+}
+
+
+/* Sayfa Başlığı (Global) */
+.page-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    /* Premium Mavi Gradyan */
+    padding: 4rem 0 4rem;
+    /* About.css stili */
+    color: white;
+    margin-bottom: 3rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 350px;
+}
+
+/* Dekoratif Üst Çizgi (About Us'tan alındı) */
+.page-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background-image: repeating-linear-gradient(90deg,
+            white 0px,
+            white 8px,
+            transparent 8px,
+            transparent 16px);
+    opacity: 0.6;
+    z-index: 2;
+}
+
+/* Header içindeki Container (İçeriği ortalayan kutu) */
+.page-header .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 350px;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #fff !important;
+}
+
+.page-header p {
+    font-size: 1.2rem;
+    opacity: 0.95;
+    margin-bottom: 1.5rem;
+    color: white !important;
+}
+
+/* Breadcrumb Stilleri */
+.page-header .breadcrumb {
+    margin-bottom: 0;
+    background: none;
+    font-size: 1.3rem !important;
+}
+
+.page-header .breadcrumb-item,
+.page-header .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+/* Breadcrumb Stilleri - Link Efekti */
+.page-header .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.95);
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+}
+
+.page-header .breadcrumb-item a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #8E735B;
+    transition: width 0.3s ease;
+}
+
+.page-header .breadcrumb-item a:hover::after {
+    width: 100%;
+}
+
+.page-header .breadcrumb-item a:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.page-header .breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Mobil Uyumluluk */
+@media (max-width: 767.98px) {
+    .page-header {
+        padding: 3rem 0 1.5rem !important;
+        min-height: auto !important;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem !important;
+    }
+
+    .page-header p {
+        font-size: 1.2rem !important;
+    }
+}
+
+
+
+/* Mobil Menü (Yan Panel) */
+.offcanvas {
+    width: 300px;
+    /* Panelin genişliği */
+    background: var(--light) !important;
+    color: var(--dark) !important;
+
+    /* Sağ tarafa dekoratif kesik çizgi ekle */
+    border-right: 5px solid var(--dark);
+    border-right-style: dashed;
+
+    /* Panel açıldığında, ana sitenin üzerine düştüğü için derin gölge ver */
+    box-shadow: 6px 0 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Çok küçük ekranlarda (eski telefonlar) panel ekranı taşmasın */
+@media (max-width: 420px) {
+    .offcanvas {
+        width: min(300px, 92vw);
+    }
+
+    /* Ekranın %92'sinden geniş olamaz */
+}
+
+.offcanvas-header {
+    border-bottom: 1px solid rgba(44, 62, 80, 0.1);
+    /* Başlık altı çizgi */
+    background: var(--light) !important;
+}
+
+.offcanvas-title {
+    font-family: var(--font-heading);
+    color: var(--dark) !important;
+    font-weight: 600;
+    font-size: 1.8rem;
+}
+
+/* Mobil Link Tasarımları */
+.mobile-nav .nav-link {
+    padding: 1rem;
+    /* Rahat dokunma alanı (Touch Target) */
+    border-bottom: 1px solid rgba(44, 62, 80, 0.1);
+    /* Listeyi çizgilerle ayır */
+    color: var(--dark) !important;
+    font-weight: 500;
+    position: relative;
+    /* Before elementi buna göre konumlanır */
+    transition: all 0.3s ease;
+}
+
+/* [EFEKT] Soldaki Sarı Çubuk */
+.mobile-nav .nav-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    /* Çubuğun kalınlığı */
+    background: var(--accent-gold);
+    transform: scaleY(0);
+    /* Başlangıçta görünmez (Yüksekliği 0) */
+    transition: transform 0.3s ease-in-out;
+    /* Animasyonlu uzama */
+}
+
+/* Hover veya Aktif olduğunda çubuk uzasın */
+.mobile-nav .nav-link:hover::before,
+.mobile-nav .nav-link.active::before {
+    transform: scaleY(1);
+    /* Tam boya ulaş */
+    opacity: 1 !important;
+}
+
+/* Hover olduğunda zemin ve yazı rengi değişimi */
+.mobile-nav .nav-link:hover,
+.mobile-nav .nav-link.active {
+    background: rgba(180, 160, 120, 0.15) !important;
+    /* Hafif sarı zemin */
+    color: var(--accent-gold) !important;
+    padding-left: 1.5rem;
+    /* Yazıyı sağa kaydır (Hareket hissi) */
+}
+
+/* Kapatma Butonu (X) */
+.offcanvas .btn-close {
+    /* İkonu koyu yapmak için filtre trick'i */
+    filter: invert(1) grayscale(100%) brightness(200%);
+    opacity: 0.7;
+}
+
+.offcanvas .btn-close:hover {
+    opacity: 1;
+}
+
+/* Alt Bilgi (Footer) */
+.footer {
+    position: relative;
+    background: var(--secondary-bg);
+    color: var(--text-light);
+    margin-top: 5rem;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.footer h1,
+.footer h2,
+.footer h3,
+.footer h4,
+.footer h6 {
+    color: var(--text-light) !important;
+}
+
+.footer .col-lg-2>h5,
+.footer .col-lg-3>h5,
+.footer .col-md-6>h5 {
+    color: white !important;
+    /* Beyaz Başlık */
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.footer p,
+.footer a {
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration: none !important;
+}
+
+.footer a:hover {
+    color: var(--accent-gold) !important;
+}
+
+/* Sosyal Medya İkonları - Premium Görünüm */
+.footer-social {
+    display: flex;
+    gap: 12px;
+    margin-top: 1.5rem;
+}
+
+.footer-social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: white !important;
+    font-size: 1.3rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-decoration: none;
+}
+
+.footer-social a:hover {
+    background: var(--accent-gold) !important;
+    border-color: var(--accent-gold);
+    color: var(--primary-bg) !important;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(184, 156, 124, 0.3);
+}
+
+.footer-social a i {
+    transition: all 0.3s ease;
+}
+
+.footer-social a:hover i {
+    transform: scale(1.1);
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.75rem;
+}
+
+/* Footer Linkleri ve İletişim Linkleri İçin Ortak Efekt */
+.footer-links a,
+.footer-contact a {
+    position: relative;
+    display: inline-block;
+    color: rgba(255, 255, 255, 0.7) !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+    padding-bottom: 2px;
+}
+
+.footer-links a::after,
+.footer-contact a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #8E735B;
+    /* Kahverengi/Altın Çizgi */
+    transition: width 0.3s ease;
+}
+
+.footer-links a:hover,
+.footer-contact a:hover {
+    color: white !important;
+    padding-left: 5px;
+    /* Hafif kayma */
+}
+
+.footer-links a:hover::after,
+.footer-contact a:hover::after {
+    width: 100%;
+}
+
+/* Footer İletişim Listesi - Bullet Kaldırma */
+.footer-contact {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-contact li {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: flex-start;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.footer-contact i {
+    margin-right: 10px;
+    color: white;
+    font-size: 1.1rem;
+    position: relative;
+    top: 2px;
+}
+
+/* Sabit WhatsApp Butonu */
+.floating-whatsapp {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #25d366;
+    color: white !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.floating-whatsapp:hover {
+    background-color: #128c7e;
+    /* Daha koyu yeşil */
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    color: white !important;
+}
+
+.floating-whatsapp i {
+    margin-top: 2px;
+    /* İkonu görsel olarak tam ortala */
+}

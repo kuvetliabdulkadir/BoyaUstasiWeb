@@ -1,0 +1,70 @@
+﻿@model ColorPalette
+@{
+    ViewData["Title"] = "Renk Düzenle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Renk Düzenle</h2>
+        <a href="@ViewBag.AdminPath/renkler" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri
+        </a>
+    </div>
+    <div class="admin-card-body">
+        <form method="post" class="admin-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Name" class="form-label">Ad *</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="HexCode" class="form-label">HEX *</label>
+                    <input asp-for="HexCode" class="form-control" />
+                    <span asp-validation-for="HexCode" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Önizleme</label>
+                    <input type="color" class="form-control form-control-color w-100" value="@Model.HexCode" oninput="document.getElementById('HexCode').value=this.value.toUpperCase();" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Category" class="form-label">Kategori *</label>
+                    <select asp-for="Category" class="form-select">
+                        <option value="Sıcak">Sıcak</option>
+                        <option value="Soğuk">Soğuk</option>
+                        <option value="Nötr">Nötr</option>
+                        <option value="Pastel">Pastel</option>
+                    </select>
+                    <span asp-validation-for="Category" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="DisplayOrder" class="form-label">Sıra</label>
+                    <input asp-for="DisplayOrder" type="number" class="form-control" />
+                </div>
+                <div class="col-md-4 d-flex align-items-center">
+                    <div class="form-check mt-4">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label">Aktif</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr class="my-3" />
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-check-lg me-2"></i>Kaydet
+                    </button>
+                    <a href="@ViewBag.AdminPath/renkler" class="btn btn-outline-secondary ms-2">İptal</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+
+}
+
+

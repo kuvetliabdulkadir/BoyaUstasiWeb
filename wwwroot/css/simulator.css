@@ -1,0 +1,483 @@
+﻿    /*
+    * DOSYA: simulator.css
+    * KONUM: wwwroot/css/simulator.css
+    * KULLANIM: Views/Simulator/Index.cshtml
+    * 
+    * AÇIKLAMA: Renk simülatörü modülünün (Interactive Color Visualizer) stilleri.
+    * Canvas alanı, renk paleti, fırça araçları ve upload alanını içerir.
+    */
+
+    /*  
+    [YATAY EKRAN UYARISI] - Landscape Warning
+    Telefonda dikey tutuluyorsa uyarı vererek yatay çevrilmesini ister.
+    */
+    .landscape-warning-overlay {
+        display: none;
+        /* Varsayılan olarak gizli */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        z-index: 99999;
+        /* En üstte */
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: white;
+    }
+
+    .landscape-warning-content i {
+        font-size: 5rem;
+        margin-bottom: 1.5rem;
+        display: block;
+        animation: rotatePhone 2s ease-in-out infinite;
+        /* Telefon döndürme animasyonu */
+    }
+
+    @keyframes rotatePhone {
+
+        0%,
+        100% {
+            transform: rotate(0deg);
+        }
+
+        25% {
+            transform: rotate(-15deg);
+        }
+
+        /* Sola */
+        75% {
+            transform: rotate(15deg);
+        }
+
+        /* Sağa */
+    }
+
+    /* Sadece MOBİLDE ve DIKEY MODDA ise göster */
+    @media only screen and (max-width: 767.98px) and (orientation: portrait) {
+        /* NOT: Kullanıcı deneyimi tercihi olarak şu an kapalı tutulabilir veya JS ile tetiklenebilir.
+        Şimdilik sadece landscape modda özel bir layout sunuyoruz. */
+    }
+
+    /* [SİMÜLATÖR KAPSAYICI] */
+    .simulator-section {
+        padding: 3rem 0 5rem;
+    }
+
+    /* [SİMULATÖR BAŞLIĞI] - Global layout.css (.page-header) kullanılıyor */
+
+    @media (max-width: 768px) {
+        .simulator-header h1 {
+            font-size: 2rem;
+            /* 3rem'den küçültüldü */
+        }
+    }
+
+    /* [KANVAS ALANI] - Preview Section
+    Resmin yüklendiği ve boyamanın yapıldığı alan.
+    */
+    .simulator-preview-wrapper {
+        background: var(--white);
+        border-radius: var(--radius-xl);
+        padding: 1.5rem;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        /* Daha yumuşak gölge */
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .preview-header h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .preview-container {
+        position: relative;
+        background: #f8f9fa;
+        /* Daha açık gri */
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 400px;
+        /* Görseldeki gibi daha yüksek */
+    }
+
+    #roomCanvas {
+        display: block;
+        max-width: 100%;
+        max-height: 80vh;
+        height: auto;
+        width: auto;
+        cursor: crosshair;
+        image-rendering: -webkit-optimize-contrast;
+    }
+
+    /* [YÜKLENİYOR İKONU] */
+    .canvas-loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.9);
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* [DOSYA YÜKLEME] - Drag & Drop alanı */
+    .upload-section h4 {
+        font-size: 1.25rem;
+        /* 1rem -> 1.25rem */
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .upload-section p {
+        font-size: 1rem !important;
+        /* small class'ını büyüt */
+        color: #6c757d;
+        margin-bottom: 1rem;
+    }
+
+    .upload-area {
+        border: 2px dashed #dee2e6;
+        /* Daha açık gri çizgi */
+        border-radius: 12px;
+        padding: 3rem 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        background: white;
+        margin-top: 1rem;
+        color: #6c757d;
+    }
+
+    .upload-area:hover,
+    .upload-area.dragover {
+        border-color: var(--primary-color);
+        background: rgba(37, 99, 235, 0.02);
+        color: var(--primary-color);
+    }
+
+    .upload-area i {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 1rem;
+        color: inherit;
+    }
+
+    /* [RENK PALETİ] - Sticky Sidebar (Sağ Panel) */
+    .color-palette-wrapper {
+        background: var(--white);
+        border-radius: var(--radius-xl);
+        padding: 1.5rem;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 100px;
+    }
+
+    .color-palette-wrapper h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Input Alanları */
+    .color-input-group label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #495057;
+        margin-bottom: 0.4rem;
+    }
+
+    .form-control-color {
+        padding: 0.2rem;
+        border-radius: 6px;
+    }
+
+    /* Seçili Renk Göstergesi - Görseldeki tasarım */
+    .selected-color-display {
+        background-color: #f8f9fa;
+        /* Hafif gri zemin */
+        border-radius: 12px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .selected-color-preview {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        /* Hafif köşeli */
+        box-shadow: none;
+        flex-shrink: 0;
+    }
+
+    .selected-color-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .color-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #212529;
+    }
+
+    .color-hex {
+        font-family: monospace;
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    /* Renk Kategorileri */
+    .color-category {
+        margin-bottom: 1.5rem;
+    }
+
+    .color-category h4 {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #6c757d;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        letter-spacing: 0.5px;
+    }
+
+    .color-swatches {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    /* Renk Kutucukları (Swatch) - YUVARLAK */
+    .color-swatch-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        /* Tam Yuvarlak */
+        border: none;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        position: relative;
+        padding: 0;
+    }
+
+    .color-swatch-btn:hover {
+        transform: scale(1.2);
+        z-index: 1;
+    }
+
+    /* Seçili durumu */
+    .color-swatch-btn.selected {
+        transform: scale(1.2);
+        box-shadow: 0 0 0 2px white, 0 0 0 4px var(--primary-color);
+    }
+
+    /* Seçili olana tik işareti EKLEME - Görselde tik yok, sadece highlight var gibi */
+    .color-swatch-btn.selected::after {
+        display: none;
+    }
+
+    /* MOBİL UYUMLULUK */
+    @media (max-width: 991.98px) {
+        .color-palette-wrapper {
+            position: static;
+            margin-top: 2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+
+
+        .upload-area {
+            padding: 1.5rem;
+        }
+
+        .room-options {
+            justify-content: center;
+        }
+
+        /* Ortala */
+    }
+
+    /* Yatay Mod (Landscape) için optimizasyon */
+    @media (max-width: 991.98px) and (orientation: landscape) {
+        #roomCanvas {
+            max-height: 60vh !important;
+            /* Ekranı kaplamasın, kaydırmaya gerek kalmasın */
+            margin: 0 auto;
+        }
+    }
+
+    /* [BEFORE / AFTER SLIDER] */
+    .before-after-container {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        border-radius: var(--radius-lg);
+        cursor: col-resize;
+        user-select: none;
+        line-height: 0;
+        margin-top: 1rem;
+        touch-action: pan-y;
+        /* Dokunmatik kaydırmayı engelle (Slider için kritik) */
+        -webkit-user-select: none;
+    }
+
+    /* Arka plandaki resim (After) */
+    .before-after-container img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+    }
+
+    /* Üstteki resim (Before) - Maskelenmiş */
+    .before-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50%;
+        /* JS ile değişir */
+        height: 100%;
+        overflow: hidden;
+        border-right: 2px solid white;
+    }
+
+    .before-image img {
+        height: 100%;
+        width: auto;
+        /* Kapsayıcısına göre değil, kendi oranına göre */
+        max-width: none;
+        /* Genişlik kısıtlamasını kaldır */
+    }
+
+
+    /* Slider Tutamacı */
+    /* Slider Tutamacı */
+    .slider-handle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 44px;
+        height: 44px;
+        background: #ffffff;
+        border-radius: 50%;
+        pointer-events: auto;
+        /* Sürüklenebilmesi için GEREKLİ */
+        cursor: ew-resize;
+        /* Yatay ok imleci */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+        color: #495057;
+        font-size: 1.2rem;
+    }
+
+    /* Ok İkonu (Unicode) */
+    .slider-handle::after {
+        content: '↔';
+        font-family: sans-serif;
+        font-weight: 300;
+        border: none;
+        padding: 0;
+        position: relative;
+        z-index: 2;
+        /* Çizginin üstünde kalsın */
+    }
+
+    /* Dikey Çizgi (Visible Line) */
+    .slider-handle::before {
+        display: block !important;
+        content: '';
+        position: absolute;
+        top: -5000px;
+        /* Yukarı uzat */
+        bottom: -5000px;
+        /* Aşağı uzat */
+        left: 50%;
+        width: 3px;
+        background: white;
+        transform: translateX(-50%);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        z-index: 1;
+    }
+
+    /* Etiketler */
+    .before-label,
+    .after-label {
+        position: absolute;
+        top: 20px;
+        background: #212529;
+        /* Tam siyah/koyu */
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        /* Pill shape */
+        font-size: 0.75rem;
+        font-weight: 700;
+        pointer-events: none;
+        z-index: 5;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .before-label {
+        left: 20px;
+    }
+
+    .after-label {
+        right: 20px;
+    }
+
+    /* MOBİL DÜZENLEMELER (Butonlar ve Başlıklar) */
+    @media (max-width: 768px) {
+        .preview-header {
+            flex-direction: column;
+            align-items: stretch !important;
+            gap: 1rem;
+        }
+
+        .preview-header h3 {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .preview-actions .btn {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            /* Daha rahat dokunma alanı */
+        }
+    }

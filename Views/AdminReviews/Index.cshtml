@@ -1,0 +1,98 @@
+﻿@model List<Review>
+@{
+    ViewData["Title"] = "Yorumlar";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Müşteri Yorumları</h2>
+        <div class="d-flex gap-2">
+            <a class="btn btn-success" href="@ViewBag.AdminPath/yorumlar/google-aktar">
+                <i class="bi bi-google me-2"></i>Google'dan Aktar
+            </a>
+            <a class="btn btn-primary" href="@ViewBag.AdminPath/yorumlar/ekle">
+                <i class="bi bi-plus-lg me-2"></i>Yeni Yorum
+            </a>
+        </div>
+    </div>
+    <div class="admin-card-body p-0">
+        @Html.AntiForgeryToken()
+        @if (Model.Any())
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Sıra</th>
+                        <th>Müşteri</th>
+                        <th class="d-none d-lg-table-cell">Konum</th>
+                        <th>Puan</th>
+                        <th class="d-none d-md-table-cell">Kaynak</th>
+                        <th>Durum</th>
+                        <th class="d-none d-md-table-cell">Tarih</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int reviewIndex = 0; }
+                    @foreach (var r in Model)
+                    {
+                        <tr data-item-id="@r.Id" data-display-order="@r.DisplayOrder">
+                            <td>
+                                @{
+                                    ViewData["ItemId"] = r.Id;
+                                    ViewData["UpdateOrderUrl"] = $"{ViewBag.AdminPath}/yorumlar/sira-guncelle";
+                                    ViewData["IsFirst"] = reviewIndex == 0;
+                                    ViewData["IsLast"] = reviewIndex == Model.Count - 1;
+                                }
+                                <partial name="_AdminTableSortButtons" view-data="ViewData" />
+                            </td>
+                            <td><strong>@r.CustomerName</strong></td>
+                            <td class="d-none d-lg-table-cell">@(r.Location ?? "-")</td>
+                            <td>@r.Rating / 5</td>
+                            <td class="d-none d-md-table-cell">
+                                @if (!string.IsNullOrEmpty(r.SourceLogoPath))
+                                {
+                                    <img src="@r.SourceLogoPath" alt="@r.Source" class="image-preview" style="max-height: 30px; max-width: 100px; object-fit: contain;" />
+                                }
+                                else
+                                {
+                                    @(r.Source ?? "-")
+                                }
+                            </td>
+                            <td>
+                                @{
+                                    ViewData["IsActive"] = r.IsActive;
+                                    ViewData["ItemId"] = r.Id;
+                                    ViewData["ToggleUrl"] = $"{ViewBag.AdminPath}/yorumlar/aktif-pasif/{r.Id}";
+                                    ViewData["EntityName"] = "Yorum";
+                                }
+                                <partial name="_AdminStatusBadge" view-data="ViewData" />
+                            </td>
+                            <td class="d-none d-md-table-cell">@r.ReviewDate.ToString("dd.MM.yyyy")</td>
+                            <td>
+                                @{
+                                    ViewData["EditUrl"] = $"{ViewBag.AdminPath}/yorumlar/duzenle/{r.Id}";
+                                    ViewData["DeleteUrl"] = $"{ViewBag.AdminPath}/yorumlar/sil/{r.Id}";
+                                    ViewData["EntityName"] = "Yorum";
+                                }
+                                <partial name="_AdminTableRowActions" view-data="ViewData" />
+                            </td>
+                        </tr>
+                        reviewIndex++;
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            {
+                ViewData["Icon"] = "bi-chat-quote";
+                ViewData["Message"] = "Henüz yorum yok";
+            }
+            <partial name="_AdminEmptyState" view-data="ViewData" />
+        }
+    </div>
+</div>
+
+

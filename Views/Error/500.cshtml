@@ -1,0 +1,251 @@
+﻿@using boya_usta_web.Services
+@using boya_usta_web.Helpers
+@inject ISettingsService SettingsService
+@{
+    ViewData["Title"] = "Sunucu Hatası";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var settings = await SettingsService.GetAllSettingsAsync();
+    var whatsapp = settings.GetSetting("WhatsApp").Replace(" ", "").Replace("+", "");
+}
+
+<section class="error-page error-page-500">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="error-content">
+                    <div class="error-illustration">
+                        <div class="error-icon-wrapper">
+                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="60" cy="60" r="55" stroke="var(--primary-color)" stroke-width="3" stroke-dasharray="8 4" opacity="0.3"/>
+                                <circle cx="60" cy="60" r="40" stroke="var(--primary-color)" stroke-width="4"/>
+                                <path d="M60 35V55M60 65V70" stroke="var(--primary-color)" stroke-width="5" stroke-linecap="round"/>
+                                <circle cx="60" cy="80" r="3" fill="var(--primary-color)"/>
+                            </svg>
+                        </div>
+                        <h1 class="error-code">500</h1>
+                    </div>
+
+                    <h2 class="error-title">Sunucu Hatası</h2>
+                    <p class="error-description">
+                        Üzgünüz, bir teknik sorun yaşandı. Ekibimiz bu durumdan haberdar edildi ve en kısa sürede çözülecektir.
+                    </p>
+
+                    @if (ViewBag.ErrorId != null)
+                    {
+                        <div class="error-id-box">
+                            <div class="error-id-content">
+                                <span class="error-id-label">Hata Referansı:</span>
+                                <code class="error-id-value">@ViewBag.ErrorId</code>
+                                <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyErrorId('@ViewBag.ErrorId')" title="Kopyala">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted d-block mt-2">Destek ekibimizle iletişime geçerken bu kodu belirtin</small>
+                        </div>
+                    }
+
+                    <div class="error-actions">
+                        <a href="javascript:location.reload()" class="btn btn-primary btn-lg">
+                            <i class="bi bi-arrow-clockwise me-2"></i>Sayfayı Yenile
+                        </a>
+                        <a href="/" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-house-fill me-2"></i>Ana Sayfaya Dön
+                        </a>
+                    </div>
+
+                    <div class="error-contact mt-5">
+                        <p class="text-muted mb-3">Sorun devam ederse bizimle iletişime geçin:</p>
+                        <div class="d-flex gap-3 justify-content-center flex-wrap">
+                            @if (!string.IsNullOrEmpty(whatsapp))
+                            {
+                                <a href="https://wa.me/@whatsapp" target="_blank" class="btn btn-whatsapp">
+                                    <i class="bi bi-whatsapp me-2"></i>WhatsApp Destek
+                                </a>
+                            }
+                            <a asp-controller="Contact" asp-action="Index" class="btn btn-outline-primary">
+                                <i class="bi bi-envelope-fill me-2"></i>İletişim Formu
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .error-page-500 {
+        background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+    }
+
+    .error-page {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        padding: 5rem 0;
+    }
+
+    .error-content {
+        padding: 3rem 2rem;
+    }
+
+    .error-illustration {
+        margin-bottom: 2.5rem;
+    }
+
+    .error-icon-wrapper {
+        margin-bottom: 1.5rem;
+        animation: fadeInScale 0.8s ease-out;
+    }
+
+    .error-icon-wrapper svg {
+        filter: drop-shadow(0 4px 12px rgba(44, 95, 140, 0.15));
+    }
+
+    .error-code {
+        font-size: 7rem;
+        font-weight: 800;
+        font-family: var(--font-heading);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0;
+        line-height: 1;
+        letter-spacing: -0.02em;
+    }
+
+    .error-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 1rem;
+        font-family: var(--font-heading);
+    }
+
+    .error-description {
+        font-size: 1.125rem;
+        color: var(--gray);
+        margin-bottom: 2rem;
+        line-height: 1.7;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .error-id-box {
+        background: var(--light);
+        border: 1px solid var(--light-dark);
+        border-radius: var(--radius-md);
+        padding: 1.5rem;
+        margin-bottom: 2.5rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .error-id-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .error-id-label {
+        color: var(--gray);
+        font-weight: 500;
+    }
+
+    .error-id-value {
+        color: #E74C3C;
+        font-weight: 600;
+        font-size: 1rem;
+        background: rgba(231, 76, 60, 0.1);
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-family: 'Courier New', monospace;
+    }
+
+    .error-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+    }
+
+    .error-contact {
+        padding-top: 2rem;
+        border-top: 1px solid var(--light-dark);
+    }
+
+    @@keyframes fadeInScale {
+        0% {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .error-code {
+            font-size: 5rem;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+        }
+
+        .error-description {
+            font-size: 1rem;
+        }
+
+        .error-content {
+            padding: 2rem 1rem;
+        }
+
+        .error-id-box {
+            padding: 1rem;
+        }
+
+        .error-id-content {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<script>
+    function copyErrorId(errorId) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(errorId).then(() => {
+                const btn = event.target.closest('button');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-check"></i>';
+                btn.classList.add('btn-success');
+                btn.classList.remove('btn-outline-secondary');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('btn-success');
+                    btn.classList.add('btn-outline-secondary');
+                }, 2000);
+            }).catch(() => {
+                alert('Kopyalama başarısız. Lütfen manuel olarak kopyalayın: ' + errorId);
+            });
+        } else {
+            // Eski tarayıcılar için yedek
+            const textarea = document.createElement('textarea');
+            textarea.value = errorId;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Hata kodu kopyalandı: ' + errorId);
+        }
+    }
+</script>

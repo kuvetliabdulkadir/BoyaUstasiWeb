@@ -1,0 +1,229 @@
+﻿@model ContactMessage
+@{
+    ViewData["Title"] = "Mesaj Detayı";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var waPhone = (Model.Phone ?? "").Replace(" ", "").Replace("+", "");
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2>Mesaj Detayı</h2>
+                <a href="@ViewBag.AdminPath/mesajlar" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-2"></i>Geri
+                </a>
+            </div>
+            <div class="admin-card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="text-muted small">Ad Soyad</label>
+                        <p class="mb-0"><strong>@(Model.FullName ?? "-")</strong></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted small">Telefon</label>
+                        <p class="mb-0">
+                            @if (!string.IsNullOrEmpty(Model.Phone))
+                            {
+                                <a href="tel:@Model.Phone">@Model.Phone</a>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </p>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Email))
+                    {
+                        <div class="col-md-6">
+                            <label class="text-muted small">E-posta</label>
+                            <p class="mb-0">
+                                <a href="mailto:@Model.Email">@Model.Email</a>
+                            </p>
+                        </div>
+                    }
+                    <div class="col-md-6">
+                        <label class="text-muted small">İl</label>
+                        <p class="mb-0">@(Model.City ?? "-")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted small">İlçe</label>
+                        <p class="mb-0">@(Model.District ?? "-")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted small">Hizmet Türü</label>
+                        <p class="mb-0">@(Model.ServiceType ?? "-")</p>
+                    </div>
+                    @if (Model.SquareMeters.HasValue)
+                    {
+                        <div class="col-md-6">
+                            <label class="text-muted small">Tahmini Metrekare</label>
+                            <p class="mb-0">@Model.SquareMeters m²</p>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Message))
+                    {
+                        <div class="col-12">
+                            <label class="text-muted small">Mesaj</label>
+                            <p class="mb-0 p-3 bg-light rounded">@Model.Message</p>
+                        </div>
+                    }
+                    @{
+                        var attachmentUrls = new List<string>();
+                        
+                        // Tam dosya yolları
+                        if (!string.IsNullOrEmpty(Model.AttachmentPaths))
+                        {
+                            try
+                            {
+                                var paths = System.Text.Json.JsonSerializer.Deserialize<List<string>>(Model.AttachmentPaths) ?? new List<string>();
+                                foreach (var path in paths)
+                                {
+                                    // Direkt kullan
+                                    attachmentUrls.Add(path);
+                                }
+                            }
+                            catch
+                            {
+                                // JSON hatası
+                            }
+                        }
+                    }
+                    @if (attachmentUrls.Any())
+                    {
+                        <div class="col-12">
+                            <label class="text-muted small">Eklenen Fotoğraflar (@attachmentUrls.Count adet)</label>
+                            <div class="row g-2">
+                                @for (int i = 0; i < attachmentUrls.Count; i++)
+                                {
+                                    <div class="col-md-4 col-6">
+                                        <img src="@attachmentUrls[i]" 
+                                             alt="Ek" 
+                                             class="img-fluid rounded message-image-thumbnail w-100" 
+                                             style="max-height: 200px; object-fit: cover; cursor: pointer; transition: transform 0.2s;" 
+                                             data-bs-toggle="modal" 
+                                             data-bs-target="#imageModal"
+                                             onclick="openImageModal('@attachmentUrls[i].Replace("'", "\\'")', @i)" />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <script>
+                            // URLleri aktar
+                            window.allImageUrls = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(attachmentUrls));
+                        </script>
+                    }
+                </div>
+                
+                <hr class="my-4">
+                
+                <div class="d-flex gap-2">
+                    <a href="https://wa.me/@waPhone" target="_blank" class="btn btn-success">
+                        <i class="bi bi-whatsapp me-2"></i>WhatsApp'tan Yanıtla
+                    </a>
+                    @if (!string.IsNullOrEmpty(Model.Phone))
+                    {
+                        <a href="tel:@Model.Phone" class="btn btn-primary">
+                            <i class="bi bi-telephone me-2"></i>Ara
+                        </a>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Email))
+                    {
+                        <a href="mailto:@Model.Email" class="btn btn-outline-secondary">
+                            <i class="bi bi-envelope me-2"></i>E-posta Gönder
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2>Bilgiler</h2>
+            </div>
+            <div class="admin-card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-3">
+                        <span class="text-muted small d-block">Gönderilme Tarihi</span>
+                        <strong data-utc-date="@Model.CreatedAt.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")">@Model.CreatedAt.ToString("dd MMMM yyyy HH:mm")</strong>
+                    </li>
+                    @if (Model.ReadAt.HasValue)
+                    {
+                        <li class="mb-3">
+                            <span class="text-muted small d-block">Okunma Tarihi</span>
+                            <strong data-utc-date="@Model.ReadAt.Value.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")">@Model.ReadAt.Value.ToString("dd MMMM yyyy HH:mm")</strong>
+                        </li>
+                    }
+                    <li class="mb-3">
+                        <span class="text-muted small d-block">Durum</span>
+                        <span class="status-badge @(Model.IsRead ? "active" : "unread")">
+                            @(Model.IsRead ? "Okundu" : "Yeni")
+                        </span>
+                    </li>
+                    @if (!string.IsNullOrEmpty(Model.IpAddress))
+                    {
+                        <li>
+                            <span class="text-muted small d-block">IP Adresi</span>
+                            <code>@Model.IpAddress</code>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // Tarih göster
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('[data-utc-date]').forEach(function(element) {
+            const utcDate = element.getAttribute('data-utc-date');
+            const date = new Date(utcDate);
+            
+            // Aylar
+            const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 
+                          'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+            
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = months[date.getMonth()];
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            
+            element.textContent = `${day} ${month} ${year} ${hours}:${minutes}`;
+        });
+    });
+
+    // URLler
+    let allImageUrls = window.allImageUrls || [];
+    
+    // Modal aç (Detay sayfasından)
+    function openImageModal(imagePath, imageIndex) {
+        // Eğer index verilmişse direkt onu kullan, yoksa path'den bul
+        let index = 0;
+        if (typeof imageIndex === 'number') {
+            index = imageIndex;
+        } else {
+            index = allImageUrls.findIndex(url => url === imagePath);
+            if (index === -1) index = 0;
+        }
+
+        // Shared modal fonksiyonunu çağır
+        showImageModal(allImageUrls, index);
+    }
+
+    // Hover
+    document.querySelectorAll('.message-image-thumbnail').forEach(function(img) {
+        img.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.02)';
+        });
+        img.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    });
+</script>
+}
+

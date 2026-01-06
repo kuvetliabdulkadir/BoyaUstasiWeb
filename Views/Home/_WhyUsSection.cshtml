@@ -1,0 +1,112 @@
+﻿@using boya_usta_web.Helpers
+@{
+    var settings = ViewBag.Settings as Dictionary<string, string?> ?? new Dictionary<string, string?>();
+    var experienceYears = settings.GetSetting("ExperienceYears");
+}
+
+@* Neden Biz *@
+<section class="why-us-section">
+    <div class="container">
+        <div class="section-header text-center fade-in">
+            <span class="section-subtitle">Neden Biz?</span>
+            <h2 class="section-title">@Html.Raw(settings.GetSetting("WhyUsTitle", "Kalite ve Güvenin Adresi"))</h2>
+            <p class="section-description">@{
+                var whyUsSubtitleRaw = settings.GetSetting("WhyUsSubtitle", "{years} yıllık tecrübemizle binlerce mutlu müşteriye hizmet verdik");
+                var whyUsSubtitle = whyUsSubtitleRaw?.Replace("{years}", experienceYears ?? "") ?? $"{experienceYears} yıllık tecrübemizle binlerce mutlu müşteriye hizmet verdik";
+                @Html.Raw(HtmlSanitizerHelper.Sanitize(whyUsSubtitle));
+            }</p>
+        </div>
+        <div class="row g-4 stagger-container">
+            @{
+                // Kart 1
+                var whyUsCard1Title = settings.GetSetting("WhyUsCard1Title");
+                var whyUsCard1DescRaw = settings.GetSetting("WhyUsCard1Desc");
+                var whyUsCard1Desc = !string.IsNullOrEmpty(whyUsCard1DescRaw) ? whyUsCard1DescRaw.Replace("{years}", experienceYears ?? "") : "";
+                var whyUsCard1Icon = settings.GetSetting("WhyUsCard1Icon", "bi bi-people-fill");
+                var whyUsCard1IsActive = settings.GetSetting("WhyUsCard1IsActive", "true") != "false" && !string.IsNullOrEmpty(whyUsCard1Title);
+                
+                // Kart 2
+                var whyUsCard2Title = settings.GetSetting("WhyUsCard2Title");
+                var teamExpDescRaw = settings.GetSetting("TeamExperienceDescription");
+                var whyUsCard2Desc = !string.IsNullOrEmpty(teamExpDescRaw) ? teamExpDescRaw.Replace("{years}", experienceYears ?? "") : "";
+                var whyUsCard2Icon = settings.GetSetting("WhyUsCard2Icon", "bi bi-bucket-fill");
+                var whyUsCard2IsActive = settings.GetSetting("WhyUsCard2IsActive", "true") != "false" && !string.IsNullOrEmpty(whyUsCard2Title);
+                
+                // Kart 3
+                var whyUsCard3Title = settings.GetSetting("WhyUsCard3Title");
+                var whyUsCard3DescRaw = settings.GetSetting("WhyUsCard3Desc");
+                var whyUsCard3Desc = !string.IsNullOrEmpty(whyUsCard3DescRaw) ? whyUsCard3DescRaw.Replace("{years}", experienceYears ?? "") : "";
+                var whyUsCard3Icon = settings.GetSetting("WhyUsCard3Icon", "bi bi-cash-coin");
+                var whyUsCard3IsActive = settings.GetSetting("WhyUsCard3IsActive", "true") != "false" && !string.IsNullOrEmpty(whyUsCard3Title);
+                
+                // Kart 4
+                var whyUsCard4Title = settings.GetSetting("WhyUsCard4Title");
+                var whyUsCard4DescRaw = settings.GetSetting("WhyUsCard4Desc");
+                var whyUsCard4Desc = !string.IsNullOrEmpty(whyUsCard4DescRaw) ? whyUsCard4DescRaw.Replace("{years}", experienceYears ?? "") : "";
+                var whyUsCard4Icon = settings.GetSetting("WhyUsCard4Icon", "bi bi-shield-check");
+                var whyUsCard4IsActive = settings.GetSetting("WhyUsCard4IsActive", "true") != "false" && !string.IsNullOrEmpty(whyUsCard4Title);
+            }
+            @if (whyUsCard1IsActive)
+            {
+            <div class="col-md-6 col-lg-3">
+                <div class="why-us-card fade-in hover-lift text-center">
+                    <div class="why-us-icon">
+                       <i class="@whyUsCard1Icon"></i>
+                    </div>
+                    <h3>@Html.Raw(whyUsCard1Title)</h3>
+                        @if (!string.IsNullOrEmpty(whyUsCard1Desc))
+                        {
+                    <p>@Html.Raw(whyUsCard1Desc)</p>
+                        }
+                </div>
+            </div>
+            }
+            @if (whyUsCard2IsActive)
+            {
+            <div class="col-md-6 col-lg-3">
+                <div class="why-us-card fade-in hover-lift text-center">
+                    <div class="why-us-icon">
+                       <i class="@whyUsCard2Icon"></i>
+                    </div>
+                    <h3>@Html.Raw(whyUsCard2Title)</h3>
+                        @if (!string.IsNullOrEmpty(whyUsCard2Desc))
+                        {
+                    <p>@Html.Raw(whyUsCard2Desc)</p>
+                        }
+                </div>
+            </div>
+            }
+            @if (whyUsCard3IsActive)
+            {
+            <div class="col-md-6 col-lg-3">
+                <div class="why-us-card fade-in hover-lift text-center">
+                    <div class="why-us-icon">
+                       <i class="@whyUsCard3Icon"></i>
+                    </div>
+                    <h3>@Html.Raw(whyUsCard3Title)</h3>
+                        @if (!string.IsNullOrEmpty(whyUsCard3Desc))
+                        {
+                    <p>@Html.Raw(whyUsCard3Desc)</p>
+                        }
+                </div>
+            </div>
+            }
+            @if (whyUsCard4IsActive)
+            {
+            <div class="col-md-6 col-lg-3">
+                <div class="why-us-card fade-in hover-lift text-center">
+                    <div class="why-us-icon">
+                       <i class="@whyUsCard4Icon"></i>
+                    </div>
+                    <h3>@Html.Raw(whyUsCard4Title)</h3>
+                        @if (!string.IsNullOrEmpty(whyUsCard4Desc))
+                        {
+                    <p>@Html.Raw(whyUsCard4Desc)</p>
+                        }
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</section>
+

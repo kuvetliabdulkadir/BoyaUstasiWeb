@@ -1,0 +1,82 @@
+﻿@using Microsoft.Extensions.Configuration
+@using boya_usta_web.Helpers
+@using boya_usta_web.Models.ViewModels
+@using System.Text.Json
+@inject IConfiguration Configuration
+@model ContactIndexViewModel
+@{
+    ViewData["Title"] = "İletişim";
+    var formModel = Model.FormModel ?? new ContactMessage();
+    var settings = Model.Settings;
+    var cities = Model.Cities;
+    var serviceTypes = Model.ServiceTypes;
+    var cityDistrictsMap = Model.CityDistrictsMap;
+    var defaultCity = Model.DefaultCity;
+    var whatsapp = settings.GetSetting("WhatsApp", "+90 532 XXX XX XX");
+    var whatsappMessage = settings.GetSetting("WhatsAppDefaultMessage", "Merhaba, boya hizmeti hakkında bilgi almak istiyorum.");
+    var turnstileEnabled = Model.Captcha.Enabled;
+    var turnstileSiteKey = Model.Captcha.SiteKey;
+    var shouldShowCaptcha = Model.Captcha.ShouldShow;
+}
+
+@* Sayfa Başlığı *@
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content text-center">
+            <h1 class="fade-in">İletişim</h1>
+            <p class="fade-in">@Html.Raw(Model.PageHeaderSubtitle)</p>
+            <nav aria-label="breadcrumb" class="fade-in">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item active">İletişim</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+@* İletişim Bölümü *@
+<section class="contact-section" id="contact-page"
+         data-city-districts-map='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(cityDistrictsMap))'
+         data-default-city='@Html.Raw(JsonSerializer.Serialize(defaultCity))'
+         data-preselected-service-type='@Html.Raw(JsonSerializer.Serialize<string?>(Model.PreselectedServiceType))'
+         data-preselected-district='@Html.Raw(Model?.FormModel != null && !string.IsNullOrEmpty(Model.FormModel.District) ? JsonSerializer.Serialize(Model.FormModel.District) : JsonSerializer.Serialize<string?>(null))'
+         data-turnstile-site-key='@(shouldShowCaptcha && !string.IsNullOrEmpty(turnstileSiteKey) ? turnstileSiteKey : "")'
+         data-should-show-captcha='@(shouldShowCaptcha && !string.IsNullOrEmpty(turnstileSiteKey) ? "true" : "false")'>
+    <div class="container">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-circle-fill me-2"></i>@TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="row g-5">
+            @await Html.PartialAsync("_ContactForm", Model)
+            @await Html.PartialAsync("_ContactInfo")
+        </div>
+    </div>
+</section>
+
+@await Html.PartialAsync("_ContactMap")
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/contact.css" asp-append-version="true" />
+}
+
+@section Scripts 
+{
+    @if (shouldShowCaptcha && !string.IsNullOrEmpty(turnstileSiteKey))
+    {
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback" async defer></script>
+    }
+    <script src="~/js/contact.js" asp-append-version="true" defer></script>
+}

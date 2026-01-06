@@ -1,0 +1,139 @@
+﻿@model Statistic
+@{
+    ViewData["Title"] = "Yeni İstatistik";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Yeni İstatistik</h2>
+        <a class="btn btn-outline-primary" href="@ViewBag.AdminPath/istatistikler">
+            <i class="bi bi-arrow-left me-2"></i>Geri
+        </a>
+    </div>
+    <div class="admin-card-body">
+        <form method="post" action="@ViewBag.AdminPath/istatistikler/ekle">
+            @Html.AntiForgeryToken()
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Başlık</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Değer</label>
+                    <input asp-for="Value" class="form-control" />
+                    <span asp-validation-for="Value" class="text-danger small"></span>
+                    <div class="form-text">Metin istatistiği için Değer boş bırakıp Ek (Suffix) alanına yazabilirsiniz (örn: Bursa).</div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Ek (Suffix)</label>
+                    <input asp-for="Suffix" class="form-control" placeholder="+, %, Yıl..." />
+                    <span asp-validation-for="Suffix" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">İkon</label>
+                    <div class="row g-2 align-items-end">
+                        <div class="col-8">
+                            <select asp-for="IconClass" class="form-select icon-select" id="statisticIconSelect" data-initial-value="" data-preview-id="statisticIconPreview">
+                                <partial name="_IconSelectOptions" />
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <div class="border rounded d-flex align-items-center justify-content-center" style="height: 38px; background: #fff;">
+                                <i id="statisticIconPreview" class="bi bi-stars" style="font-size: 1.4rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-muted small mt-1">İkonu listeden seçin.</div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Sıra</label>
+                    <input asp-for="DisplayOrder" class="form-control" type="number" />
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="IsActive" />
+                        <label class="form-check-label" asp-for="IsActive">Aktif</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg me-2"></i>Kaydet
+                </button>
+                <a class="btn btn-outline-secondary" href="@ViewBag.AdminPath/istatistikler">İptal</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const select = document.getElementById('statisticIconSelect');
+            const preview = document.getElementById('statisticIconPreview');
+            if (!select || !preview)
+            {
+                return;
+            }
+
+            // Değeri al
+            let currentValue = select.getAttribute('data-initial-value') || select.value || '';
+            
+            // Trim
+            if (currentValue) {
+                currentValue = currentValue.trim();
+            }
+            
+            // Option kontrol
+            if (currentValue) {
+                const trimmedValue = currentValue;
+                const hasOption = Array.from(select.options).some(o => {
+                    const optValue = (o.value || '').trim();
+                    return optValue === trimmedValue;
+                });
+                
+                if (!hasOption) {
+                    // Özel değer
+                    const opt = document.createElement('option');
+                    opt.value = trimmedValue;
+                    opt.textContent = 'Mevcut (özel): ' + trimmedValue;
+                    opt.selected = true;
+                    select.insertBefore(opt, select.firstChild);
+                    currentValue = trimmedValue;
+                } else {
+                    // Normal değer
+                    select.value = trimmedValue;
+                    // Selected kaldır
+                    Array.from(select.options).forEach(o => o.selected = false);
+                    // Doğruyu seç
+                    const correctOption = Array.from(select.options).find(o => (o.value || '').trim() === trimmedValue);
+                    if (correctOption) {
+                        correctOption.selected = true;
+                    }
+                    currentValue = trimmedValue;
+                }
+            }
+
+            function apply(val) {
+                if (preview && val) {
+                    preview.className = val.trim() || 'bi bi-stars';
+                }
+            }
+
+            // Preview güncelle
+            apply(currentValue);
+            
+            // Değişiklik
+            select.addEventListener('change', function () {
+                apply(this.value);
+            });
+        });
+    </script>
+}
+
+

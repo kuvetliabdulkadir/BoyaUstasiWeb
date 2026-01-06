@@ -1,0 +1,101 @@
+@model boya_usta_web.Models.ViewModels.ContactSettingsVm
+
+<div class="col-12">
+    <label class="form-label">İl-İlçe Yönetimi</label>
+    <div class="card border">
+        <div class="card-body">
+            <div id="cityDistrictsManager">
+                @{
+                    var cityDistrictsMap = new Dictionary<string, List<string>>();
+                    var cityDistrictsMapJson = ViewBag.CityDistrictsMapJson as string ?? "";
+                    
+                    // Önce JSON'dan oku
+                    if (!string.IsNullOrWhiteSpace(cityDistrictsMapJson))
+                    {
+                        try
+                        {
+                            cityDistrictsMap = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, List<string>>>(cityDistrictsMapJson) 
+                                ?? new Dictionary<string, List<string>>();
+                        }
+                        catch
+                        {
+                            // JSON parse hatası durumunda eski sisteme dön
+                        }
+                    }
+                    
+                    // Eğer JSON yoksa veya boşsa eski sistemi kullan (geriye dönük uyumluluk)
+                    if (!cityDistrictsMap.Any() && !string.IsNullOrEmpty(Model.ServiceAreas) && !string.IsNullOrEmpty(Model.Cities))
+                    {
+                        var cities = Model.Cities.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                            .Select(c => c.Trim())
+                            .Where(c => !string.IsNullOrWhiteSpace(c));
+                        
+                        foreach (var city in cities)
+                        {
+                            if (city.Equals("Bursa", StringComparison.OrdinalIgnoreCase))
+                            {
+                                var districts = Model.ServiceAreas.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                    .Select(d => d.Trim())
+                                    .Where(d => !string.IsNullOrWhiteSpace(d))
+                                    .ToList();
+                                cityDistrictsMap[city] = districts;
+                            }
+                            else
+                            {
+                                cityDistrictsMap[city] = new List<string>();
+                            }
+                        }
+                    }
+                    
+                    // Eğer hala boşsa ve Cities varsa, boş ilçe listeleriyle oluştur
+                    if (!cityDistrictsMap.Any() && !string.IsNullOrEmpty(Model.Cities))
+                    {
+                        var cities = Model.Cities.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                            .Select(c => c.Trim())
+                            .Where(c => !string.IsNullOrWhiteSpace(c));
+                        
+                        foreach (var city in cities)
+                        {
+                            cityDistrictsMap[city] = new List<string>();
+                        }
+                    }
+                }
+                
+                @foreach (var city in cityDistrictsMap.Keys)
+                {
+                    <div class="city-district-group mb-3 p-3 border rounded" data-city="@city">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0">
+                                <i class="bi bi-geo-alt-fill text-primary me-2"></i>@city
+                            </h6>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeCityGroup('@city')">
+                                <i class="bi bi-trash"></i> İli Sil
+                            </button>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2 mb-2" id="districts_@city.Replace(" ", "_")">
+                            @foreach (var district in cityDistrictsMap[city])
+                            {
+                                <span class="badge bg-primary d-flex align-items-center gap-2" style="font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                                    <span>@district</span>
+                                    <button type="button" class="btn-close btn-close-white" style="font-size: 0.7rem;" onclick="removeDistrict('@city', '@district')" aria-label="Kaldır"></button>
+                                </span>
+                            }
+                        </div>
+                        <div class="input-group">
+                            <input type="text" class="form-control district-input" data-city="@city" placeholder="İlçe adı yazın ve Enter'a basın" />
+                            <button type="button" class="btn btn-outline-primary" onclick="addDistrict('@city')">
+                                <i class="bi bi-plus-lg"></i> İlçe Ekle
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <input type="hidden" id="cityDistrictsMapJson" name="CityDistrictsMapJson" />
+            <div class="text-muted small mt-2">
+                <i class="bi bi-info-circle me-1"></i>
+                Her il için ilçe ekleyebilirsiniz. İl silmek için "İli Sil" butonuna tıklayın. 
+                İlçe silmek için ilçe tag'ı üzerindeki X'e tıklayın.
+            </div>
+        </div>
+    </div>
+</div>

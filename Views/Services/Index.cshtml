@@ -1,0 +1,113 @@
+﻿@model List<Service>
+@{
+    ViewData["Title"] = "Hizmetlerimiz";
+}
+
+@* Sayfa Başlığı *@
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content text-center">
+            <h1 class="fade-in">Hizmetlerimiz</h1>
+            <p class="fade-in">@Html.Raw(ViewBag.ServicesPageHeaderSubtitle)</p>
+            <nav aria-label="breadcrumb" class="fade-in">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item active">Hizmetler</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+@* Hizmetler Listesi *@
+<section class="services-page-section">
+    <div class="container">
+        <div class="row g-4 stagger-container">
+            @foreach (var service in Model)
+            {
+                <div class="col-md-6">
+                    <div class="service-detail-card fade-in hover-lift">
+                        @if (!string.IsNullOrEmpty(service.ImagePath))
+                        {
+                            @* Resim Varsa *@
+                            <h2>@Html.Raw(service.Title)</h2>
+                            <div class="service-image mb-3">
+                                <img src="@service.ImagePath" alt="@Html.Raw(service.Title)" class="img-fluid rounded" style="max-height: 200px; width: 100%; object-fit: cover;" />
+                            </div>
+                        }
+                        else
+                        {
+                            @* İkon Varsa *@
+                            <div class="service-icon-large">
+                                @{
+                                    var randomIcons = new[] { 
+                                        "fas fa-paint-roller", "fas fa-paint-brush", "fas fa-spray-can",
+                                        "bi bi-brush-fill", "bi bi-palette-fill", "bi bi-bucket-fill",
+                                        "bi bi-paint-bucket", "fas fa-hammer", "fas fa-tools",
+                                        "bi bi-tools", "fas fa-hard-hat", "bi bi-award"
+                                    };
+                                    var iconToShow = !string.IsNullOrEmpty(service.IconClass) 
+                                        ? service.IconClass 
+                                        : randomIcons[service.Id % randomIcons.Length];
+                                }
+                                <i class="@iconToShow"></i>
+                            </div>
+                        }
+
+                        <div class="service-detail-content">
+                            @if (string.IsNullOrEmpty(service.ImagePath))
+                            {
+                                <h2>@Html.Raw(service.Title)</h2>
+                            }
+                            <p class="service-short-desc">@Html.Raw(service.ShortDescription)</p>
+                            @if (service.Details != null && service.Details.Any())
+                            {
+                                <ul class="service-features">
+                                    @foreach (var detail in service.Details.OrderBy(d => d.DisplayOrder))
+                                    {
+                                        <li><i class="bi bi-check2-circle"></i> @Html.Raw(detail.DetailText)</li>
+                                    }
+                                </ul>
+                            }
+                            <div class="service-price-large">
+                                <span class="price-label">Fiyat:</span>
+                                <span class="price-value">@Html.Raw(service.PriceInfo)</span>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a asp-route="service-detail" asp-route-slug="@service.Slug" class="btn btn-outline-primary">
+                                    <i class="bi bi-info-circle me-2"></i>Detay
+                                </a>
+                                <a asp-controller="Contact" asp-action="Index" asp-route-serviceType="@service.Title" class="btn btn-primary">
+                                    <i class="bi bi-calendar-check me-2"></i>Teklif Al
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@* Çağrı (CTA) Bölümü *@
+<section class="services-cta-section">
+    <div class="container">
+        <div class="services-cta-wrapper fade-in">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h2>Hangi hizmete ihtiyacınız var?</h2>
+                    <p>Bilgi almak için iletişime geçin.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a asp-controller="Contact" asp-action="Index" class="btn btn-secondary btn-lg">
+                        <i class="bi bi-whatsapp me-2"></i>WhatsApp'tan Yaz
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/services.css" asp-append-version="true" />
+}

@@ -1,0 +1,1054 @@
+@model boya_usta_web.Models.ViewModels.AboutSettingsVm
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.icon-select').forEach(function(select) {
+            const previewId = select.getAttribute('data-preview-id');
+            const preview = document.getElementById(previewId);
+            if (!preview)
+            {
+                return;
+            }
+
+            // asp-for ile set edilmiş değeri al - önce data-initial-value'dan, sonra select.value'dan
+            let currentValue = select.getAttribute('data-initial-value') || select.value || '';
+            
+            // Trim yap
+            if (currentValue) {
+                currentValue = currentValue.trim();
+            }
+            
+            // Eğer değer boş değilse ve select'te bu option yoksa, ekle
+            if (currentValue) {
+                const trimmedValue = currentValue;
+                const hasOption = Array.from(select.options).some(o => {
+                    const optValue = (o.value || '').trim();
+                    return optValue === trimmedValue;
+                });
+                
+                if (!hasOption) {
+                    // Özel değer - select'e ekle ve seç
+                    const opt = document.createElement('option');
+                    opt.value = trimmedValue;
+                    opt.textContent = 'Mevcut (özel): ' + trimmedValue;
+                    opt.selected = true;
+                    select.insertBefore(opt, select.firstChild);
+                    currentValue = trimmedValue;
+                } else {
+                    // Normal değer - sadece seç
+                    select.value = trimmedValue;
+                    // Tüm option'ların selected attribute'unu kaldır
+                    Array.from(select.options).forEach(o => o.selected = false);
+                    // Doğru option'ı seç
+                    const correctOption = Array.from(select.options).find(o => (o.value || '').trim() === trimmedValue);
+                    if (correctOption) {
+                        correctOption.selected = true;
+                    }
+                    currentValue = trimmedValue;
+                }
+            }
+
+            function apply(val) {
+                if (preview && val) {
+                    preview.className = val.trim() || 'bi bi-check2-circle';
+                }
+            }
+
+            // İlk yüklemede preview'ı güncelle
+            apply(currentValue);
+            
+            // Değişiklik olduğunda preview'ı güncelle
+            select.addEventListener('change', function () {
+                apply(this.value);
+            });
+        });
+
+        // AboutText2 için validation'ı devre dışı bırak (Opsiyonel alan)
+        const aboutText2Field = document.querySelector('textarea[name="AboutText2"]');
+        if (aboutText2Field) {
+            // HTML5 validation'ı devre dışı bırak
+            aboutText2Field.removeAttribute('required');
+            aboutText2Field.setAttribute('data-val', 'false');
+            aboutText2Field.setAttribute('data-val-required', 'false');
+            
+            // jQuery Validation varsa kuralı kaldır
+            if (typeof jQuery !== 'undefined' && jQuery.validator) {
+                const form = aboutText2Field.closest('form');
+                if (form) {
+                    jQuery(form).validate();
+                    jQuery(aboutText2Field).rules('remove', 'required');
+                }
+            }
+        }
+
+        // Özellik metinleri için validation'ı devre dışı bırak
+        document.querySelectorAll('.feature-input').forEach(input => {
+            input.removeAttribute('required');
+            input.setAttribute('data-val', 'false');
+            input.setAttribute('data-val-required', 'false');
+            
+            if (typeof jQuery !== 'undefined' && jQuery.validator) {
+                const form = input.closest('form');
+                if (form) {
+                    jQuery(form).validate();
+                    jQuery(input).rules('remove', 'required');
+                }
+            }
+        });
+    })();
+
+    // Index değişkenlerini başlat - window objesine ekle (global erişim için)
+    window.featureIndex = @(Model.Features?.Count ?? 0);
+    window.valueIndex = @(Model.Values?.Count ?? 0);
+
+    // Yeni özellik ekle
+    function addFeature() {
+        try {
+            const container = document.getElementById('featuresContainer');
+            if (!container) {
+                console.error('featuresContainer bulunamadı');
+                alert('Özellikler bölümü bulunamadı. Sayfayı yenileyin.');
+                return;
+            }
+            
+            // Mevcut kart sayısını sayarak index hesapla (daha güvenli)
+            const existingCards = container.querySelectorAll('.feature-card');
+            const index = existingCards.length;
+            
+            // Global index'i güncelle
+            if (typeof window.featureIndex === 'undefined') {
+                window.featureIndex = index;
+            }
+            window.featureIndex = Math.max(window.featureIndex, index);
+            
+            const featureId = 'feature-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            
+            // İkon listesini hidden div'den al
+            const iconTemplate = document.getElementById('iconSelectOptionsTemplate');
+            const iconSelectHTML = iconTemplate ? iconTemplate.querySelector('select').innerHTML : '';
+            
+            const featureCard = `
+                <div class="feature-card card border mb-3" data-feature-id="${featureId}">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 text-primary">Özellik ${index + 1}</h6>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteFeature('${featureId}', this)">
+                            <i class="bi bi-trash"></i> Sil
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label">Metin</label>
+                                <input type="text" name="Features[${index}].Text" class="form-control feature-text-input" placeholder="Örn: Premium kalite boya markaları" />
+                                <input type="hidden" name="Features[${index}].Id" value="${featureId}" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">İkon</label>
+                                <div class="row g-2 align-items-end">
+                                    <div class="col-8">
+                                        <select name="Features[${index}].Icon" class="form-select icon-select" data-preview-id="preview-${featureId}" data-initial-value="bi bi-check2-circle">
+                                            ${iconSelectHTML}
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="border rounded d-flex align-items-center justify-content-center" style="height: 38px; background: #fff;">
+                                            <i id="preview-${featureId}" class="bi bi-check2-circle" style="font-size: 1.4rem;"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="Features[${index}].IsActive" value="true" class="feature-active-hidden" />
+                                    <input type="checkbox" class="form-check-input feature-active-checkbox" checked id="featureActive-${featureId}" onchange="updateFeatureActive(this, '${index}')" />
+                                    <label class="form-check-label" for="featureActive-${featureId}">Aktif</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', featureCard);
+            
+            // Yeni eklenen ikon select için preview ekle
+            const newSelect = container.querySelector(`select[data-preview-id="preview-${featureId}"]`);
+            if (newSelect) {
+                setupIconPreview(newSelect);
+            }
+            
+            // Sayfayı yeni eklenen karta kaydır
+            const newCard = container.querySelector(`[data-feature-id="${featureId}"]`);
+            if (newCard) {
+                newCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                setTimeout(() => {
+                    const textInput = newCard.querySelector('.feature-text-input');
+                    if (textInput)
+                    {
+                        textInput.focus();
+                    }
+                }, 100);
+            }
+        } catch (error) {
+            console.error('Özellik ekleme hatası:', error);
+            alert('Özellik eklenirken bir hata oluştu: ' + error.message);
+        }
+    }
+
+    // Özellik silme fonksiyonu
+    function deleteFeature(featureId, button) {
+        if (!confirm('Bu özelliği silmek istediğinize emin misiniz?')) {
+            return;
+        }
+        
+        const card = button.closest('.feature-card');
+        if (!card)
+        {
+            return;
+        }
+        
+        // Eğer geçici bir ID ise (henüz kaydedilmemiş), sadece DOM'dan kaldır
+        // Geçici ID'ler "feature-1234567890-xyz" formatında olur
+        if (featureId.startsWith('feature-')) {
+            card.style.transition = 'opacity 0.3s';
+            card.style.opacity = '0';
+            setTimeout(() => {
+                card.remove();
+                updateFeatureNumbers();
+                reindexFeatures();
+            }, 300);
+            return;
+        }
+        
+        // API çağrısı yap
+        fetch('@ViewBag.AdminPath/ayarlar/hakkimizda/ozellik-sil', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+            },
+            body: JSON.stringify(featureId)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                card.style.transition = 'opacity 0.3s';
+                card.style.opacity = '0';
+                setTimeout(() => {
+                    card.remove();
+                    updateFeatureNumbers();
+                    reindexFeatures();
+                }, 300);
+            } else {
+                alert('Özellik silinirken bir hata oluştu.');
+            }
+        })
+        .catch(error => {
+            console.error('Hata:', error);
+            alert('Özellik silinirken bir hata oluştu.');
+        });
+    }
+
+    // Özellik numaralarını güncelle
+    function updateFeatureNumbers() {
+        const cards = document.querySelectorAll('.feature-card');
+        cards.forEach((card, index) => {
+            const header = card.querySelector('.card-header h6');
+            if (header) {
+                header.textContent = `Özellik ${index + 1}`;
+            }
+        });
+    }
+
+    // Checkbox değiştiğinde hidden input'u güncelle
+    function updateFeatureActive(checkbox, index) {
+        const card = checkbox.closest('.feature-card');
+        const hiddenInput = card.querySelector('input.feature-active-hidden');
+        if (hiddenInput) {
+            hiddenInput.value = checkbox.checked ? 'true' : 'false';
+            hiddenInput.name = `Features[${index}].IsActive`;
+        }
+    }
+
+    // Form submit edilmeden önce index'leri yeniden düzenle
+    function reindexFeatures() {
+        const cards = document.querySelectorAll('.feature-card');
+        cards.forEach((card, index) => {
+            // Input name'lerini güncelle
+            const textInput = card.querySelector('input[name*=".Text"]');
+            const idInput = card.querySelector('input[name*=".Id"]');
+            const iconSelect = card.querySelector('select[name*=".Icon"]');
+            const activeCheckbox = card.querySelector('input.feature-active-checkbox');
+            const activeHidden = card.querySelector('input.feature-active-hidden');
+            
+            if (textInput)
+            {
+                textInput.name = `Features[${index}].Text`;
+            }
+            if (idInput) {
+                const featureId = idInput.value || `feature-${index}`;
+                idInput.name = `Features[${index}].Id`;
+                
+                if (iconSelect) {
+                    iconSelect.name = `Features[${index}].Icon`;
+                    // Icon value'yu trim yap ve set et - önemli: value boş değilse ve geçerli bir ikon class'ı ise
+                    if (iconSelect.value) {
+                        const trimmedValue = iconSelect.value.trim();
+                        // Eğer value geçerli bir ikon class'ı ise (bi- veya fas- ile başlıyorsa) set et
+                        if (trimmedValue && (trimmedValue.startsWith('bi ') || trimmedValue.startsWith('fas ') || trimmedValue.startsWith('bi bi-') || trimmedValue.startsWith('fas fa-'))) {
+                            iconSelect.value = trimmedValue;
+                        } else {
+                            // Eğer geçerli bir ikon class'ı değilse, mevcut değeri koru veya ilk option'ı seç
+                            const currentValue = iconSelect.getAttribute('data-initial-value') || '';
+                            if (currentValue && currentValue.trim()) {
+                                iconSelect.value = currentValue.trim();
+                            } else if (iconSelect.options.length > 0) {
+                                iconSelect.value = iconSelect.options[0].value;
+                            }
+                        }
+                    }
+                    const previewId = iconSelect.getAttribute('data-preview-id');
+                    if (previewId) {
+                        iconSelect.setAttribute('data-preview-id', `preview-${featureId}`);
+                        const preview = document.getElementById(previewId);
+                        if (preview)
+                        {
+                            preview.id = `preview-${featureId}`;
+                        }
+                    }
+                }
+                
+                if (activeCheckbox) {
+                    activeCheckbox.id = `featureActive-${featureId}`;
+                    activeCheckbox.setAttribute('onchange', `updateFeatureActive(this, '${index}')`);
+                    const label = card.querySelector('label[for*="featureActive"]');
+                    if (label)
+                    {
+                        label.setAttribute('for', activeCheckbox.id);
+                    }
+                }
+                
+                if (activeHidden) {
+                    activeHidden.name = `Features[${index}].IsActive`;
+                    // Hidden input'un değerini checkbox durumuna göre güncelle
+                    if (activeCheckbox) {
+                        activeHidden.value = activeCheckbox.checked ? 'true' : 'false';
+                    }
+                }
+            }
+        });
+    }
+
+    // Form submit edilmeden önce index'leri düzenle
+    document.querySelector('form').addEventListener('submit', function(e) {
+        reindexFeatures();
+    });
+
+    // İkon preview kurulumu
+    function setupIconPreview(select) {
+        const previewId = select.getAttribute('data-preview-id');
+        const preview = document.getElementById(previewId);
+        if (!preview)
+        {
+            return;
+        }
+
+        // Değer kartları için resim kontrolü (value-preview ile başlayan ID'ler)
+        const isValueCard = previewId && previewId.startsWith('value-preview-');
+        let imagePreview = null;
+        let imagePathInput = null;
+        
+        if (isValueCard) {
+            const valueId = previewId.replace('value-preview-', '');
+            imagePreview = document.getElementById(`value-image-preview-${valueId}`);
+            imagePathInput = document.getElementById(`value-image-path-${valueId}`);
+        }
+
+        // asp-for ile set edilmiş değeri al - önce data-initial-value'dan, sonra select.value'dan
+        let currentValue = select.getAttribute('data-initial-value') || select.value || '';
+        
+        // Trim yap
+        if (currentValue) {
+            currentValue = currentValue.trim();
+        }
+        
+        // Eğer değer boş değilse ve select'te bu option yoksa, ekle
+        if (currentValue) {
+            const trimmedValue = currentValue;
+            const hasOption = Array.from(select.options).some(o => {
+                const optValue = (o.value || '').trim();
+                return optValue === trimmedValue;
+            });
+            
+            if (!hasOption) {
+                // Özel değer - select'e ekle ve seç
+                const opt = document.createElement('option');
+                opt.value = trimmedValue;
+                opt.textContent = 'Mevcut (özel): ' + trimmedValue;
+                opt.selected = true;
+                select.insertBefore(opt, select.firstChild);
+                currentValue = trimmedValue;
+            } else {
+                // Normal değer - sadece seç
+                select.value = trimmedValue;
+                // Tüm option'ların selected attribute'unu kaldır
+                Array.from(select.options).forEach(o => o.selected = false);
+                // Doğru option'ı seç
+                const correctOption = Array.from(select.options).find(o => (o.value || '').trim() === trimmedValue);
+                if (correctOption) {
+                    correctOption.selected = true;
+                }
+                currentValue = trimmedValue;
+            }
+        }
+
+        function apply(val) {
+            if (!val)
+            {
+                return;
+            }
+            
+            const trimmedVal = val.trim();
+            if (!trimmedVal)
+            {
+                return;
+            }
+            
+            // Değer kartları için resim kontrolü
+            if (isValueCard && imagePathInput && imagePreview) {
+                const hasImage = imagePathInput.value && imagePathInput.value.trim() !== '';
+                
+                if (hasImage) {
+                    // Resim varsa ikonu gizle
+                    if (preview)
+                    {
+                        preview.style.display = 'none';
+                    }
+                    if (imagePreview)
+                    {
+                        imagePreview.style.display = 'block';
+                    }
+                } else {
+                    // Resim yoksa ikonu göster
+                    if (preview) {
+                        preview.className = trimmedVal;
+                        preview.style.display = 'block';
+                    }
+                    if (imagePreview) imagePreview.style.display = 'none';
+                }
+            } else {
+                // Normal ikon preview (Hikayemiz bölümü gibi)
+                if (preview) {
+                    preview.className = trimmedVal || 'bi bi-check2-circle';
+                }
+            }
+        }
+
+        // İlk yüklemede preview'ı güncelle
+        apply(currentValue);
+        
+        // Değişiklik olduğunda preview'ı güncelle
+        select.addEventListener('change', function() {
+            const newValue = this.value ? this.value.trim() : '';
+            if (newValue) {
+                apply(newValue);
+                // data-initial-value'yu güncelle (sayfa yenilendiğinde doğru değer gelsin)
+                select.setAttribute('data-initial-value', newValue);
+            }
+        });
+    }
+
+    // Sayfa yüklendiğinde tüm ikon select'leri için preview kur
+    document.querySelectorAll('.icon-select').forEach(setupIconPreview);
+
+    // Sayfa yüklendiğinde mevcut checkbox'lar için event listener ekle
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.feature-active-checkbox').forEach(function(checkbox) {
+            const card = checkbox.closest('.feature-card');
+            const hiddenInput = card.querySelector('input.feature-active-hidden');
+            if (hiddenInput) {
+                const indexMatch = hiddenInput.name.match(/Features\[(\d+)\]/);
+                if (indexMatch) {
+                    checkbox.setAttribute('onchange', `updateFeatureActive(this, '${indexMatch[1]}')`);
+                }
+            }
+        });
+        
+        // Değerler için checkbox'lar
+        document.querySelectorAll('.value-active-checkbox').forEach(function(checkbox) {
+            const card = checkbox.closest('.value-card');
+            const hiddenInput = card.querySelector('input.value-active-hidden');
+            if (hiddenInput) {
+                const indexMatch = hiddenInput.name.match(/Values\[(\d+)\]/);
+                if (indexMatch) {
+                    checkbox.setAttribute('onchange', `updateValueActive(this, '${indexMatch[1]}')`);
+                }
+            }
+        });
+        
+        // Değer ikon select'leri için preview kur (artık icon-select class'ı kullanılıyor, setupIconPreview otomatik çalışacak)
+        
+        // Hikayemiz bölümü ikon select için preview kur
+        const aboutImageIconSelect = document.querySelector('select[data-preview-id="about-image-preview"]');
+        if (aboutImageIconSelect) {
+            setupIconPreview(aboutImageIconSelect);
+        }
+    });
+
+    // ========== DEĞERLER BÖLÜMÜ FONKSİYONLARI ==========
+    
+    // Yeni değer ekle
+    function addValue() {
+        try {
+            const container = document.getElementById('valuesContainer');
+            if (!container) {
+                console.error('valuesContainer bulunamadı');
+                alert('Değerler bölümü bulunamadı. Sayfayı yenileyin.');
+                return;
+            }
+            
+            // Mevcut kart sayısını sayarak index hesapla (daha güvenli)
+            const existingCards = container.querySelectorAll('.value-card');
+            const index = existingCards.length;
+            
+            // Global index'i güncelle
+            if (typeof window.valueIndex === 'undefined') {
+                window.valueIndex = index;
+            }
+            window.valueIndex = Math.max(window.valueIndex, index);
+            
+            const valueId = 'value-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            
+            // İkon listesini hidden div'den al
+            const iconTemplate = document.getElementById('iconSelectOptionsTemplate');
+            const iconSelectHTML = iconTemplate ? iconTemplate.querySelector('select').innerHTML : '';
+            
+            const valueCard = `
+                <div class="value-card card border mb-3" data-value-id="${valueId}">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 text-primary">Değer ${index + 1}</h6>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteValue('${valueId}', this)">
+                            <i class="bi bi-trash"></i> Sil
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label">Başlık <span class="text-danger">*</span></label>
+                                <input type="text" name="Values[${index}].Title" class="form-control value-title-input" placeholder="Örn: Müşteri Memnuniyeti" required />
+                                <input type="hidden" name="Values[${index}].Id" value="${valueId}" />
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Açıklama</label>
+                                <textarea name="Values[${index}].Description" class="form-control value-description-input" rows="3" placeholder="Değer kartının açıklama metni"></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">İkon / Resim</label>
+                                <div class="row g-2 align-items-end">
+                                    <div class="col-8">
+                                        <select name="Values[${index}].Icon" class="form-select icon-select" data-preview-id="value-preview-${valueId}" data-initial-value="bi bi-heart-fill">
+                                            ${iconSelectHTML}
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="border rounded d-flex align-items-center justify-content-center" style="height: 38px; background: #fff; position: relative;" id="value-preview-container-${valueId}">
+                                            <img src="" alt="Resim" id="value-image-preview-${valueId}" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none;" />
+                                            <i id="value-preview-${valueId}" class="bi bi-heart-fill" style="font-size: 1.4rem; display: block;"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label">Resim Yükle</label>
+                                <input type="file" name="Values[${index}].Image" class="form-control value-image-input" accept="image/*" data-value-id="${valueId}" onchange="handleValueImageChange(this, '${valueId}')" />
+                                <div class="text-muted small mt-1">Resim yüklerseniz ikon yerine resim gösterilir. Resim yoksa ikon kullanılır.</div>
+                                <div class="mt-2 value-image-remove-btn" style="display: none;">
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="removeValueImage('${valueId}')">
+                                        <i class="bi bi-trash me-1"></i>Resmi Kaldır
+                                    </button>
+                                </div>
+                                <input type="hidden" name="Values[${index}].ImagePath" value="" id="value-image-path-${valueId}" />
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="Values[${index}].IsActive" value="true" class="value-active-hidden" />
+                                    <input type="checkbox" class="form-check-input value-active-checkbox" checked id="valueActive-${valueId}" onchange="updateValueActive(this, '${index}')" />
+                                    <label class="form-check-label" for="valueActive-${valueId}">Aktif</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', valueCard);
+            updateValueNumbers();
+            
+            // Yeni eklenen ikon select için preview kur
+            setTimeout(() => {
+                const newSelect = container.querySelector(`select[data-preview-id="value-preview-${valueId}"]`);
+                if (newSelect) {
+                    setupIconPreview(newSelect);
+                }
+            }, 100);
+            
+            // Sayfayı yeni eklenen karta kaydır
+            const newCard = container.querySelector(`[data-value-id="${valueId}"]`);
+            if (newCard) {
+                newCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                setTimeout(() => {
+                    const titleInput = newCard.querySelector('.value-title-input');
+                    if (titleInput)
+                    {
+                        titleInput.focus();
+                    }
+                }, 100);
+            }
+        } catch (error) {
+            console.error('Değer ekleme hatası:', error);
+            alert('Değer eklenirken bir hata oluştu: ' + error.message);
+        }
+    }
+
+    // Değer sil
+    async function deleteValue(valueId, button) {
+        if (!confirm('Bu değeri silmek istediğinize emin misiniz?')) {
+            return;
+        }
+        
+        const card = button.closest('.value-card');
+        if (!card) {
+            showToast('Kart bulunamadı.', 'error');
+            return;
+        }
+        
+        // Eğer geçici bir ID ise (henüz kaydedilmemiş), sadece DOM'dan kaldır
+        // Geçici ID'ler "value-1234567890-xyz" formatında olur
+        if (valueId.startsWith('value-')) {
+            card.style.transition = 'opacity 0.3s';
+            card.style.opacity = '0';
+            setTimeout(() => {
+                card.remove();
+                updateValueNumbers();
+                reindexValues();
+                showToast('Değer kaldırıldı.', 'success');
+            }, 300);
+            return;
+        }
+        
+        // API çağrısı yap
+        try {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            if (!token) {
+                showToast('Güvenlik token\'ı bulunamadı. Sayfayı yenileyin.', 'error');
+                return;
+            }
+            
+            // Anti-forgery token için form data oluştur
+            const formData = new FormData();
+            formData.append('__RequestVerificationToken', token);
+            formData.append('valueId', valueId);
+            
+            const response = await fetch('@ViewBag.AdminPath/ayarlar/hakkimizda/deger-sil', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': token,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('API Hatası:', response.status, errorText);
+                showToast('Değer silinirken bir hata oluştu: ' + response.status, 'error');
+                return;
+            }
+            
+            const data = await response.json();
+            if (data.success) {
+                card.style.transition = 'opacity 0.3s';
+                card.style.opacity = '0';
+                setTimeout(() => {
+                    card.remove();
+                    updateValueNumbers();
+                    reindexValues();
+                    showToast('Değer başarıyla silindi.', 'success');
+                }, 300);
+            } else {
+                showToast('Değer silinirken bir hata oluştu.', 'error');
+            }
+        } catch (error) {
+            console.error('Hata:', error);
+            showToast('Değer silinirken bir hata oluştu: ' + error.message, 'error');
+        }
+    }
+
+    // Değer numaralarını güncelle
+    function updateValueNumbers() {
+        const cards = document.querySelectorAll('.value-card');
+        cards.forEach((card, index) => {
+            const header = card.querySelector('.card-header h6');
+            if (header) {
+                header.textContent = `Değer ${index + 1}`;
+            }
+        });
+    }
+
+    // Checkbox değiştiğinde hidden input'u güncelle
+    function updateValueActive(checkbox, index) {
+        const card = checkbox.closest('.value-card');
+        const hiddenInput = card.querySelector('input.value-active-hidden');
+        if (hiddenInput) {
+            hiddenInput.value = checkbox.checked ? 'true' : 'false';
+            hiddenInput.name = `Values[${index}].IsActive`;
+        }
+    }
+
+    // Form submit edilmeden önce index'leri yeniden düzenle
+    function reindexValues() {
+        const cards = document.querySelectorAll('.value-card');
+        cards.forEach((card, index) => {
+            const titleInput = card.querySelector('input.value-title-input');
+            const idInput = card.querySelector('input[name*=".Id"]');
+            const descriptionInput = card.querySelector('textarea.value-description-input');
+            const iconSelect = card.querySelector('select.icon-select');
+            const imageInput = card.querySelector('input.value-image-input');
+            const imagePathInput = card.querySelector('input[name*=".ImagePath"]');
+            const activeCheckbox = card.querySelector('input.value-active-checkbox');
+            const activeHidden = card.querySelector('input.value-active-hidden');
+            
+            if (titleInput)
+            {
+                titleInput.name = `Values[${index}].Title`;
+            }
+            if (descriptionInput)
+            {
+                descriptionInput.name = `Values[${index}].Description`;
+            }
+            if (imageInput)
+            {
+                imageInput.name = `Values[${index}].Image`;
+            }
+            if (imagePathInput)
+            {
+                imagePathInput.name = `Values[${index}].ImagePath`;
+            }
+            
+            if (idInput) {
+                const valueId = idInput.value || `value-${index}`;
+                idInput.name = `Values[${index}].Id`;
+                
+                if (iconSelect) {
+                    iconSelect.name = `Values[${index}].Icon`;
+                    // İkon value'sunu koru (reindex sırasında kaybolmasın)
+                    const currentIconValue = (iconSelect.value || iconSelect.getAttribute('data-initial-value') || '').trim();
+                    const previewId = iconSelect.getAttribute('data-preview-id');
+                    if (previewId) {
+                        iconSelect.setAttribute('data-preview-id', `value-preview-${valueId}`);
+                        // data-initial-value'yu güncelle (mevcut değeri koru)
+                        if (currentIconValue) {
+                            iconSelect.setAttribute('data-initial-value', currentIconValue);
+                        }
+                        const preview = document.getElementById(previewId);
+                        if (preview) {
+                            preview.id = `value-preview-${valueId}`;
+                        }
+                        // Preview container ve image preview ID'lerini güncelle
+                        const previewContainer = card.querySelector(`#value-preview-container-${previewId.split('-').pop()}`);
+                        if (previewContainer) {
+                            previewContainer.id = `value-preview-container-${valueId}`;
+                        }
+                        const imagePreview = card.querySelector(`#value-image-preview-${previewId.split('-').pop()}`);
+                        if (imagePreview) {
+                            imagePreview.id = `value-image-preview-${valueId}`;
+                        }
+                    }
+                }
+                
+                if (imageInput) {
+                    imageInput.setAttribute('data-value-id', valueId);
+                    imageInput.setAttribute('onchange', `handleValueImageChange(this, '${valueId}')`);
+                }
+                
+                if (imagePathInput) {
+                    imagePathInput.id = `value-image-path-${valueId}`;
+                }
+                
+                if (activeCheckbox) {
+                    activeCheckbox.id = `valueActive-${valueId}`;
+                    activeCheckbox.setAttribute('onchange', `updateValueActive(this, '${index}')`);
+                    const label = card.querySelector('label[for*="valueActive"]');
+                    if (label)
+                    {
+                        label.setAttribute('for', activeCheckbox.id);
+                    }
+                }
+                
+                if (activeHidden) {
+                    activeHidden.name = `Values[${index}].IsActive`;
+                    if (activeCheckbox) {
+                        activeHidden.value = activeCheckbox.checked ? 'true' : 'false';
+                    }
+                }
+            }
+        });
+    }
+
+
+    // Değer resmi değiştiğinde (Hikayemiz bölümü gibi)
+    function handleValueImageChange(input, valueId) {
+        const file = input.files[0];
+        const imagePreview = document.getElementById(`value-image-preview-${valueId}`);
+        const iconPreview = document.getElementById(`value-preview-${valueId}`);
+        const previewContainer = document.getElementById(`value-preview-container-${valueId}`);
+        const imagePathInput = document.getElementById(`value-image-path-${valueId}`);
+        const removeBtn = input.closest('.col-md-8')?.querySelector('.value-image-remove-btn');
+        
+        if (file && imagePreview && iconPreview && previewContainer) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+                iconPreview.style.display = 'none';
+                if (removeBtn)
+                {
+                    removeBtn.style.display = 'block';
+                }
+                // ImagePath input'unu güncelle (geçici olarak)
+                if (imagePathInput) {
+                    imagePathInput.value = e.target.result; // Geçici olarak data URL
+                }
+            };
+            reader.readAsDataURL(file);
+        } else if (!file && imagePreview && iconPreview && previewContainer) {
+            // Dosya seçilmediyse, eğer hidden input'ta resim yolu varsa onu göster
+            if (imagePathInput && imagePathInput.value && imagePathInput.value.trim() !== '') {
+                imagePreview.src = imagePathInput.value;
+                imagePreview.style.display = 'block';
+                iconPreview.style.display = 'none';
+                if (removeBtn)
+                {
+                    removeBtn.style.display = 'block';
+                }
+            } else {
+                imagePreview.style.display = 'none';
+                iconPreview.style.display = 'block';
+                if (removeBtn)
+                {
+                    removeBtn.style.display = 'none';
+                }
+            }
+        }
+    }
+    
+    // Değer resmini kaldır
+    async function removeValueImage(valueId) {
+        if (!confirm('Resmi kaldırmak istediğinize emin misiniz?')) {
+            return;
+        }
+        
+        try {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            const response = await fetch('@ViewBag.AdminPath/ayarlar/hakkimizda/deger-resim-kaldir', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token || ''
+                },
+                body: JSON.stringify(valueId)
+            });
+            
+            if (response.ok) {
+                const imagePreview = document.getElementById(`value-image-preview-${valueId}`);
+                const iconPreview = document.getElementById(`value-preview-${valueId}`);
+                const previewContainer = document.getElementById(`value-preview-container-${valueId}`);
+                const imagePathInput = document.getElementById(`value-image-path-${valueId}`);
+                const imageInput = document.querySelector(`input[data-value-id="${valueId}"]`);
+                const removeBtn = document.querySelector(`input[data-value-id="${valueId}"]`)?.closest('.col-md-8')?.querySelector('.value-image-remove-btn');
+                
+                if (imagePathInput)
+                {
+                    imagePathInput.value = '';
+                }
+                if (imageInput)
+                {
+                    imageInput.value = '';
+                }
+                if (imagePreview)
+                {
+                    imagePreview.style.display = 'none';
+                }
+                if (iconPreview)
+                {
+                    iconPreview.style.display = 'block';
+                }
+                if (removeBtn)
+                {
+                    removeBtn.style.display = 'none';
+                }
+                
+                showToast('Resim kaldırıldı.', 'success');
+            } else {
+                showToast('Resim kaldırılırken bir hata oluştu.', 'error');
+            }
+        } catch (error) {
+            console.error('Resim kaldırma hatası:', error);
+            showToast('Resim kaldırılırken bir hata oluştu.', 'error');
+        }
+    }
+
+    // Hikayemiz bölümü resim değiştiğinde
+    function handleAboutImageChange(input) {
+        const file = input.files[0];
+        const imagePreview = document.getElementById('about-image-preview-img');
+        const iconPreview = document.getElementById('about-image-preview');
+        const previewContainer = document.getElementById('about-image-preview-container');
+        
+        if (file && imagePreview && iconPreview && previewContainer) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+                iconPreview.style.display = 'none';
+                // Resim kaldır butonunu göster
+                const removeBtn = input.closest('.col-md-8')?.querySelector('.btn-danger');
+                if (removeBtn)
+                {
+                    removeBtn.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+        } else if (!file && imagePreview && iconPreview && previewContainer) {
+            // Dosya seçilmediyse, eğer hidden input'ta resim yolu varsa onu göster
+            const imagePathInput = document.getElementById('about-image-path-input');
+            if (imagePathInput && imagePathInput.value && imagePathInput.value.trim() !== '') {
+                imagePreview.src = imagePathInput.value;
+                imagePreview.style.display = 'block';
+                iconPreview.style.display = 'none';
+                const removeBtn = input.closest('.col-md-8')?.querySelector('.btn-danger');
+                if (removeBtn)
+                {
+                    removeBtn.style.display = 'block';
+                }
+            } else {
+                imagePreview.style.display = 'none';
+                iconPreview.style.display = 'block';
+                const removeBtn = input.closest('.col-md-8')?.querySelector('.btn-danger');
+                if (removeBtn)
+                {
+                    removeBtn.style.display = 'none';
+                }
+            }
+        }
+    }
+    
+    // Hikayemiz bölümü resmini kaldır
+    async function removeAboutImage() {
+        if (!confirm('Resmi kaldırmak istediğinize emin misiniz?')) {
+            return;
+        }
+        
+        try {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            const response = await fetch('@ViewBag.AdminPath/ayarlar/hakkimizda/about-resim-kaldir', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token || ''
+                },
+                body: JSON.stringify('about')
+            });
+            
+            if (response.ok) {
+                const imagePreview = document.getElementById('about-image-preview-img');
+                const iconPreview = document.getElementById('about-image-preview');
+                const imagePathInput = document.getElementById('about-image-path-input');
+                const imageInput = document.querySelector('input[name="AboutImage"]');
+                const removeBtn = document.querySelector('button[onclick="removeAboutImage()"]');
+                
+                if (imagePathInput)
+                {
+                    imagePathInput.value = '';
+                }
+                if (imageInput)
+                {
+                    imageInput.value = '';
+                }
+                if (imagePreview)
+                {
+                    imagePreview.style.display = 'none';
+                }
+                if (iconPreview)
+                {
+                    iconPreview.style.display = 'block';
+                }
+                if (removeBtn)
+                {
+                    removeBtn.style.display = 'none';
+                }
+                
+                showToast('Resim kaldırıldı.', 'success');
+            } else {
+                showToast('Resim kaldırılırken bir hata oluştu.', 'error');
+            }
+        } catch (error) {
+            console.error('Resim kaldırma hatası:', error);
+            showToast('Resim kaldırılırken bir hata oluştu.', 'error');
+        }
+    }
+
+    // Form submit edilmeden önce hem özellikleri hem değerleri yeniden indexle
+    document.querySelector('form').addEventListener('submit', function(e) {
+        // Önce reindex yap
+        reindexFeatures();
+        reindexValues();
+        
+        // Tüm icon-select'lerin value'larını kontrol et (değer kartları için)
+        document.querySelectorAll('.value-card select.icon-select').forEach(function(select) {
+            const currentValue = select.value ? select.value.trim() : '';
+            const dataInitialValue = (select.getAttribute('data-initial-value') || '').trim();
+            
+            // Hangi değeri kullanacağımızı belirle (data-initial-value öncelikli)
+            const valueToUse = dataInitialValue || currentValue;
+            
+            if (valueToUse) {
+                // Option'ı bul (case-insensitive)
+                let option = Array.from(select.options).find(o => {
+                    const optValue = (o.value || '').trim();
+                    return optValue === valueToUse;
+                });
+                
+                // Case-insensitive arama
+                if (!option) {
+                    option = Array.from(select.options).find(o => {
+                        const optValue = (o.value || '').trim();
+                        return optValue.toLowerCase() === valueToUse.toLowerCase();
+                    });
+                }
+                
+                if (option) {
+                    // Option bulundu, seçili yap
+                    Array.from(select.options).forEach(o => {
+                        o.selected = false;
+                        o.removeAttribute('selected');
+                    });
+                    option.selected = true;
+                    option.setAttribute('selected', 'selected');
+                    select.value = valueToUse;
+                    select.selectedIndex = Array.from(select.options).indexOf(option);
+                } else {
+                    // Option bulunamadı, özel değer olarak ekle
+                    const opt = document.createElement('option');
+                    opt.value = valueToUse;
+                    opt.textContent = 'Mevcut (özel): ' + valueToUse;
+                    opt.selected = true;
+                    opt.setAttribute('selected', 'selected');
+                    select.insertBefore(opt, select.firstChild);
+                    select.value = valueToUse;
+                    select.selectedIndex = 0;
+                }
+            }
+        });
+    });
+</script>

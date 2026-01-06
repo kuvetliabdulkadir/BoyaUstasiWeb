@@ -1,0 +1,82 @@
+﻿@model List<Faq>
+@{
+    ViewData["Title"] = "SSS";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Sıkça Sorulan Sorular</h2>
+        <a class="btn btn-primary" href="@ViewBag.AdminPath/sss/ekle">
+            <i class="bi bi-plus-lg me-2"></i>Yeni SSS
+        </a>
+    </div>
+    <div class="admin-card-body p-0">
+        @Html.AntiForgeryToken()
+        @if (Model.Any())
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Sıra</th>
+                        <th>Soru</th>
+                        <th>Sıra No</th>
+                        <th>Durum</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int faqIndex = 0; }
+                    @foreach (var f in Model)
+                    {
+                        var answer = f.Answer ?? "";
+                        <tr data-item-id="@f.Id" data-display-order="@f.DisplayOrder">
+                            <td>
+                                @{
+                                    ViewData["ItemId"] = f.Id;
+                                    ViewData["UpdateOrderUrl"] = $"{ViewBag.AdminPath}/sss/sira-guncelle";
+                                    ViewData["IsFirst"] = faqIndex == 0;
+                                    ViewData["IsLast"] = faqIndex == Model.Count - 1;
+                                }
+                                <partial name="_AdminTableSortButtons" view-data="ViewData" />
+                            </td>
+                            <td>
+                                <strong>@f.Question</strong>
+                                <div class="text-muted small">@((answer.Length > 120) ? answer.Substring(0, 120) + "..." : answer)</div>
+                            </td>
+                            <td>@f.DisplayOrder</td>
+                            <td>
+                                @{
+                                    ViewData["IsActive"] = f.IsActive;
+                                    ViewData["ItemId"] = f.Id;
+                                    ViewData["ToggleUrl"] = $"{ViewBag.AdminPath}/sss/aktif-pasif/{f.Id}";
+                                    ViewData["EntityName"] = "SSS";
+                                }
+                                <partial name="_AdminStatusBadge" view-data="ViewData" />
+                            </td>
+                            <td>
+                                @{
+                                    ViewData["EditUrl"] = $"{ViewBag.AdminPath}/sss/duzenle/{f.Id}";
+                                    ViewData["DeleteUrl"] = $"{ViewBag.AdminPath}/sss/sil/{f.Id}";
+                                    ViewData["EntityName"] = "SSS";
+                                }
+                                <partial name="_AdminTableRowActions" view-data="ViewData" />
+                            </td>
+                        </tr>
+                        faqIndex++;
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            {
+                ViewData["Icon"] = "bi-question-circle";
+                ViewData["Message"] = "Henüz SSS yok";
+            }
+            <partial name="_AdminEmptyState" view-data="ViewData" />
+        }
+    </div>
+</div>
+
+

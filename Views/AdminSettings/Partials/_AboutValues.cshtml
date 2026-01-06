@@ -1,0 +1,95 @@
+@model boya_usta_web.Models.ViewModels.AboutSettingsVm
+
+<div class="col-12">
+    <h5 class="border-bottom pb-2 mb-3 mt-4">Değerlerimiz / Neden Biz?</h5>
+</div>
+<div class="col-md-6">
+    <label asp-for="ValuesTitle" class="form-label">Başlık</label>
+    <input asp-for="ValuesTitle" class="form-control" placeholder="Neden Biz?" />
+    <span asp-validation-for="ValuesTitle" class="text-danger"></span>
+</div>
+<div class="col-md-6">
+    <label asp-for="ValuesSubtitle" class="form-label">Alt Başlık</label>
+    <input asp-for="ValuesSubtitle" class="form-control" placeholder="Değerlerimiz" />
+    <span asp-validation-for="ValuesSubtitle" class="text-danger"></span>
+</div>
+<div class="col-12">
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
+        <h5 class="mb-0 border-bottom pb-2 flex-grow-1">Değer Kartları</h5>
+        <button type="button" class="btn btn-success btn-sm ms-3" onclick="addValue()">
+            <i class="bi bi-plus-circle me-2"></i>Yeni Değer Ekle
+        </button>
+    </div>
+</div>
+<div id="valuesContainer" class="col-12">
+    @if (Model.Values != null && Model.Values.Any())
+    {
+        @for (int i = 0; i < Model.Values.Count; i++)
+        {
+            var value = Model.Values[i];
+            <div class="value-card card border mb-3" data-value-id="@value.Id">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 text-primary">Değer @(i + 1)</h6>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteValue('@value.Id', this)">
+                        <i class="bi bi-trash"></i> Sil
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Başlık <span class="text-danger">*</span></label>
+                            <input type="text" name="Values[@i].Title" value="@value.Title" class="form-control value-title-input" placeholder="Örn: Müşteri Memnuniyeti" required />
+                            <input type="hidden" name="Values[@i].Id" value="@value.Id" />
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Açıklama</label>
+                            <textarea name="Values[@i].Description" class="form-control value-description-input" rows="3" placeholder="Değer kartının açıklama metni">@value.Description</textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">İkon / Resim</label>
+                            <div class="row g-2 align-items-end">
+                                <div class="col-8">
+                                    <select name="Values[@i].Icon" class="form-select icon-select" data-preview-id="value-preview-@value.Id" data-initial-value="@(value.Icon ?? "bi bi-heart-fill")">
+                                        <partial name="_IconSelectOptions" />
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <div class="border rounded d-flex align-items-center justify-content-center" style="height: 38px; background: #fff; position: relative;" id="value-preview-container-@value.Id">
+                                        @if (!string.IsNullOrEmpty(value.ImagePath))
+                                        {
+                                            <img src="@value.ImagePath" alt="Resim" id="value-image-preview-@value.Id" style="max-width: 100%; max-height: 100%; object-fit: contain; display: block;" />
+                                            <i id="value-preview-@value.Id" class="@(value.Icon ?? "bi bi-heart-fill")" style="font-size: 1.4rem; display: none;"></i>
+                                        }
+                                        else
+                                        {
+                                            <img src="" alt="Resim" id="value-image-preview-@value.Id" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none;" />
+                                            <i id="value-preview-@value.Id" class="@(value.Icon ?? "bi bi-heart-fill")" style="font-size: 1.4rem; display: block;"></i>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label">Resim Yükle</label>
+                            <input type="file" name="Values[@i].Image" class="form-control value-image-input" accept="image/*" data-value-id="@value.Id" onchange="handleValueImageChange(this, '@value.Id')" />
+                            <div class="text-muted small mt-1">Resim yüklerseniz ikon yerine resim gösterilir. Resim yoksa ikon kullanılır.</div>
+                            <div class="mt-2 value-image-remove-btn" style="@(string.IsNullOrEmpty(value.ImagePath) ? "display: none;" : "")">
+                                <button type="button" class="btn btn-sm btn-danger" onclick="removeValueImage('@value.Id')">
+                                    <i class="bi bi-trash me-1"></i>Resmi Kaldır
+                                </button>
+                            </div>
+                            <input type="hidden" name="Values[@i].ImagePath" value="@(value.ImagePath ?? "")" id="value-image-path-@value.Id" />
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="Values[@i].IsActive" value="@(value.IsActive ? "true" : "false")" class="value-active-hidden" />
+                                <input type="checkbox" class="form-check-input value-active-checkbox" @(value.IsActive ? "checked" : "") id="valueActive-@value.Id" onchange="updateValueActive(this, '@i')" />
+                                <label class="form-check-label" for="valueActive-@value.Id">Aktif</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

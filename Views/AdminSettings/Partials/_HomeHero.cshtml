@@ -1,0 +1,100 @@
+@model boya_usta_web.Models.ViewModels.HomeSettingsVm
+
+<div class="col-12">
+    <h5 class="border-bottom pb-2 mb-3">Hero Bölümü</h5>
+</div>
+<div class="col-12">
+    <label asp-for="HeroTitle" class="form-label"></label>
+    <input asp-for="HeroTitle" class="form-control" placeholder="Bursa'nın En Güvenilir Boya Ustası" />
+    <div class="text-muted small mt-1">Ana sayfa hero bölümündeki ana başlık.</div>
+    <span asp-validation-for="HeroTitle" class="text-danger"></span>
+</div>
+<div class="col-12">
+    <label asp-for="HeroSubtitle" class="form-label">Ekstra Alt Başlık</label>
+    <input asp-for="HeroSubtitle" class="form-control" placeholder="Profesyonel Boya Hizmetleri" />
+    <div class="text-muted small mt-1">Ana başlığın hemen altındaki ekstra başlık (İsteğe bağlı).</div>
+    <span asp-validation-for="HeroSubtitle" class="text-danger"></span>
+</div>
+<div class="col-md-6">
+    <label asp-for="HeroVisualTitle" class="form-label"></label>
+    <input asp-for="HeroVisualTitle" class="form-control" placeholder="Kaliteli Boya Hizmeti" />
+    <div class="text-muted small mt-1">Hero görsel kartındaki başlık (sağ taraftaki kart).</div>
+    <span asp-validation-for="HeroVisualTitle" class="text-danger"></span>
+</div>
+<div class="col-md-6">
+    <label asp-for="HeroVisualSubtitle" class="form-label"></label>
+    <input asp-for="HeroVisualSubtitle" class="form-control" placeholder="Profesyonel Çözümler" />
+    <div class="text-muted small mt-1">Hero görsel kartındaki alt başlık.</div>
+    <span asp-validation-for="HeroVisualSubtitle" class="text-danger"></span>
+</div>
+<div class="col-md-6">
+    <label asp-for="HeroExperienceBadge" class="form-label"></label>
+    <input asp-for="HeroExperienceBadge" class="form-control" placeholder="{years}+ Yıl" />
+    <div class="text-muted small mt-1">{years} yazarsanız tecrübe yılı otomatik eklenecektir.</div>
+    <span asp-validation-for="HeroExperienceBadge" class="text-danger"></span>
+</div>
+<div class="col-md-6">
+    <label asp-for="HeroDescription" class="form-label"></label>
+    <input asp-for="HeroDescription" class="form-control" placeholder="{years} yıllık tecrübemizle..." />
+    <div class="text-muted small mt-1">{years} yazarsanız tecrübe yılı otomatik eklenecektir.</div>
+    <span asp-validation-for="HeroDescription" class="text-danger"></span>
+</div>
+
+
+<div class="col-12">
+    <h5 class="border-bottom pb-2 mb-3 mt-4">Hero Özellik İkonları ve Yazıları</h5>
+</div>
+<div class="col-md-4">
+    <label class="form-label">Özellik 1 İkon</label>
+    <div class="row g-2 align-items-end mb-2">
+        <div class="col-8">
+            <select asp-for="HeroFeature1Icon" class="form-select icon-select" data-preview-id="preview-HeroFeature1Icon" data-initial-value="@(Model.HeroFeature1Icon ?? "")">
+                <partial name="_IconSelectOptions" />
+            </select>
+        </div>
+        <div class="col-4">
+            <div class="border rounded d-flex align-items-center justify-content-center" style="height: 38px; background: #fff;">
+                <i id="preview-HeroFeature1Icon" class="@(Model.HeroFeature1Icon ?? "bi bi-stars")" style="font-size: 1.4rem;"></i>
+            </div>
+        </div>
+    </div>
+    <label asp-for="HeroFeature1Text" class="form-label">Özellik 1 Yazı</label>
+    <input asp-for="HeroFeature1Text" class="form-control" placeholder="2 Yıl Garanti" />
+    <div class="text-muted small mt-1">Hero bölümündeki ilk özellik yazısı.</div>
+</div>
+<div class="col-md-4">
+    <label class="form-label">Özellik 2 İkon</label>
+    <div class="row g-2 align-items-end mb-2">
+        <div class="col-8">
+            <select asp-for="HeroFeature2Icon" class="form-select icon-select" data-preview-id="preview-HeroFeature2Icon" data-initial-value="@(Model.HeroFeature2Icon ?? "")">
+                <partial name="_IconSelectOptions" />
+            </select>
+        </div>
+        <div class="col-4">
+            <div class="border rounded d-flex align-items-center justify-content-center" style="height: 38px; background: #fff;">
+                <i id="preview-HeroFeature2Icon" class="@(Model.HeroFeature2Icon ?? "bi bi-stars")" style="font-size: 1.4rem;"></i>
+            </div>
+        </div>
+    </div>
+    <label asp-for="HeroFeature2Text" class="form-label">Özellik 2 Yazı</label>
+    <input asp-for="HeroFeature2Text" class="form-control" placeholder="Uygun Fiyat" />
+    <div class="text-muted small mt-1">Hero bölümündeki ikinci özellik yazısı.</div>
+</div>
+<div class="col-md-4">
+    <label class="form-label">Özellik 3 İkon</label>
+    <div class="row g-2 align-items-end mb-2">
+        <div class="col-8">
+            <select asp-for="HeroFeature3Icon" class="form-select icon-select" data-preview-id="preview-HeroFeature3Icon" data-initial-value="@(Model.HeroFeature3Icon ?? "")">
+                <partial name="_IconSelectOptions" />
+            </select>
+        </div>
+        <div class="col-4">
+            <div class="border rounded d-flex align-items-center justify-content-center" style="height: 38px; background: #fff;">
+                <i id="preview-HeroFeature3Icon" class="@(Model.HeroFeature3Icon ?? "bi bi-stars")" style="font-size: 1.4rem;"></i>
+            </div>
+        </div>
+    </div>
+    <label asp-for="HeroFeature3Text" class="form-label">Özellik 3 Yazı</label>
+    <input asp-for="HeroFeature3Text" class="form-control" placeholder="Premium Kalite" />
+    <div class="text-muted small mt-1">Hero bölümündeki üçüncü özellik yazısı.</div>
+</div>

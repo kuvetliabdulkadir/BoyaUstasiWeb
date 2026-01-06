@@ -1,0 +1,671 @@
+﻿/*
+ * DOSYA: admin.css
+ * KONUM: wwwroot/css/admin.css
+ * KULLANIM: Areas/Admin/Views/Shared/_AdminLayout.cshtml ve tüm Admin sayfaları
+ * 
+ * AÇIKLAMA: Admin panelinin iskeletini, kartlarını, tablolarını ve formlarını yöneten stil dosyası.
+ * "Eğitim Düzeyinde" detaylı açıklamalarla kodlanmıştır.
+ */
+
+/* [DEĞİŞKENLER] Sitede kullanılan ana renk tanımları */
+:root {
+    --admin-primary: #2563eb;
+    /* Ana Renk (Parlak Mavi) */
+    --admin-dark: #1e293b;
+    /* Koyu Renk (Lacivert-Siyah) */
+    --admin-sidebar: #0f172a;
+    /* Sidebar Arka Planı (Çok koyu) */
+    --admin-light: #f8fafc;
+    /* Sayfa Arka Planı (Çok açık gri) */
+    --admin-border: #e2e8f0;
+    /* Kenarlık Rengi (Gri) */
+}
+
+/* Tüm elemanlar için kutu hesabı ayarı */
+* {
+    box-sizing: border-box;
+    /* Padding ve Border genişliğe dahil edilir (Hesaplamayı kolaylaştırır) */
+}
+
+html,
+body {
+    width: 100%;
+    overflow-x: hidden;
+    /* Yanlara taşmayı ve gereksiz scroll'u engelle */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--admin-light);
+    /* Sayfanın genel arka plan rengi */
+    margin: 0;
+    padding: 0;
+}
+
+/* [WRAPPER] Tüm admin panelini saran dış kapsayıcı */
+.admin-wrapper {
+    display: flex;
+    /* Yan yana dizilim (Sidebar + Main) */
+    min-height: 100vh;
+    /* En az ekran yüksekliği kadar olsun */
+    width: 100%;
+}
+
+/* 
+ * [BÖLÜM: YAN MENÜ (SIDEBAR)] 
+ * Sol taraftaki sabit navigasyon menüsü.
+ */
+.admin-sidebar {
+    width: 260px;
+    /* Genişlik sabittir */
+    background-color: var(--admin-sidebar);
+    /* Koyu arka plan */
+    color: white;
+    /* Yazılar beyaz */
+    display: flex;
+    flex-direction: column;
+    /* İçeriği alt alta diz */
+
+    /* Sabitleme Ayarları */
+    position: fixed;
+    /* Sayfa kaydırılsa bile ekranda sabit durur */
+    top: 0;
+    left: 0;
+    bottom: 0;
+    /* Sol tarafı boydan boya kapla */
+    z-index: 1000;
+    /* Diğer her şeyin üstünde kalsın */
+
+    transition: transform 0.3s ease;
+    /* Mobilde açılıp kapanma efekti */
+}
+
+/* Sidebar Başlığı (Logo Alanı) */
+.sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    /* Altına ince silik çizgi */
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    /* Dikey ortala */
+    gap: 0.75rem;
+    /* Logo ile yazı arasını aç */
+    color: white;
+    text-decoration: none;
+    /* Link alt çizgisini kaldır */
+    font-weight: 600;
+    /* Kalın yazı */
+    font-size: 1.25rem;
+}
+
+.sidebar-brand i {
+    font-size: 1.5rem;
+    color: var(--admin-primary);
+    /* İkonu mavi yap */
+}
+
+/* Menü Linklerinin Listesi */
+.sidebar-nav {
+    flex: 1;
+    /* Kalan tüm boşluğu doldur */
+    padding: 1rem 0;
+    overflow-y: auto;
+    /* Menü uzunsa scroll çıksın */
+    scrollbar-width: none;
+    /* Firefox scrollbar gizle */
+    -ms-overflow-style: none;
+}
+
+/* Chrome scrollbar gizle */
+.sidebar-nav::-webkit-scrollbar {
+    display: none;
+}
+
+/* Menü Linki (Tekil Satır) */
+.sidebar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1.5rem;
+    /* Geniş tıklama alanı */
+    color: rgba(255, 255, 255, 0.7);
+    /* Hafif soluk beyaz */
+    transition: all 0.2s ease;
+}
+
+/* Link üzerine gelince */
+.sidebar-nav .nav-link:hover {
+    color: white;
+    /* Yazı parlasın */
+    background-color: rgba(255, 255, 255, 0.05);
+    /* Hafif arka plan */
+}
+
+/* Aktif Link (Şu anki sayfa) */
+.sidebar-nav .nav-link.active {
+    color: white;
+    background-color: var(--admin-primary);
+    /* Arka planı mavi yap */
+}
+
+.sidebar-nav .nav-link i {
+    font-size: 1.25rem;
+    width: 24px;
+    /* İkon genişliğini sabitle (Hizalama bozulmasın) */
+}
+
+/* Sidebar Alt Kısım (Footer) */
+.sidebar-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    /* Üstüne çizgi */
+}
+
+/* 
+ * [BÖLÜM: ANA İÇERİK ALANI (MAIN)] 
+ * Sidebar'ın sağında kalan, sayfaların yüklendiği alan.
+ */
+.admin-main {
+    flex: 1;
+    /* Kalan genişliği kapla */
+    margin-left: 260px;
+    /* Sidebar kadar soldan boşluk bırak (Çakışmayı önle) */
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    /* Flexbox taşma sorununu çözer */
+}
+
+/* Üst Navigasyon (Top Navbar) */
+.admin-navbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background-color: white;
+    border-bottom: 1px solid var(--admin-border);
+
+    /* Yapışkan Özellik */
+    position: sticky;
+    top: 0;
+    /* Sayfa kaydırılsa da üstte kalsın */
+    z-index: 100;
+    flex-wrap: wrap;
+    /* Mobilde sığmazsa alt satıra geç */
+}
+
+/* Sidebar Açma/Kapama Butonu (Sadece Mobilde Görünür) */
+.sidebar-toggle {
+    display: none;
+    /* Masaüstünde gizle */
+    font-size: 1.5rem;
+    color: var(--admin-dark);
+}
+
+.page-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Çok uzun başlıkları ... ile kes */
+    white-space: nowrap;
+}
+
+/* Sağ Üst Kullanıcı Alanı */
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-left: auto;
+    /* En sağa yasla */
+}
+
+.user-name {
+    font-size: 0.875rem;
+    color: #64748b;
+    /* Gri renk */
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    background-color: var(--admin-primary);
+    border-radius: 50%;
+    /* Tam yuvarlak */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+/* Sayfa İçeriği Kapsayıcısı */
+.admin-content {
+    padding: 1.5rem;
+    /* Kenarlardan boşluk */
+    flex: 1;
+    /* Footer'ı alta itmek için */
+    min-width: 0;
+}
+
+/* 
+ * [BÖLÜM: KARTLAR (CARDS)] 
+ * İçeriklerin sunulduğu beyaz kutular.
+ */
+.admin-card {
+    background: white;
+    /* Beyaz zemin */
+    border-radius: 0.75rem;
+    /* Köşeleri yuvarla */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* Hafif gölge ver */
+    overflow: hidden;
+    /* İçerik taşarsa gizle (Köşeler keskinleşmesin) */
+}
+
+.admin-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Başlık sola, buton sağa */
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--admin-border);
+    /* İnce alt çizgi */
+}
+
+.admin-card-header h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.admin-card-body {
+    padding: 1.5rem;
+    max-width: 100%;
+    overflow-x: auto;
+    /* Tablo taşarsa yatay scroll aç */
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Özel Durum: Padding Olmayan Kart (Tablolar İçin) */
+.admin-card-body.p-0 {
+    padding: 0 !important;
+}
+
+/* 
+ * [BÖLÜM: İSTATİSTİK KARTLARI (STATS)] 
+ * Dashboard'daki renkli ikonlu sayı kutuları.
+ */
+.stat-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.5rem;
+    /* Karemsi yuvarlak */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    /* Sayı ile ikon arası boşluk */
+}
+
+/* Renk Varyasyonları */
+.stat-card-icon.primary {
+    background-color: rgba(37, 99, 235, 0.1);
+    /* Soluk mavi zemin */
+    color: var(--admin-primary);
+    /* Mavi ikon */
+}
+
+.stat-card-icon.success {
+    background-color: rgba(16, 185, 129, 0.1);
+    /* Soluk yeşil */
+    color: #10b981;
+    /* Yeşil */
+}
+
+.stat-card-icon.warning {
+    background-color: rgba(245, 158, 11, 0.1);
+    /* Soluk turuncu */
+    color: #f59e0b;
+}
+
+.stat-card-icon.danger {
+    background-color: rgba(239, 68, 68, 0.1);
+    /* Soluk kırmızı */
+    color: #ef4444;
+}
+
+.stat-card-value {
+    font-size: 2rem;
+    /* Büyük sayı */
+    font-weight: 700;
+    color: var(--admin-dark);
+}
+
+.stat-card-label {
+    color: #64748b;
+    /* Gri açıklama */
+    font-size: 0.875rem;
+}
+
+/* 
+ * [BÖLÜM: TABLOLAR] 
+ * Responsive ve şık veri listeleme.
+ */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    /* Hücre çizgilerini birleştir */
+}
+
+.admin-table th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 0.75rem;
+    /* Küçük font */
+    text-transform: uppercase;
+    /* BÜYÜK HARF */
+    letter-spacing: 0.05em;
+    /* Harf aralığı */
+    color: #64748b;
+    /* Gri başlık */
+    background-color: #f8fafc;
+    /* Açık başlık zemini */
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--admin-border);
+    vertical-align: middle;
+    /* İçeriği dikeyde ortala */
+
+    /* Uzun metinlerde kırılma ayarı */
+    word-break: normal;
+    overflow-wrap: break-word;
+}
+
+.admin-table tr:hover {
+    background-color: #f8fafc;
+    /* Satır üzerine gelince renk değişsin */
+}
+
+/* Durum Rozetleri (Aktif/Pasif) */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    /* Kapsül şekli */
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-badge.active {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+/* Yeşil */
+.status-badge.inactive {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+/* Kırmızı */
+
+/* 
+ * [BÖLÜM: FORMLAR] 
+ * Giriş alanları ve buton stilleri.
+ */
+.admin-form .form-label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.admin-form .form-control,
+.admin-form .form-select {
+    border-radius: 0.5rem;
+    border: 1px solid var(--admin-border);
+    padding: 0.75rem 1rem;
+}
+
+/* Input odaklanınca */
+.admin-form .form-control:focus {
+    border-color: var(--admin-primary);
+    /* Mavi çerçeve */
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    /* Mavi parlama */
+}
+
+/* Aksiyon Butonları (Düzenle/Sil) */
+.action-btns {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    /* Mobilde alt alta inebilsin */
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+    border: 1px solid var(--admin-border);
+    background: white;
+    color: #64748b;
+    transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+    background-color: #f8fafc;
+    color: var(--admin-dark);
+}
+
+.btn-action.edit:hover {
+    color: var(--admin-primary);
+    border-color: var(--admin-primary);
+    /* Mavi */
+}
+
+.btn-action.delete:hover {
+    color: #ef4444;
+    border-color: #ef4444;
+    /* Kırmızı */
+}
+
+/* 
+ * [BÖLÜM: MOBİL UYUMLULUK] 
+ * Tablet ve Telefon ekranları için özel ayarlar.
+ */
+@media (max-width: 991.98px) {
+
+    /* Sidebbar'ı gizle (Sola kaydır) */
+    .admin-sidebar {
+        transform: translateX(-100%);
+        width: min(260px, 86vw);
+    }
+
+    /* Sidebar Açıkken */
+    .admin-wrapper.sidebar-collapsed .admin-sidebar {
+        transform: translateX(0);
+        /* Geri getir */
+    }
+
+    /* İçerik margin'ini sıfırla */
+    .admin-main {
+        margin-left: 0;
+    }
+
+    .sidebar-toggle {
+        display: block;
+        /* Menü butonunu göster */
+    }
+
+    /* Karartma Overlay'i (Menü açıkken arkası kararır) */
+    .admin-wrapper.sidebar-collapsed::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .admin-content {
+        padding: 1rem;
+        /* Boşlukları azalt */
+    }
+
+    /* Tabloları yatay kaydırılabilir yap */
+    .table-responsive {
+        margin: 0 -1rem;
+        padding: 0 1rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* İstatistik kartlarını küçült */
+    .stat-card-value {
+        font-size: 1.5rem;
+    }
+}
+
+/* 
+ * [BÖLÜM: LOGIN SAYFASI] 
+ * Admin giriş ekranı.
+ */
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--admin-dark) 0%, #1e3a5f 100%);
+    /* Koyu Gradient */
+    padding: 1rem;
+}
+
+.login-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    /* Derin gölge */
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-header i {
+    font-size: 3rem;
+    color: var(--admin-primary);
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+
+.login-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--admin-dark);
+    margin-bottom: 0.5rem;
+}
+
+.login-header p {
+    color: #64748b;
+    margin: 0;
+}
+
+/* Giriş formu input stilleri */
+.login-card .input-group-text {
+    background-color: white;
+    border-right: none;
+    color: #94a3b8;
+}
+
+.login-card .form-control {
+    border-left: none;
+    padding-left: 0;
+}
+
+.login-card .form-control:focus {
+    box-shadow: none;
+    border-color: var(--admin-border);
+}
+
+.login-card .input-group:focus-within {
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-radius: 0.375rem;
+}
+
+.login-card .input-group:focus-within .form-control,
+.login-card .input-group:focus-within .input-group-text {
+    border-color: var(--admin-primary);
+    color: var(--admin-primary);
+}
+
+/* Tablo içi resim önizleme */
+.image-preview {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+    border: 1px solid var(--admin-border);
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.image-preview:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Boş Veri Durumu (Empty State) */
+.empty-state {
+    padding: 3rem;
+    text-align: center;
+    color: #94a3b8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    color: var(--admin-border);
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.empty-state p {
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 500;
+}

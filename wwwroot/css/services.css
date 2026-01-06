@@ -1,0 +1,325 @@
+﻿/*
+ * DOSYA: services.css
+ * KONUM: wwwroot/css/services.css
+ * KULLANIM: Views/Services/Index.cshtml
+ * 
+ * AÇIKLAMA: Hizmetleri listelediğimiz ana sayfaya özel stiller.
+ * Kart yapıları, fiyat etiketleri ve sayfa başlığı özelleştirmeleri burada.
+ */
+
+/* [SAYFA BAŞLIĞI] - Mavi Arka Planlı Üst Kısım */
+
+
+/* Breadcrumb (Navigasyon Yolu) Linkleri - Beyaz uyumlu */
+.page-header .breadcrumb {
+    margin-bottom: 0;
+}
+
+.page-header .breadcrumb-item,
+.page-header .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.page-header .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.95);
+    text-decoration: none;
+}
+
+
+
+.page-header .breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* [HİZMET LİSTESİ] - Ana Grid Alanı */
+.services-page-section {
+    padding: 0 0 5rem;
+    /* Sadece alttan boşluk bırak */
+}
+
+/* [HİZMET KARTI] - Tekil Hizmet Kutusu */
+.service-detail-card {
+    height: 100%;
+    /* Yanındaki kartlarla eşit boyda olsun */
+    background: white;
+    padding: 2rem;
+    /* Görseldeki boşluk */
+    border-radius: 20px;
+    /* Görseldeki yuvarlaklık */
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    /* Yumuşak gölge */
+    transition: all var(--transition-normal);
+    display: flex;
+    /* İçeriği dikey dizmek için */
+    flex-direction: column;
+}
+
+/* Hover Durumu - Kartın üzerine gelince */
+.service-detail-card:hover {
+    transform: translateY(-5px);
+    /* Yukarı kalk */
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+}
+
+/* Hizmet Görseli (İkon Alanı) */
+.service-image {
+    width: 100%;
+    height: 200px;
+    background: var(--light);
+    /* Gri zemin */
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: white;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.service-image i {
+    color: var(--primary-color);
+    font-size: 3rem;
+}
+
+/* Hizmet İkonu (Koyu Kutu) */
+.service-icon-large {
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(135deg, #2c3e50 0%, #8E735B 100%);
+    /* Koyu Mavi -> Altın/Kahve */
+    /* Koyu gradyan */
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
+}
+
+.service-icon-large i {
+    font-size: 2.5rem;
+    color: white;
+    /* İkon rengi */
+}
+
+/* İçerik Alanı */
+.service-detail-content {
+    flex: 1;
+    /* Kartın kalan kısmını doldur */
+    display: flex;
+    flex-direction: column;
+}
+
+.service-detail-content h2,
+.service-detail-card>h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.service-short-desc {
+    color: #6c757d;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+/* [ÖZELLİK LİSTESİ] - Tik İşaretli Maddeler */
+.service-features {
+    list-style: none;
+    /* Noktaları kaldır */
+    padding: 0;
+    margin: 0 0 1.5rem;
+    font-size: 1.1rem;
+}
+
+.service-features li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}
+
+.service-features li i {
+    color: #25d366;
+    /* Parlak Yeşil */
+    margin-right: 0.75rem;
+    font-size: 1.25rem;
+}
+
+/* [FİYAT BİLGİSİ] - Alt Kısım */
+/* [FİYAT BİLGİSİ] - Bej Kutu */
+.service-price-large {
+    background-color: #F9F7F2;
+    /* Bej Zemin */
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    margin-bottom: 1.5rem;
+}
+
+.service-price-large .price-label {
+    color: #888;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.service-price-large .price-value {
+    color: #8E735B;
+    /* Altın/Kahve Rengi */
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+/* Buton Özelleştirmeleri (Kart İçi) */
+/* Buton Özelleştirmeleri (Kart İçi) */
+.service-detail-card .btn-outline-primary {
+    color: #8E735B;
+    border: 2px solid #8E735B;
+    /* Çerçeve kalınlığı eşitlendi */
+    background: transparent;
+    border-radius: 10px;
+    /* Radius Eşitlendi (10px) */
+    font-weight: 500;
+    /* Font CTA ile aynı (500) */
+    font-size: 1.1rem;
+    padding: 0.6rem 1.5rem;
+    flex: 1;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.service-detail-card .btn-outline-primary:hover {
+    background: #8E735B;
+    color: white;
+    box-shadow: 0 4px 12px rgba(142, 115, 91, 0.3);
+}
+
+.service-detail-card .btn-primary {
+    background-color: #8E735B;
+    border: 2px solid #8E735B;
+    /* Çerçeve kalınlığı eşitlendi */
+    color: white;
+    border-radius: 10px;
+    /* Radius Eşitlendi (10px) */
+    font-weight: 500;
+    /* Font CTA ile aynı (500) */
+    font-size: 1.1rem;
+    padding: 0.6rem 1.5rem;
+    flex: 1;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.service-detail-card .btn-primary:hover {
+    background-color: white;
+    color: #8E735B;
+    border-color: #8E735B;
+    box-shadow: 0 4px 12px rgba(142, 115, 91, 0.3);
+}
+
+/* [ÇAĞRI ALANI] - CTA Section */
+.services-cta-section {
+    padding: 0 0 5rem;
+}
+
+.services-cta-wrapper {
+    background-color: #2c3e50;
+    /* Düz Koyu Mavi/Lacivert */
+    border-radius: 20px;
+    padding: 3.5rem 4rem;
+    /* Görseldeki genişlik */
+    color: white;
+}
+
+.services-cta-wrapper h2 {
+    color: white;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.services-cta-wrapper p {
+    color: rgba(255, 255, 255, 0.8) !important;
+    opacity: 1;
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+/* CTA İçindeki WhatsApp Butonu */
+.services-cta-wrapper .btn-secondary {
+    background-color: white !important;
+    color: #8E735B !important;
+    /* Altın Rengi Yazı */
+    border: 2px solid #8E735B !important;
+    font-weight: 500;
+    font-size: 1.1rem;
+    padding: 0.75rem 2rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    /* İkon ile yazı arası */
+}
+
+.services-cta-wrapper .btn-secondary:hover {
+    background-color: #8E735B !important;
+    color: white !important;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* MOBİL UYUMLULUK */
+@media (max-width: 991.98px) {
+    .services-cta-wrapper {
+        text-align: center;
+    }
+
+    .services-cta-wrapper .col-lg-4 {
+        margin-top: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 3rem;
+    }
+
+    .page-header p {
+        font-size: 1.3rem;
+    }
+
+    .service-detail-card {
+        padding: 1.5rem;
+    }
+
+    .services-cta-wrapper {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .page-header h1 {
+        font-size: 2.5rem;
+    }
+
+    .page-header p {
+        font-size: 1.2rem;
+    }
+
+    .service-detail-card {
+        padding: 1.25rem;
+    }
+}

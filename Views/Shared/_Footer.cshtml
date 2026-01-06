@@ -1,0 +1,137 @@
+@using boya_usta_web.Services
+@using boya_usta_web.Data
+@using boya_usta_web.Helpers
+@using Microsoft.EntityFrameworkCore
+@inject ISettingsService SettingsService
+@inject ApplicationDbContext Db
+@{
+    var settings = await SettingsService.GetAllSettingsAsync();
+    var siteName = settings.GetSetting("SiteName");
+    var experienceYears = settings.GetSetting("ExperienceYears");
+    var footerAboutShortRaw = settings.GetSetting("FooterAboutShort");
+    var footerAboutShort = !string.IsNullOrEmpty(footerAboutShortRaw) ? footerAboutShortRaw.Replace("{years}", experienceYears) : "";
+    var footerLinkText = settings.GetSetting("FooterLinkText");
+    var footerLinkUrl = settings.GetSetting("FooterLinkUrl");
+    var whatsapp = settings.GetSetting("WhatsApp");
+    var whatsappMessage = settings.GetSetting("WhatsAppDefaultMessage", "Merhaba, boya hizmeti hakkında bilgi almak istiyorum.");
+
+    var footerServices = await Db.Services
+        .Where(s => s.IsActive)
+        .OrderBy(s => s.DisplayOrder)
+        .Take(4)
+        .ToListAsync();
+}
+
+    <footer class="footer">
+
+        <div class="footer-content">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-brand">
+                            <h2 class="h3">
+                                <i class="fas fa-paint-roller me-2" aria-hidden="true"></i>@Html.Raw(siteName)
+                            </h2>
+                            <p>@Html.Raw(footerAboutShort)</p>
+                            <div class="footer-social">
+                                @if (!string.IsNullOrEmpty(settings.GetSetting("Facebook")))
+                                {
+                                    <a href="@settings["Facebook"]" target="_blank" aria-label="Facebook sayfamız"><i class="bi bi-facebook" aria-hidden="true"></i></a>
+                                }
+                                @if (!string.IsNullOrEmpty(settings.GetSetting("Instagram")))
+                                {
+                                    <a href="@settings["Instagram"]" target="_blank" aria-label="Instagram sayfamız"><i class="bi bi-instagram" aria-hidden="true"></i></a>
+                                }
+                                @if (!string.IsNullOrEmpty(settings.GetSetting("YouTube")))
+                                {
+                                    <a href="@settings["YouTube"]" target="_blank" aria-label="YouTube kanalımız"><i class="bi bi-youtube" aria-hidden="true"></i></a>
+                                }
+                                @if (!string.IsNullOrEmpty(settings.GetSetting("LinkedIn")))
+                                {
+                                    <a href="@settings["LinkedIn"]" target="_blank" aria-label="LinkedIn sayfamız"><i class="bi bi-linkedin" aria-hidden="true"></i></a>
+                                }
+                                @if (!string.IsNullOrEmpty(settings.GetSetting("TikTok")))
+                                {
+                                    <a href="@settings["TikTok"]" target="_blank" aria-label="TikTok profilimiz"><i class="bi bi-tiktok" aria-hidden="true"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <h3 class="h5">Hızlı Linkler</h3>
+                        <ul class="footer-links">
+                            <li><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                            <li><a asp-controller="Simulator" asp-action="Index">Renk Simülatörü</a></li>
+                            <li><a asp-controller="Services" asp-action="Index">Hizmetler</a></li>
+                            <li><a asp-controller="Projects" asp-action="Index">Projeler</a></li>
+                            <li><a asp-controller="Contact" asp-action="Index">İletişim</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <h3 class="h5">Hizmetlerimiz</h3>
+                        <ul class="footer-links">
+                            @if (footerServices.Any())
+                            {
+                                @foreach (var s in footerServices)
+                                {
+                                    <li><a href="/hizmetler/@s.Slug">@Html.Raw(s.Title)</a></li>
+                                }
+                            }
+                            else
+                            {
+                                <li><a asp-controller="Services" asp-action="Index">Hizmetler</a></li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <h3 class="h5">İletişim</h3>
+                        <ul class="footer-contact">
+                            @if (!string.IsNullOrEmpty(whatsapp))
+                            {
+                            <li>
+                                <i class="bi bi-whatsapp" aria-hidden="true"></i>
+                                <a href="@boya_usta_web.Helpers.UrlHelperExtensions.GetWhatsAppLink(whatsapp, whatsappMessage)" target="_blank" aria-label="WhatsApp ile iletişim">WhatsApp</a>
+                            </li>
+                            }
+                            <li>
+                                <i class="bi bi-envelope-fill" aria-hidden="true"></i>
+                                <a href="mailto:@settings.GetSetting("Email")" aria-label="E-posta gönder">@settings.GetSetting("Email")</a>
+                            </li>
+                            <li>
+                                <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
+                                <span>@settings.GetSetting("Address")</span>
+                            </li>
+                            <li>
+                                <i class="bi bi-clock-fill" aria-hidden="true"></i>
+                                <span>@settings.GetSetting("WorkingHours")</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <hr class="footer-divider">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-center text-md-start">
+                        <p class="mb-0">&copy; @DateTime.Now.Year @Html.Raw(siteName). Tüm hakları saklıdır.</p>
+                        @if (!string.IsNullOrWhiteSpace(footerLinkText) && !string.IsNullOrWhiteSpace(footerLinkUrl))
+                        {
+                            <p class="mb-0 mt-2">
+                                <a href="@footerLinkUrl" target="_blank" rel="noopener noreferrer" class="footer-legal-link">
+                                    @footerLinkText
+                                </a>
+                            </p>
+                        }
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    @* WhatsApp *@
+    @if (!string.IsNullOrEmpty(whatsapp))
+    {
+    <a href="@boya_usta_web.Helpers.UrlHelperExtensions.GetWhatsAppLink(whatsapp, whatsappMessage)" target="_blank" class="floating-whatsapp" aria-label="WhatsApp ile iletişime geç" role="button">
+        <i class="bi bi-whatsapp" aria-hidden="true"></i>
+    </a>
+    }

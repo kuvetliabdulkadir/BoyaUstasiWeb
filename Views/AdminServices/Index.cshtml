@@ -1,0 +1,80 @@
+﻿@model List<Service>
+@{
+    ViewData["Title"] = "Hizmetler";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Hizmetler</h2>
+        <a class="btn btn-primary" href="@ViewBag.AdminPath/hizmetler/ekle">
+            <i class="bi bi-plus-lg me-2"></i>Yeni Hizmet
+        </a>
+    </div>
+    <div class="admin-card-body p-0">
+        @Html.AntiForgeryToken()
+        @if (Model.Any())
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Sıra</th>
+                        <th>Başlık</th>
+                        <th>Fiyat</th>
+                        <th>Detay Sayısı</th>
+                        <th>Durum</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int index = 0; }
+                    @foreach (var s in Model)
+                    {
+                        <tr data-item-id="@s.Id" data-display-order="@s.DisplayOrder">
+                            <td>
+                                @{
+                                    ViewData["ItemId"] = s.Id;
+                                    ViewData["UpdateOrderUrl"] = $"{ViewBag.AdminPath}/hizmetler/sira-guncelle";
+                                    ViewData["IsFirst"] = index == 0;
+                                    ViewData["IsLast"] = index == Model.Count - 1;
+                                }
+                                <partial name="_AdminTableSortButtons" view-data="ViewData" />
+                            </td>
+                            <td><strong>@s.Title</strong></td>
+                            <td>@(s.PriceInfo ?? "-")</td>
+                            <td>@(s.Details?.Count ?? 0)</td>
+                            <td>
+                                @{
+                                    ViewData["IsActive"] = s.IsActive;
+                                    ViewData["ItemId"] = s.Id;
+                                    ViewData["ToggleUrl"] = $"{ViewBag.AdminPath}/hizmetler/aktif-pasif/{s.Id}";
+                                    ViewData["EntityName"] = "Hizmet";
+                                }
+                                <partial name="_AdminStatusBadge" view-data="ViewData" />
+                            </td>
+                            <td>
+                                @{
+                                    ViewData["EditUrl"] = $"{ViewBag.AdminPath}/hizmetler/duzenle/{s.Id}";
+                                    ViewData["DeleteUrl"] = $"{ViewBag.AdminPath}/hizmetler/sil/{s.Id}";
+                                    ViewData["EntityName"] = "Hizmet";
+                                }
+                                <partial name="_AdminTableRowActions" view-data="ViewData" />
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            {
+                ViewData["Icon"] = "bi-tools";
+                ViewData["Message"] = "Henüz hizmet yok";
+            }
+            <partial name="_AdminEmptyState" view-data="ViewData" />
+        }
+    </div>
+</div>
+
+

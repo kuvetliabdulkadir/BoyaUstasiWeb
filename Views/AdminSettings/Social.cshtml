@@ -1,0 +1,126 @@
+﻿@model boya_usta_web.Models.ViewModels.SocialSettingsVm
+@{
+    ViewData["Title"] = "Sosyal Medya Ayarları";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Sosyal Medya Ayarları</h2>
+        <a href="@ViewBag.AdminPath/ayarlar" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri
+        </a>
+    </div>
+    <div class="admin-card-body">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+
+        <form method="post" class="admin-form">
+            @Html.AntiForgeryToken()
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="Facebook" class="form-label">Facebook <span class="text-muted small">(Opsiyonel)</span></label>
+                    <div class="input-group">
+                        <input asp-for="Facebook" type="text" class="form-control" placeholder="https://facebook.com/sayfa-adi" data-val="false" data-val-required="false" />
+                        <button type="button" class="btn btn-outline-danger" onclick="clearSocialLink('Facebook')" title="Linki Sil">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                    <div class="text-muted small mt-1">Facebook sayfa veya profil linkiniz. Boş bırakılabilir.</div>
+                    <span asp-validation-for="Facebook" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Instagram" class="form-label">Instagram <span class="text-muted small">(Opsiyonel)</span></label>
+                    <div class="input-group">
+                        <input asp-for="Instagram" type="text" class="form-control" placeholder="https://instagram.com/kullanici-adi" data-val="false" data-val-required="false" />
+                        <button type="button" class="btn btn-outline-danger" onclick="clearSocialLink('Instagram')" title="Linki Sil">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                    <div class="text-muted small mt-1">Instagram profil linkiniz. Boş bırakılabilir.</div>
+                    <span asp-validation-for="Instagram" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="YouTube" class="form-label">YouTube <span class="text-muted small">(Opsiyonel)</span></label>
+                    <div class="input-group">
+                        <input asp-for="YouTube" type="text" class="form-control" placeholder="https://youtube.com/@@kanal-adi" data-val="false" data-val-required="false" />
+                        <button type="button" class="btn btn-outline-danger" onclick="clearSocialLink('YouTube')" title="Linki Sil">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                    <div class="text-muted small mt-1">YouTube kanal linkiniz. Boş bırakılabilir.</div>
+                    <span asp-validation-for="YouTube" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="LinkedIn" class="form-label">LinkedIn <span class="text-muted small">(Opsiyonel)</span></label>
+                    <div class="input-group">
+                        <input asp-for="LinkedIn" type="text" class="form-control" placeholder="https://linkedin.com/company/sirket-adi" data-val="false" data-val-required="false" />
+                        <button type="button" class="btn btn-outline-danger" onclick="clearSocialLink('LinkedIn')" title="Linki Sil">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                    <div class="text-muted small mt-1">LinkedIn şirket veya profil linkiniz. Boş bırakılabilir.</div>
+                    <span asp-validation-for="LinkedIn" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="TikTok" class="form-label">TikTok <span class="text-muted small">(Opsiyonel)</span></label>
+                    <div class="input-group">
+                        <input asp-for="TikTok" type="text" class="form-control" placeholder="https://tiktok.com/@@kullanici-adi" data-val="false" data-val-required="false" />
+                        <button type="button" class="btn btn-outline-danger" onclick="clearSocialLink('TikTok')" title="Linki Sil">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                    <div class="text-muted small mt-1">TikTok profil linkiniz. Boş bırakılabilir.</div>
+                    <span asp-validation-for="TikTok" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <hr class="my-3" />
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-check-lg me-2"></i>Kaydet
+                    </button>
+                    <a href="@ViewBag.AdminPath/ayarlar" class="btn btn-outline-secondary ms-2">İptal</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Validation devre dışı (Opsiyonel)
+            const socialInputs = document.querySelectorAll('input[name="Facebook"], input[name="Instagram"], input[name="YouTube"], input[name="LinkedIn"], input[name="TikTok"]');
+            socialInputs.forEach(field => {
+                // HTML5 check iptal
+                field.removeAttribute('required');
+                field.setAttribute('data-val', 'false');
+                field.setAttribute('data-val-required', 'false');
+
+                // jQuery kural kaldır
+                if (typeof jQuery !== 'undefined' && jQuery.validator) {
+                    const form = field.closest('form');
+                    if (form) {
+                        jQuery(form).validate();
+                        jQuery(field).rules('remove', 'required');
+                        jQuery(field).rules('remove', 'url');
+                    }
+                }
+            });
+        });
+
+        function clearSocialLink(platform) {
+            if (!confirm(`${platform} linkini silmek istediğinize emin misiniz?`))
+            {
+                return;
+            }
+
+            const input = document.querySelector(`input[name="${platform}"]`);
+            if (input) {
+                input.value = '';
+            }
+        }
+    </script>
+}

@@ -1,0 +1,103 @@
+﻿@using boya_usta_web.Services
+@using boya_usta_web.Helpers
+@inject ISettingsService SettingsService
+@inject ISeoService SeoService
+@{
+    var settings = await SettingsService.GetAllSettingsAsync();
+    var siteName = settings.GetSetting("SiteName", "Bursa Boya Ustası");
+    var phone = settings.GetSetting("Phone");
+    var email = settings.GetSetting("Email");
+    var address = settings.GetSetting("Address", "Bursa, Türkiye");
+    var workingHours = settings.GetSetting("WorkingHours", "Pzt-Cmt: 08:00-18:00");
+    var facebook = settings.GetSetting("Facebook");
+    var instagram = settings.GetSetting("Instagram");
+    var youtube = settings.GetSetting("YouTube");
+    var linkedin = settings.GetSetting("LinkedIn");
+    var tiktok = settings.GetSetting("TikTok");
+    var siteUrl = SeoService.GetSiteUrl();
+    var ogImage = SeoService.OgImage;
+
+    // Sosyal medya linkleri
+    var sameAs = new List<string>();
+    if (!string.IsNullOrEmpty(facebook)) sameAs.Add(facebook);
+    if (!string.IsNullOrEmpty(instagram)) sameAs.Add(instagram);
+    if (!string.IsNullOrEmpty(youtube)) sameAs.Add(youtube);
+    if (!string.IsNullOrEmpty(linkedin)) sameAs.Add(linkedin);
+    if (!string.IsNullOrEmpty(tiktok)) sameAs.Add(tiktok);
+    var sameAsJson = sameAs.Any() 
+        ? $@"""sameAs"": [{string.Join(", ", sameAs.Select(s => $@"""{s}"""))}],"
+        : "";
+}
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "HousePainter",
+    "@@id": "@siteUrl",
+    "name": "@Html.Raw(siteName)",
+    "description": "@Html.Raw(SeoService.MetaDescription.Replace("\"", "\\\""))",
+    @if (!string.IsNullOrEmpty(phone))
+    {
+        @Html.Raw($@"""telephone"": ""{phone}"",")
+    }
+    @if (!string.IsNullOrEmpty(email))
+    {
+        @Html.Raw($@"""email"": ""{email}"",")
+    }
+    "url": "@siteUrl",
+    "image": "@ogImage",
+    "logo": "@(siteUrl)/images/logo.png",
+    "priceRange": "₺₺",
+    "address": {
+        "@@type": "PostalAddress",
+        "streetAddress": "@(address?.Replace("\"", "\\\"") ?? "")",
+        "addressLocality": "Bursa",
+        "addressRegion": "Bursa",
+        "postalCode": "16000",
+        "addressCountry": "TR"
+    },
+    "geo": {
+        "@@type": "GeoCoordinates",
+        "latitude": "40.1885",
+        "longitude": "29.0610"
+    },
+    "openingHoursSpecification": {
+        "@@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "08:00",
+        "closes": "18:00"
+    },
+    "areaServed": {
+        "@@type": "City",
+        "name": "Bursa"
+    },
+    @Html.Raw(sameAsJson)
+    "hasOfferCatalog": {
+        "@@type": "OfferCatalog",
+        "name": "Boya Hizmetleri",
+        "itemListElement": [
+            {
+                "@@type": "Offer",
+                "itemOffered": {
+                    "@@type": "Service",
+                    "name": "İç Cephe Boya"
+                }
+            },
+            {
+                "@@type": "Offer",
+                "itemOffered": {
+                    "@@type": "Service",
+                    "name": "Dış Cephe Boya"
+                }
+            },
+            {
+                "@@type": "Offer",
+                "itemOffered": {
+                    "@@type": "Service",
+                    "name": "Dekoratif Boya"
+                }
+            }
+        ]
+    }
+}
+</script>
+

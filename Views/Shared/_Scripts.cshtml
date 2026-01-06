@@ -1,0 +1,39 @@
+@using boya_usta_web.Services
+@inject ISettingsService SettingsService
+@{
+   var settings = await SettingsService.GetAllSettingsAsync();
+   var googleAnalyticsId = settings.GetValueOrDefault("SeoGoogleAnalyticsId");
+}
+
+    @* Analitik *@
+    @if (!string.IsNullOrEmpty(googleAnalyticsId))
+    {
+        <script async src="https://www.googletagmanager.com/gtag/js?id=@googleAnalyticsId"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '@googleAnalyticsId');
+        </script>
+    }
+
+    @* Scriptler *@
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true" defer></script>
+    <script src="~/lib/gsap/gsap.min.js" asp-append-version="true" defer></script>
+    <script src="~/lib/gsap/ScrollTrigger.min.js" asp-append-version="true" defer></script>
+    <script src="~/js/utils.js" asp-append-version="true" defer></script>
+    <script src="~/js/navbar.js" asp-append-version="true" defer></script>
+    <script src="~/js/animations.js" asp-append-version="true" defer></script>
+    <script src="~/js/site.js" asp-append-version="true" defer></script>
+    <script src="~/js/loading.js" asp-append-version="true" defer></script>
+    
+    @* PWA Worker *@
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => {
+                    // Silent fail
+                });
+            });
+        }
+    </script>

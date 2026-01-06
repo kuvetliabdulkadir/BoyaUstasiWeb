@@ -1,0 +1,47 @@
+﻿@{
+    var reviews = ViewBag.Reviews as List<Review> ?? new List<Review>();
+}
+
+@if (reviews.Any())
+{
+    @*Yorumlar *@
+    <section class="reviews-section">
+        <div class="container">
+            <div class="section-header text-center fade-in">
+                <span class="section-subtitle">Müşteri Yorumları</span>
+                <h2 class="section-title">Müşterilerimiz Ne Diyor?</h2>
+                <p class="section-description">Binlerce mutlu müşterimizin memnuniyeti bizim gururumuz</p>
+            </div>
+            <div class="reviews-slider-wrapper position-relative">
+                <div class="reviews-scroll-container">
+                    <div class="reviews-scroll-wrapper">
+                        @foreach (var review in reviews)
+                        {
+                            <div class="testimonial-card-wrapper">
+                            <div class="testimonial-card">
+                                    <p class="testimonial-comment">"@Html.Raw(review.Comment)"</p>
+                                    <div class="testimonial-author">
+                                        <strong>@Html.Raw(review.CustomerName)</strong>
+                                        @if (!string.IsNullOrEmpty(review.Location))
+                                        {
+                                            <span class="testimonial-location">
+                                                <i class="bi bi-geo-alt-fill me-1"></i>@Html.Raw(review.Location)
+                                            </span>
+                                        }
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(review.Source))
+                                        {
+                                        <div class="testimonial-source">
+                                            <span>@review.Source</span>
+                                            </div>
+                                        }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+

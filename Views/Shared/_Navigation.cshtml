@@ -1,0 +1,120 @@
+@using boya_usta_web.Services
+@using boya_usta_web.Helpers
+@inject ISettingsService SettingsService
+@{
+    var settings = await SettingsService.GetAllSettingsAsync();
+    var siteName = settings.GetSetting("SiteName");
+    var logoPath = settings.GetSetting("LogoPath");
+    var whatsapp = settings.GetSetting("WhatsApp");
+    var whatsappMessage = settings.GetSetting("WhatsAppDefaultMessage", "Merhaba, boya hizmeti hakkında bilgi almak istiyorum.");
+}
+
+    @* Menü *@
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand" href="/" aria-label="@Html.Raw(siteName) - Ana Sayfa">
+                <span class="brand-icon">
+                    @{
+                        var finalLogo = !string.IsNullOrEmpty(logoPath) ? logoPath : "/images/logo.png";
+                    }
+                    <img src="@finalLogo" 
+                         alt="@Html.Raw(siteName) Logo" 
+                         style="width:100%;height:100%;object-fit:contain;display:block;" 
+                         onerror="this.onerror=null; this.src='/images/logo.png'; this.style.display='block'; if(this.src.includes('logo.png')) { this.style.display='none'; this.nextElementSibling.style.display='block'; }" />
+                    <i class="fas fa-paint-roller" style="font-size: 2rem; color: #ffffff; display: none;" aria-hidden="true"></i>
+                </span>
+                <span class="brand-text">@Html.Raw(siteName)</span>
+            </a>
+            
+            <div class="d-flex align-items-center d-lg-none">
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-label="Menüyü aç" aria-expanded="false">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link highlight-link" asp-controller="Simulator" asp-action="Index">
+                            <i class="bi bi-palette-fill me-1" aria-hidden="true"></i>Renk Simülatörü
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Services" asp-action="Index">Hizmetler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Projects" asp-action="Index">Projeler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="About">Hakkımızda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Contact" asp-action="Index">İletişim</a>
+                    </li>
+                </ul>
+                @if (!string.IsNullOrEmpty(whatsapp))
+                {
+                <div class="navbar-cta ms-lg-3">
+                    <a href="@boya_usta_web.Helpers.UrlHelperExtensions.GetWhatsAppLink(whatsapp, whatsappMessage)" target="_blank" class="btn btn-whatsapp" aria-label="WhatsApp ile iletişime geç">
+                        <i class="bi bi-whatsapp me-1" aria-hidden="true"></i><span>WhatsApp</span>
+                    </a>
+                </div>
+                }
+            </div>
+        </div>
+    </nav>
+
+    @* Mobil Menü *@
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+        <div class="offcanvas-header">
+            <h2 class="offcanvas-title h5" id="mobileMenuLabel">
+                <i class="fas fa-paint-roller me-2" aria-hidden="true"></i>@Html.Raw(siteName)
+            </h2>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Menüyü kapat"></button>
+        </div>
+        <div class="offcanvas-body">
+            @if (!string.IsNullOrEmpty(whatsapp))
+            {
+            <div class="mobile-menu-cta mb-4">
+                <a href="@boya_usta_web.Helpers.UrlHelperExtensions.GetWhatsAppLink(whatsapp, whatsappMessage)" target="_blank" class="btn btn-whatsapp w-100" aria-label="WhatsApp ile mesaj gönder">
+                    <i class="bi bi-whatsapp me-2" aria-hidden="true"></i><span>WhatsApp'tan Yaz</span>
+                </a>
+            </div>
+            }
+            <ul class="nav flex-column mobile-nav">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-house me-2" aria-hidden="true"></i>Ana Sayfa
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link highlight-link" asp-controller="Simulator" asp-action="Index">
+                        <i class="bi bi-palette-fill me-2" aria-hidden="true"></i>Renk Simülatörü
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Services" asp-action="Index">
+                        <i class="bi bi-tools me-2" aria-hidden="true"></i>Hizmetler
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Projects" asp-action="Index">
+                        <i class="bi bi-images me-2" aria-hidden="true"></i>Projeler
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="About">
+                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>Hakkımızda
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Contact" asp-action="Index">
+                        <i class="bi bi-envelope me-2" aria-hidden="true"></i>İletişim
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>

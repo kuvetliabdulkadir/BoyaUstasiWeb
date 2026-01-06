@@ -1,0 +1,247 @@
+﻿@model SiteSetting
+@{
+    ViewData["Title"] = "Ayar Düzenle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var isAssetKey = Model != null && (Model.Key == "LogoPath" || Model.Key == "FaviconPath" || Model.Key == "OgImagePath");
+    var isIconKey = Model != null && Model.Key.EndsWith("Icon", StringComparison.OrdinalIgnoreCase);
+
+    var labels = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["SiteName"] = "Site Adı",
+        ["SiteSlogan"] = "Site Slogan",
+        ["MetaDescription"] = "Meta Açıklama (SEO)",
+        ["FooterAboutShort"] = "Footer Kısa Açıklama",
+        ["HeroExperienceBadge"] = "Ana Sayfa - Tecrube Rozeti",
+        ["HeroDescription"] = "Ana Sayfa - Açıklama",
+        ["WhyUsSubtitle"] = "Ana Sayfa - Neden Biz Alt Başlık",
+        ["WhyUsTitle"] = "Ana Sayfa - Neden Biz Başlık",
+        ["WhyUsExperienceDescription"] = "Ana Sayfa - Neden Biz Açıklama",
+        ["WhyUsCard1Title"] = "Ana Sayfa - Kart 1 Başlık",
+        ["WhyUsCard1Desc"] = "Ana Sayfa - Kart 1 Açıklama",
+        ["WhyUsCard1Icon"] = "Ana Sayfa - Kart 1 İkon",
+        ["WhyUsCard2Title"] = "Ana Sayfa - Kart 2 Başlık",
+        ["TeamExperienceDescription"] = "Ana Sayfa - Kart 2 Açıklama",
+        ["WhyUsCard2Icon"] = "Ana Sayfa - Kart 2 İkon",
+        ["WhyUsCard3Title"] = "Ana Sayfa - Kart 3 Başlık",
+        ["WhyUsCard3Desc"] = "Ana Sayfa - Kart 3 Açıklama",
+        ["WhyUsCard3Icon"] = "Ana Sayfa - Kart 3 İkon",
+        ["WhyUsCard4Title"] = "Ana Sayfa - Kart 4 Başlık",
+        ["WhyUsCard4Desc"] = "Ana Sayfa - Kart 4 Açıklama",
+        ["WhyUsCard4Icon"] = "Ana Sayfa - Kart 4 İkon",
+        ["HeroFeature1Icon"] = "Ana Sayfa - Hero İkon 1",
+        ["HeroFeature2Icon"] = "Ana Sayfa - Hero İkon 2",
+        ["HeroFeature3Icon"] = "Ana Sayfa - Hero İkon 3",
+        ["AboutTitle"] = "Hakkımızda - Üst Başlık",
+        ["AboutText"] = "Hakkımızda - Ana Metin (ilk Paragraf)",
+        ["AboutText2"] = "Hakkımızda - İkinci Paragraf",
+        ["ExperienceBadgeYears"] = "Hakkımızda - Tecrube Rozeti (Yıl)",
+        ["ExperienceBadgeLabel"] = "Hakkımızda - Tecrube Rozeti (Etiket)",
+        ["AboutFeature1"] = "Hakkımızda - Özellik 1 Metin",
+        ["AboutFeature1Icon"] = "Hakkımızda - Özellik 1 İkon",
+        ["AboutFeature1IsActive"] = "Hakkımızda - Özellik 1 Aktif/Pasif",
+        ["AboutFeature2"] = "Hakkımızda - Özellik 2 Metin",
+        ["AboutFeature2Icon"] = "Hakkımızda - Özellik 2 İkon",
+        ["AboutFeature2IsActive"] = "Hakkımızda - Özellik 2 Aktif/Pasif",
+        ["AboutFeature3"] = "Hakkımızda - Özellik 3 Metin",
+        ["AboutFeature3Icon"] = "Hakkımızda - Özellik 3 İkon",
+        ["AboutFeature3IsActive"] = "Hakkımızda - Özellik 3 Aktif/Pasif",
+        ["AboutFeature4"] = "Hakkımızda - Özellik 4 Metin",
+        ["AboutFeature4Icon"] = "Hakkımızda - Özellik 4 İkon",
+        ["AboutFeature4IsActive"] = "Hakkımızda - Özellik 4 Aktif/Pasif",
+        ["Phone"] = "Telefon (gösterim)",
+        ["WhatsApp"] = "WhatsApp Numarası",
+        ["Email"] = "E-posta",
+        ["Address"] = "Adres",
+        ["WorkingHours"] = "Çalışma Saatleri",
+        ["GoogleMapsEmbed"] = "Google Maps Embed Kodu",
+        ["Facebook"] = "Facebook Linki",
+        ["Instagram"] = "Instagram Linki",
+        ["YouTube"] = "YouTube Linki",
+
+        ["LogoPath"] = "Logo",
+        ["FaviconPath"] = "Favicon",
+        ["OgImagePath"] = "Sosyal Paylaşım Göseli (OG)",
+
+        ["WhyUsCard1Icon"] = "Ana Sayfa - Kart 1 İkon",
+        ["WhyUsCard2Icon"] = "Ana Sayfa - Kart 2 İkon",
+        ["WhyUsCard3Icon"] = "Ana Sayfa - Kart 3 İkon",
+        ["WhyUsCard4Icon"] = "Ana Sayfa - Kart 4 İkon",
+        ["HeroFeature1Icon"] = "Ana Sayfa - Hero İkon 1",
+        ["HeroFeature2Icon"] = "Ana Sayfa - Hero İkon 2",
+        ["HeroFeature3Icon"] = "Ana Sayfa - Hero İkon 3"
+    };
+    var friendlyTitle = (Model != null && labels.TryGetValue(Model.Key, out var t)) ? t : (Model?.Key ?? "Ayar");
+
+    // Ayara özel yardım metni (site sahibi için)
+    var helpByKey = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["WhatsApp"] = "Örnek format: 90532XXXXXXX (boşluksuz).",
+        ["Phone"] = "Telefon sadece görüntülenir. Müşteriler aramasın diye tıklanabilir link kaldırıldı.",
+        ["Email"] = "Örnek: info@site.com",
+        ["WorkingHours"] = "Örnek: Pazartesi - Cumartesi: 08:00 - 19:00",
+        ["MetaDescription"] = "Google sonuçlarında görünen kısa açıklama (SEO). 1-2 cümle idealdir.",
+        ["GoogleMapsEmbed"] = "Google Maps > Paylaş > Harita yerleştir (Embed) kısmındaki <iframe> kodunu buraya yapıştırın.",
+
+    };
+
+    string GetHelpText()
+    {
+        if (Model == null) return "";
+        if (isAssetKey) return "Bu ayar görseller içindir. 'Site Görselleri' sayfasından değiştirin.";
+        if (isIconKey) return "İkonu listeden seçin. Yazmanız gerekmez.";
+        if (helpByKey.TryGetValue(Model.Key, out var h)) return h;
+        return "Bu sayfada genelde sadece 'Değer' kısmını değiştirmeniz yeterlidir.";
+    }
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Ayar Düzenle</h2>
+        <a href="@ViewBag.AdminPath/ayarlar" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri
+        </a>
+    </div>
+    <div class="admin-card-body">
+        <div class="alert alert-light border">
+            <strong>@friendlyTitle</strong>
+            <div class="text-muted small mt-1">@GetHelpText()</div>
+        </div>
+        <form method="post" class="admin-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Group" class="form-label">Grup</label>
+                    <input asp-for="Group" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Ayar</label>
+                    <input class="form-control" value="@friendlyTitle" readonly />
+                </div>
+                <div class="col-12">
+                    <label asp-for="Value" class="form-label">Değer</label>
+                    @if (isAssetKey)
+                    {
+                        <div class="alert alert-info">
+                            Bu ayar bir <strong>görsel yolu</strong> anahtarıdır. Lütfen görsel yüklemek/değiştirmek için
+                            <a href="@ViewBag.AdminPath/ayarlar/gorseller" class="alert-link">Site Görselleri</a> sayfasını kullanın.
+                        </div>
+                        <input asp-for="Value" class="form-control" readonly />
+                    }
+                    else if (isIconKey)
+                    {
+                        <div class="row g-3 align-items-end">
+                            <div class="col-lg-8">
+                                <select asp-for="Value" class="form-select" id="iconSelect" data-initial-value="@(Model?.Value ?? "")" data-preview-id="iconPreview">
+                                    <partial name="_IconSelectOptions" />
+                                </select>
+                                <div class="text-muted small mt-2">
+                                    Sadece listeden seçin. (İkon seti: Bootstrap Icons)
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="border rounded d-flex align-items-center justify-content-center" style="height: 48px; background: #fff;">
+                                    <i id="iconPreview" class="@(Model?.Value ?? "bi bi-stars")" style="font-size: 1.6rem;"></i>
+                                </div>
+                                <div class="text-muted small mt-2">
+                                    Seçilen: <code id="iconValueText">@(Model?.Value ?? "")</code>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <textarea asp-for="Value" class="form-control" rows="4"></textarea>
+                    }
+                </div>
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label">Başlık (Admin'de görünen isim)</label>
+                    <input asp-for="Description" class="form-control" placeholder="Örn: Site Adı / WhatsApp Numarası" />
+                    <div class="text-muted small mt-1">Boş bırakırsanız sistem otomatik başlık gösterir.</div>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-link p-0 text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#advancedKey" aria-expanded="false">
+                        <i class="bi bi-sliders me-2"></i>Gelişmiş (Kod)
+                    </button>
+                    <div class="collapse mt-2" id="advancedKey">
+                        <div class="card card-body">
+                            <label asp-for="Key" class="form-label">Kod (Anahtar)</label>
+                            <input asp-for="Key" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr class="my-3" />
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-check-lg me-2"></i>Kaydet
+                    </button>
+                    <a href="@ViewBag.AdminPath/ayarlar" class="btn btn-outline-secondary ms-2">İptal</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const select = document.getElementById('iconSelect');
+        const preview = document.getElementById('iconPreview');
+        const valueText = document.getElementById('iconValueText');
+        if (!select || !preview || !valueText) return;
+
+        // asp-for ile set edilmiş değeri al - önce data-initial-value'dan, sonra select.value'dan
+        let currentValue = select.getAttribute('data-initial-value') || select.value || '';
+        
+        // Trim yap
+        if (currentValue) {
+            currentValue = currentValue.trim();
+        }
+        
+        // Eğer değer boş değilse ve select'te bu option yoksa, ekle
+        if (currentValue) {
+            const trimmedValue = currentValue;
+            const hasOption = Array.from(select.options).some(o => {
+                const optValue = (o.value || '').trim();
+                return optValue === trimmedValue;
+            });
+            
+            if (!hasOption) {
+                // Özel değer - select'e ekle ve seç
+                const opt = document.createElement('option');
+                opt.value = trimmedValue;
+                opt.textContent = 'Mevcut (Özel): ' + trimmedValue;
+                opt.selected = true;
+                select.insertBefore(opt, select.firstChild);
+                currentValue = trimmedValue;
+            } else {
+                // Normal değer - sadece seç
+                select.value = trimmedValue;
+                // Tüm option'ların selected attribute'unu kaldır
+                Array.from(select.options).forEach(o => o.selected = false);
+                // Doğru option'ı seç
+                const correctOption = Array.from(select.options).find(o => (o.value || '').trim() === trimmedValue);
+                if (correctOption) {
+                    correctOption.selected = true;
+                }
+                currentValue = trimmedValue;
+            }
+        }
+
+        function apply(val) {
+            if (preview && val) {
+                preview.className = val.trim();
+                valueText.textContent = val.trim();
+            }
+        }
+
+        // İlk yüklemede preview'ı güncelle
+        apply(currentValue);
+        
+        // Değişiklik olduğunda preview'ı güncelle
+        select.addEventListener('change', function () {
+            apply(this.value);
+        });
+    });
+</script>
+}

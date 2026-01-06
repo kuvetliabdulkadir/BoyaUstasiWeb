@@ -1,0 +1,1590 @@
+﻿/*
+ * DOSYA: home.css
+ * KONUM: wwwroot/css/home.css
+ * KULLANIM: Views/Home/Index.cshtml
+ * 
+ * ACIKLAMA: Ana sayfa (Home Page) icin ozel stiller.
+ * Hero, Hizmetler, Projeler, Yorumlar ve SSS bolumlerini icerir.
+ */
+
+/* [BOLUM: HERO]
+   - Giris Alani
+   Sayfanin ilk acilan, tam ekran etkili bolumu. */
+.hero-section {
+    min-height: 90vh;
+    /* Ekranin %90'ini kapla */
+    display: flex;
+    /* Icerigi dikeyde ve yatayda hizala */
+    align-items: center;
+    padding: 8rem 0 4rem;
+    /* Header payi + Alt bosluk */
+    position: relative;
+    /* Icindeki absolute elementler icin */
+    overflow: hidden;
+    /* Yanlardan tasan susleri kes */
+    border-bottom: none;
+    margin-top: 0;
+}
+
+.hero-section .container {
+    max-width: 1400px;
+    /* Genis ekranlarda icerigi cok dagitma */
+}
+
+/* [DEKOR] Sag ustteki yuzen dev kirmizimsi daire */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(231, 76, 60, 0.1) 0%, transparent 70%);
+    /* Merkezden disa solan kirmizi */
+    border-radius: 50%;
+    animation: float 20s ease-in-out infinite;
+    /* Suzulme animasyonu */
+}
+
+.hero-section::after {
+    display: none;
+}
+
+/* [ANIMASYON] Yukari-Asagi Suzulme (Float) */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(30px, -30px) scale(1.1);
+    }
+
+    /* Ortada biraz saga-yukari git ve buy */
+}
+
+/* [KART] Sol icerik kutusu (Glassmorphism) */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    /* Resimlerin onunde dur */
+    background: rgba(255, 255, 255, 0.98);
+    /* Neredeyse opak beyaz */
+    padding: 4.5rem;
+    border-radius: 2rem;
+    /* Yumusak kose */
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.12);
+    /* Derin golge */
+    backdrop-filter: blur(15px);
+    /* Arka plani buzla */
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
+}
+
+/* [ROZET] "Lider Boya Firmasi" */
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, var(--secondary-color), #c0392b);
+    /* Altin-Kirmizi gecis */
+    color: white;
+    padding: 0.875rem 1.75rem;
+    border-radius: 50px;
+    /* Hap sekli */
+    font-weight: 600;
+    margin-bottom: 2.5rem;
+    font-size: 1rem;
+    box-shadow: 0 4px 20px rgba(231, 76, 60, 0.35);
+    /* Kirmizi parlama */
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.hero-badge:hover {
+    transform: translateY(-3px);
+    /* Hover'da uc */
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+}
+
+.hero-badge i {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+}
+
+/* [BASLIK] H1 Manset */
+.hero-title {
+    font-size: 4.2rem;
+    /* Dev font */
+    font-weight: 800;
+    /* Extra Bold */
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+    /* Satirlar siki dursun */
+    color: var(--dark);
+    /* Yazinin icini renklendir */
+    background: linear-gradient(135deg, var(--dark) 0%, var(--primary-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* Ici seffaf olsun ki gradient gorunsun */
+    background-clip: text;
+}
+
+.hero-description {
+    font-size: 1.4rem;
+    color: var(--gray);
+    margin-bottom: 3rem;
+    line-height: 1.8;
+}
+
+/* [OZELLIKLER] 3 Sutunlu Ikonlar */
+.hero-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 Esit parca */
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.hero-feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1.25rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 1rem;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.hero-feature:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--secondary-color);
+    /* Kenar rengi degissin */
+}
+
+.hero-feature i {
+    color: var(--secondary-color);
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.hero-feature span {
+    color: var(--dark);
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+/* [BUTONLAR] Hero Buton Grubu */
+.hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.hero-cta .btn {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.hero-cta .btn-primary {
+    background: linear-gradient(135deg, var(--secondary-color), #c0392b);
+    border: none;
+    color: white;
+}
+
+.hero-cta .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+}
+
+.hero-cta .btn-outline-primary {
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    background: white;
+}
+
+.hero-cta .btn-outline-primary:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-3px);
+}
+
+/* [SAG GORSEL ALANI] */
+.hero-image {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.hero-visual-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    min-height: 550px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-visual-showcase {
+    width: 100%;
+    max-width: 600px;
+    height: 100%;
+    min-height: 550px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Resim Cercevesi */
+.hero-image-wrapper {
+    position: relative;
+    z-index: 2;
+    width: 90%;
+    max-width: 500px;
+    aspect-ratio: 1;
+    /* Kare */
+}
+
+.hero-image-frame {
+    width: 100%;
+    height: 100%;
+    border-radius: 2rem;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Resim Overlay (Hafif kararti) */
+.hero-image-frame::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(18, 42, 66, 0.03) 0%, rgba(231, 76, 60, 0.03) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.hero-visual-showcase:hover .hero-image-frame {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.hero-image-main {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-visual-showcase:hover .hero-image-main {
+    transform: scale(1.05);
+    /* Zoom in */
+}
+
+/* [ARKA PLAN SEKILLERI] - Geometrik Susler */
+.hero-geometric-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    border-radius: 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
+}
+
+.geometric-shape {
+    position: absolute;
+    opacity: 0.6;
+}
+
+/* Sekil 1: Mavi Amorf */
+.geo-1 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    top: -50px;
+    right: -50px;
+    animation: morph-shape 8s ease-in-out infinite;
+    /* Sekil degistirme */
+}
+
+/* Sekil 2: Kirmizi Amorf */
+.geo-2 {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, var(--secondary-color), #c0392b);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    bottom: -30px;
+    left: -30px;
+    animation: morph-shape 10s ease-in-out infinite reverse;
+}
+
+/* Sekil 3: Gri Daire */
+.geo-3 {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, rgba(44, 62, 80, 0.3), rgba(52, 73, 94, 0.3));
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: float-gentle 6s ease-in-out infinite;
+}
+
+/* [ANIMASYON] Sekil Degistirme (Morphing) */
+@keyframes morph-shape {
+
+    0%,
+    100% {
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+
+    25% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+
+    50% {
+        border-radius: 70% 30% 50% 50% / 30% 60% 40% 70%;
+    }
+
+    75% {
+        border-radius: 40% 60% 70% 30% / 50% 50% 30% 60%;
+    }
+}
+
+@keyframes float-gentle {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) translateY(0);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) translateY(-20px);
+    }
+}
+
+/* Istatistik Minikleri */
+.hero-content-card {
+    position: relative;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 2rem;
+    padding: 3.5rem;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    width: 90%;
+    max-width: 500px;
+    transition: all 0.4s ease;
+}
+
+.hero-content-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+}
+
+.hero-icon-circle {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 2rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(44, 62, 80, 0.2);
+    position: relative;
+}
+
+/* Ikon halkasi animasyonu */
+.hero-icon-circle::before {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    opacity: 0.2;
+    z-index: -1;
+    animation: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(1);
+        opacity: 0.2;
+    }
+
+    100% {
+        transform: scale(1.3);
+        opacity: 0;
+    }
+}
+
+.hero-icon-circle i {
+    font-size: 4rem;
+    color: white;
+}
+
+.hero-visual-title {
+    font-size: 2.5rem !important;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.hero-visual-subtitle {
+    font-size: 1.5rem !important;
+    color: var(--gray);
+    margin-bottom: 2rem;
+    font-weight: 500;
+}
+
+.hero-stats-mini {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+}
+
+.stat-mini {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-number {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--secondary-color);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+/* [BOLUM: HIZMETLER]
+   - Services List */
+.services-section {
+    padding: 5rem 0;
+    border-top: none;
+    background-color: var(--secondary-bg) !important;
+    color: var(--text-light);
+}
+
+.services-section .section-subtitle {
+    color: var(--accent-gold) !important;
+}
+
+.services-section .section-title {
+    color: var(--text-light) !important;
+}
+
+.services-section .section-description {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Bolum Basliklari */
+.section-header {
+    margin-bottom: 3rem;
+}
+
+.section-subtitle {
+    display: inline-block;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
+
+.section-description {
+    color: var(--gray);
+    font-size: 1.125rem;
+}
+
+
+/* [KART] Hizmet Kutusu */
+.service-card {
+    background: #FAF9F6;
+    /* Krem/Bej Tonu */
+    padding: 2.5rem 2rem;
+    border-radius: 24px;
+    /* Daha yuvarlak koseler */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    height: 488px;
+    max-height: 488px;
+    text-align: center;
+    transition: all var(--transition-fast);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: none;
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+}
+
+/* Kart Icerik Alani */
+.service-card-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-right: 0.5rem;
+}
+
+.service-card-content::-webkit-scrollbar {
+    display: none;
+}
+
+.service-card h3 {
+    margin: 1rem 0 0.5rem;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.service-card p {
+    color: #2c3e50 !important;
+    /* Daha koyu ve net */
+    font-size: 1rem;
+    line-height: 1.6;
+    font-weight: 500;
+    /* Biraz daha dolgun */
+}
+
+.service-price {
+    margin: 1rem auto;
+    display: inline-block;
+    background-color: rgba(142, 115, 91, 0.15);
+    /* Acik Kahve Seffaf Zemin */
+    color: #8E735B;
+    /* Koyu Altin/Kahve Yazi */
+    padding: 0.4rem 1.25rem;
+    border-radius: 50px;
+    /* Hap seklinde */
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: 1px solid rgba(142, 115, 91, 0.2);
+}
+
+/* Kart Butonu */
+.service-card .btn {
+    flex-shrink: 0;
+    margin-top: auto;
+    background: transparent;
+    border: 2px solid #8E735B;
+    /* Altin/Kahve Cerceve */
+    color: #2c3e50 !important;
+    /* Koyu Yazi */
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.service-card .btn:hover {
+    background: #8E735B;
+    color: white !important;
+}
+
+/* [KAYDIRMA LISTESI] - Yatay Slider Alternatifi */
+.services-scroll-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 1rem 0;
+    margin: 0 -15px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    will-change: scroll-position;
+    touch-action: auto;
+    /* Hem yatay hem dikey kaydirmaya izin ver */
+}
+
+.services-scroll-container:hover {
+    overflow-x: auto;
+    cursor: grab;
+}
+
+.services-scroll-container.grabbing {
+    cursor: grabbing !important;
+}
+
+.services-scroll-container:hover::-webkit-scrollbar {
+    display: none;
+}
+
+.services-scroll-container:active {
+    cursor: grabbing;
+}
+
+.services-scroll-wrapper {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0 15px;
+    min-width: max-content;
+    transform: translateZ(0);
+}
+
+.service-card-wrapper {
+    flex: 0 0 auto;
+    width: 300px;
+    /* Kart genisligi biraz daraltildi */
+    min-width: 300px;
+    max-width: 300px;
+}
+
+/* Ikon ve Resim Alanlari */
+.service-icon {
+    width: 80px;
+    height: 80px;
+    /* Gradient: Koyu Griden Altina Gecis */
+    background: linear-gradient(180deg, #434c56 0%, #7d6c4d 100%);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2.5rem;
+    color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.service-image {
+    width: 100%;
+    height: 200px;
+    margin: 0 auto 1.5rem;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--light);
+}
+
+.service-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.service-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
+
+.service-card p {
+    color: var(--gray);
+    margin-bottom: 1.5rem;
+    flex-grow: 0;
+}
+
+/* "Tumunu Gor" Butonu */
+.services-view-all-btn,
+.services-view-all-btn:focus,
+.services-view-all-btn:active,
+.services-view-all-btn.btn-primary {
+    color: var(--text-light) !important;
+    font-size: 1.4rem !important;
+}
+
+.services-view-all-btn:hover {
+    background: var(--primary-bg) !important;
+    color: #000000 !important;
+    border-color: var(--accent-gold) !important;
+}
+
+.services-view-all-btn i {
+    color: var(--text-light) !important;
+}
+
+.services-view-all-btn:hover i {
+    color: #000000 !important;
+}
+
+/* [BOLUM: NEDEN BIZ?] - Why Us */
+.why-us-section {
+    padding: 5rem 0;
+}
+
+.why-us-section .section-subtitle {
+    color: var(--accent-gold) !important;
+}
+
+.why-us-card {
+    background: #FAF9F6;
+    /* Krem/Bej Tonu */
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    /* Yumusak Golge */
+    height: 100%;
+    border: none;
+    transition: transform 0.3s ease;
+}
+
+.why-us-card:hover {
+    transform: translateY(-5px);
+}
+
+.why-us-icon {
+    width: 80px;
+    height: 80px;
+    background: #8E735B;
+    /* Koyu Altin/Kahve */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: white;
+    box-shadow: 0 4px 12px rgba(142, 115, 91, 0.3);
+}
+
+.why-us-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #2c3e50 !important;
+    /* Koyu Baslik */
+    font-weight: 700;
+}
+
+.why-us-card p {
+    color: #2c3e50 !important;
+    /* Daha Koyu/Net */
+    margin: 0;
+    line-height: 1.6;
+    font-weight: 500;
+}
+
+
+
+/* [BOLUM: PROJELER] - Projects Section */
+.projects-section {
+    padding: 5rem 0;
+    background-color: #2c3e50;
+    /* Koyu Lacivert Zemin */
+    color: white;
+}
+
+.projects-section .section-subtitle {
+    display: block;
+    color: #bdc3c7 !important;
+    /* Acik Gri */
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+}
+
+.projects-section .section-title {
+    color: white !important;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.projects-section p {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.project-card {
+    background: white;
+    /* Kart Zemini Beyaz */
+    border-radius: 20px;
+    /* Yuvarlak Koseler */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    height: 100%;
+    transition: transform 0.3s ease;
+    border: none;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+}
+
+.project-image {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    border-radius: 20px 20px 0 0;
+    /* Sadece ust koseler */
+}
+
+.project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.project-card:hover .project-image img {
+    transform: scale(1.1);
+}
+
+.project-content {
+    padding: 1.5rem;
+    color: #2c3e50;
+    background: white;
+    border-radius: 0 0 20px 20px;
+}
+
+.project-content h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+/* Kategori Etiketi (Kahverengi Hap) */
+.project-category {
+    display: inline-block;
+    background: #8E735B;
+    /* Kahverengi */
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.project-location {
+    color: #7f8c8d !important;
+    /* Gorunur olmasi icin zorla gri */
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.project-location i {
+    color: #2c3e50;
+}
+
+/* Tum Projeler ve Tum Hizmetler Butonu (Ortak Stil) */
+.projects-section .text-center .btn,
+.services-section .text-center .btn {
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    /* Hafif Beyaz Cerceve */
+    color: white !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 1.1rem !important;
+    /* Yazi Buyutuldu */
+    padding: 1.2rem 3rem !important;
+    /* Boyut Buyutuldu ve Zorlandi */
+    border-radius: 8px;
+    /* Hafif Yuvarlak */
+    box-shadow: none !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* Ortala */
+    letter-spacing: 1.5px;
+    transition: all 0.3s ease;
+    min-width: 350px;
+    /* Genislik Esitlendi */
+}
+
+.projects-section .text-center .btn i,
+.services-section .text-center .btn i {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+    margin-left: 10px;
+}
+
+/* Hover Durumu (Gorseldeki Gibi: Beyaz Kutu, Koyu Yazi) */
+.projects-section .text-center .btn:hover,
+.services-section .text-center .btn:hover {
+    background: white !important;
+    color: #2c3e50 !important;
+    /* Koyu Lacivert Yazi */
+    border-color: white !important;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+.projects-section .text-center .btn:hover i,
+.services-section .text-center .btn:hover i {
+    transform: translateX(5px);
+    color: #2c3e50 !important;
+}
+
+/* [BOLUM: YORUMLAR] - Testimonials */
+.reviews-section {
+    padding: 5rem 0;
+    background: #F9F4EB;
+    color: var(--text-main);
+}
+
+.reviews-section .section-subtitle {
+    color: var(--accent-gold) !important;
+}
+
+.reviews-section .section-description {
+    color: var(--text-main);
+}
+
+.reviews-scroll-container {
+    overflow-x: hidden;
+    overflow-y: hidden;
+    padding: 1rem 0;
+    margin: 0 -15px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    will-change: scroll-position;
+}
+
+.reviews-scroll-container:hover {
+    overflow-x: auto;
+    cursor: grab;
+}
+
+.reviews-scroll-container:active {
+    cursor: grabbing;
+}
+
+.reviews-scroll-container:hover::-webkit-scrollbar {
+    display: none;
+}
+
+.reviews-scroll-wrapper {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0 15px;
+    min-width: max-content;
+    transform: translateZ(0);
+}
+
+.testimonial-card-wrapper {
+    flex: 0 0 auto;
+    width: 350px;
+    min-width: 350px;
+    max-width: 350px;
+}
+
+.testimonial-card {
+    background: var(--white) !important;
+    backdrop-filter: none;
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(44, 62, 80, 0.15);
+    height: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-comment {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+    color: #000000 !important;
+    /* Tam Siyah/Cok Koyu */
+    font-weight: 500;
+}
+
+.testimonial-author strong {
+    font-size: 1.125rem;
+    color: var(--secondary-bg) !important;
+    font-weight: 700;
+}
+
+.testimonial-location {
+    font-size: 0.875rem;
+    color: var(--text-main) !important;
+}
+
+.testimonial-location i {
+    color: var(--accent-gold) !important;
+}
+
+/* [BOLUM: S.S.S.] - Accordion FAQ */
+.faq-section {
+    padding: 5rem 0;
+    background-color: var(--secondary-bg) !important;
+    /* Koyu Gri/Lacivert Zemin */
+    color: var(--text-light);
+}
+
+.faq-section .section-title {
+    color: var(--text-light) !important;
+}
+
+.faq-section .section-description {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.faq-section .section-subtitle {
+    color: var(--accent-gold) !important;
+}
+
+.accordion-item {
+    border: none;
+    /* Cizgiyi kaldir, golge kullan */
+    margin-bottom: 1.25rem;
+    border-radius: 16px !important;
+    /* Daha yuvarlak */
+    overflow: hidden;
+    /* Koseler tasmasin */
+    background: var(--primary-bg);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.accordion-button {
+    background: var(--primary-bg) !important;
+    color: #2c3e50 !important;
+    /* Koyu Yazi */
+    font-weight: 600;
+    font-size: 1.15rem;
+    /* Daha Buyuk */
+    padding: 1.5rem 2rem;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed) {
+    background: #FAF9F6 !important;
+    /* Hafif Krem acilinca */
+    color: var(--accent-gold) !important;
+    /* Altin Rengi Yazi */
+    box-shadow: none !important;
+}
+
+.accordion-button::after {
+    background-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.accordion-body {
+    padding: 1.5rem 2rem;
+    font-size: 1.15rem;
+    /* Daha Buyuk */
+    font-weight: 500;
+    /* Daha Kalin */
+    color: #2c3e50;
+    /* Daha Koyu */
+    line-height: 1.6;
+    background-color: #FAF9F6;
+}
+
+.accordion-body {
+    padding: 1.5rem;
+    color: var(--text-main) !important;
+    background: var(--primary-bg) !important;
+    line-height: 1.8;
+}
+
+/* Dikey Kaydirabilir FAQ */
+.faq-scroll-container {
+    overflow-x: hidden;
+    overflow-y: hidden;
+    padding: 1rem 0;
+    max-height: 600px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    will-change: scroll-position;
+}
+
+.faq-scroll-container:hover {
+    overflow-y: auto;
+    cursor: grab;
+}
+
+.faq-scroll-container:active {
+    cursor: grabbing;
+}
+
+.faq-scroll-container:hover::-webkit-scrollbar {
+    display: none;
+}
+
+/* [BOLUM: CTA] - Alt Teklif Kutusu */
+.cta-section {
+    padding: 5rem 0;
+}
+
+.cta-wrapper {
+    background: linear-gradient(90deg, #2c3e50 0%, #8E735B 100%);
+    /* Gorseldeki gibi gecis */
+    border-radius: 20px;
+    padding: 4rem 3rem;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.cta-wrapper h2 {
+    color: white;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.cta-wrapper p {
+    color: rgba(255, 255, 255, 0.95) !important;
+    margin: 0;
+    max-width: 600px;
+    font-size: 1.25rem;
+    /* Yazi Buyutuldu */
+    font-weight: 500;
+}
+
+/* CTA Butonlari */
+.cta-wrapper .btn-secondary,
+.cta-wrapper .btn-outline-light {
+    font-size: 1.25rem !important;
+    /* Daha Buyuk Yazi */
+    padding: 1rem 2rem !important;
+    /* Daha Genis Dolgu */
+    border-radius: 12px !important;
+    /* Yumusak Koseler */
+    font-weight: 700 !important;
+    /* Kalin Yazi */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cta-wrapper .btn-secondary {
+    background: white !important;
+    color: #8E735B !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* WhatsApp Butonu Hover Efekti */
+.cta-wrapper .btn-secondary:hover {
+    background: #8E735B !important;
+    /* Kahverengi Arka Plan */
+    color: white !important;
+    /* Beyaz Yazi */
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+.cta-wrapper .btn-outline-light {
+    background: transparent !important;
+    border: 2.5px solid #ffffff !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.cta-wrapper .btn-outline-light:hover {
+    background: white !important;
+    color: #8E735B !important;
+    border-color: white !important;
+}
+
+/* [RESPONSIVE]
+   - Medya Sorgulari
+   Web sitesinin farkli ekran boyutlarinda (Telefon, Tablet, Bilgisayar)
+   nasil gorunecegini ayarlayan kurallar. */
+
+/* [BUYUK EKRANLAR] - 1400px ve Uzeri (Genis Monitorler) */
+@media (min-width: 1400px) {
+
+    /* Icerigi daha genis tutak ki kenarlarda cok bosluk kalmasin */
+    .hero-section .container {
+        max-width: 1600px;
+    }
+
+    /* Yazilari ve dolgulari buyut (Buyuk ekranda kucuk kalmasin) */
+    .hero-content {
+        padding: 5rem;
+    }
+
+    .hero-title {
+        font-size: 4.5rem;
+    }
+}
+
+/* [TABLET VE KUCUK LAPTOPLAR] - 991px ve alti
+   Bu nokta (Breakpoint) genellikle mobil menuye gecis noktasidir.
+   Yan yana duran sutunlar burada alt alta (Stack) gecer.
+*/
+@media (max-width: 991.98px) {
+
+    /* Hero bolumunu sikistir */
+    .hero-section {
+        min-height: auto;
+        padding: 7rem 0 3rem;
+        margin-top: 2rem;
+    }
+
+    .hero-content {
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    /* Basligi kucult */
+
+    /* Yan yana duran 3 ozellik kutusunu alt alta diz (Tek sutun) */
+    .hero-features {
+        grid-template-columns: 1fr;
+    }
+
+    /* Butonlari alt alta diz */
+    .hero-cta {
+        flex-direction: column;
+    }
+
+    .hero-cta .btn {
+        width: 100%;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Kart genisliklerini sabitle (Slider icinde duzgun dursun) */
+    .service-card-wrapper {
+        width: 320px !important;
+    }
+
+    .service-card {
+        height: 480px !important;
+        max-height: 480px !important;
+        padding: 2rem !important;
+    }
+
+    .testimonial-card-wrapper {
+        width: 300px !important;
+    }
+
+    /* CTA (Teklif) kutusundaki yazilari ortala */
+    .cta-wrapper {
+        text-align: center;
+    }
+}
+
+/* [MOBIL TELEFONLAR] - 575px ve alti (Dikey Telefonlar) */
+@media (max-width: 575.98px) {
+
+    /* Kartlari ekranin genisligine gore daralt */
+    .service-card-wrapper {
+        width: 250px !important;
+    }
+
+    /* Kart yuksekligini azalt (Mobilde cok yer kaplamasin) */
+    .service-card {
+        height: 400px !important;
+        max-height: 400px !important;
+    }
+
+    .testimonial-card-wrapper {
+        width: 280px !important;
+    }
+}
+
+/* [PROJE KARTI OVERLAY]
+   - Hover Efekti */
+.project-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    /* Hafif karartma */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+    border-radius: 20px 20px 0 0;
+    z-index: 2;
+    /* Placeholder'in ustunde ciksin */
+}
+
+.project-card:hover .project-overlay {
+    opacity: 1;
+}
+
+/* Detayli Goruntule Butonu */
+.project-overlay .btn {
+    background: white !important;
+    color: #2c3e50 !important;
+    /* Koyu Lacivert/Siyah Metin */
+    font-weight: 600;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    border: 2px solid #8E735B;
+    /* Altin/Kahverengi Cerceve */
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+.project-card:hover .project-overlay .btn {
+    transform: translateY(0);
+}
+
+.project-overlay .btn:hover {
+    background: #8E735B !important;
+    /* Hover'da Kahverengi */
+    color: white !important;
+    border-color: #8E735B;
+}
+
+/* [RESIM YOKSA] - Placeholder (Home - One Cikanlar) */
+.project-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #f8f9fa;
+    /* Acik Gri Zemin */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2c3e50;
+    /* Koyu Gorunur Ikon Rengi */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    /* Overlay'in altinda kalsin */
+}
+
+.project-slider {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    gap: 2rem;
+    /* Kartlar arasi bosluk */
+    padding: 2rem 1rem;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge */
+    align-items: stretch;
+    /* Kartlari esit yukseklikte tut */
+}
+
+/* Scrollbari gizle */
+.project-slider::-webkit-scrollbar {
+    display: none;
+}
+
+/* Slider Ogesi (Kart Sarmalayici) */
+.project-slide-item {
+    flex: 0 0 auto;
+    width: 400px;
+    /* PC icin ideal genislik */
+    max-width: 90vw;
+    /* Mobilde ekrani tasmasin */
+    transition: transform 0.3s ease;
+}
+
+.project-slide-item:hover {
+    transform: translateY(-5px);
+    /* Hafif yukari kalkma */
+}
+
+/* Kartin kendisi slider icinde tam yukseklikte olsun */
+.project-slide-item .project-card {
+    height: 100%;
+    margin-bottom: 0;
+}
+
+/* Slider Navigasyon Butonlari */
+.slider-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    border: none;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0.9;
+}
+
+.slider-nav-btn:hover {
+    background: #8E735B;
+    color: white;
+    opacity: 1;
+    transform: translateY(-50%) scale(1.15);
+    box-shadow: 0 10px 30px rgba(142, 115, 91, 0.4);
+}
+
+.slider-prev {
+    left: -20px;
+}
+
+.slider-next {
+    right: -20px;
+}
+
+/* Mobil / Tablet Uyumlulugu */
+@media (max-width: 991px) {
+    .project-slide-item {
+        width: 340px;
+        /* Tablet icin biraz daha dar */
+    }
+}
+
+@media (max-width: 768px) {
+    .slider-nav-btn {
+        display: none;
+        /* Mobilde butonlari gizle, kaydirma daha kolay */
+    }
+
+    .project-slide-item {
+        width: 300px;
+        /* Mobil icin ideal */
+        max-width: 85vw;
+    }
+
+    .project-slider {
+        gap: 1rem;
+        padding: 1rem 0.5rem;
+    }
+}
+
+/* [BOLUM: PROJE SLIDER] - Yatay Kaydirma Duzeltmesi */
+.project-slider-container {
+    position: relative;
+    padding: 0 1rem;
+    margin: 2rem 0;
+}
+
+.project-slider {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    gap: 2rem;
+    padding: 2rem 1rem;
+    align-items: stretch;
+    /* Scrollbar gizleme */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.project-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.project-slide-item {
+    flex: 0 0 auto;
+    width: 400px;
+    /* PC */
+    max-width: 90vw;
+    transition: transform 0.3s ease;
+}
+
+.project-slide-item:hover {
+    transform: translateY(-5px);
+}
+
+.project-slide-item .project-card {
+    height: 100%;
+    margin-bottom: 0;
+    width: 100%;
+}
+
+/* Navigasyon Butonlari */
+.slider-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border: none;
+    color: #2c3e50;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.slider-nav-btn:hover {
+    background: #8E735B;
+    color: white;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.slider-prev {
+    left: 0;
+}
+
+.slider-next {
+    right: 0;
+}
+
+@media (max-width: 991px) {
+    .project-slide-item {
+        width: 320px;
+    }
+}
+
+@media (max-width: 768px) {
+    .slider-nav-btn {
+        display: none;
+    }
+
+    .project-slide-item {
+        width: 300px;
+    }
+
+    .project-slider {
+        gap: 1rem;
+        padding: 1rem 0.5rem;
+    }
+}

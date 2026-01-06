@@ -1,0 +1,68 @@
+@model boya_usta_web.Models.ViewModels.SeoSettingsVm
+
+@* Temel SEO *@
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <i class="bi bi-globe me-2"></i>Temel SEO Ayarları
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="SiteUrl" class="form-label"></label>
+                <input asp-for="SiteUrl" class="form-control" placeholder="https://www.example.com" />
+                <div class="form-text">Sitenizin tam URL'si (https:// ile başlamalı)</div>
+                <span asp-validation-for="SiteUrl" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="SiteName" class="form-label"></label>
+                <input asp-for="SiteName" class="form-control" placeholder="Bursa Boya Ustası" />
+                <div class="form-text">Sitenizin adı (marka adı)</div>
+                <span asp-validation-for="SiteName" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="DefaultTitle" class="form-label"></label>
+                <input asp-for="DefaultTitle" class="form-control" maxlength="70" id="defaultTitle" />
+                <div class="form-text">
+                    Arama sonuçlarında görünecek başlık. <strong>50-60 karakter</strong> ideal.
+                    <span class="float-end"><span id="titleCount">0</span>/70</span>
+                </div>
+                <span asp-validation-for="DefaultTitle" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="DefaultDescription" class="form-label"></label>
+                <textarea asp-for="DefaultDescription" class="form-control" rows="3" maxlength="160" id="defaultDesc"></textarea>
+                <div class="form-text">
+                    Arama sonuçlarında görünecek açıklama. <strong>150-160 karakter</strong> ideal.
+                    <span class="float-end"><span id="descCount">0</span>/160</span>
+                </div>
+                <span asp-validation-for="DefaultDescription" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="DefaultKeywords" class="form-label"></label>
+                @* Hidden input for form submission *@
+                <input type="hidden" asp-for="DefaultKeywords" id="keywordsHidden" />
+                
+                @* Tag Input UI *@
+                <div class="keywords-container">
+                    <div class="keywords-tags" id="keywordsTags">
+                        @* Tags will be rendered here *@
+                    </div>
+                    <div class="input-group mt-2">
+                        <input type="text" class="form-control" id="keywordInput" 
+                               placeholder="Anahtar kelime yazın ve Enter'a basın..." 
+                               autocomplete="off" />
+                        <button type="button" class="btn btn-outline-primary" id="addKeywordBtn">
+                            <i class="bi bi-plus-lg"></i> Ekle
+                        </button>
+                    </div>
+                </div>
+                <div class="form-text">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Anahtar kelime yazıp Enter'a basın veya Ekle butonuna tıklayın. Silmek için kelime üzerindeki X'e tıklayın.
+                    <span class="float-end"><span id="keywordCount">0</span> anahtar kelime</span>
+                </div>
+                <span asp-validation-for="DefaultKeywords" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</div>

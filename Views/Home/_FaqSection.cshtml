@@ -1,0 +1,44 @@
+﻿@using boya_usta_web.Helpers
+@{
+    var faqs = ViewBag.Faqs as List<Faq> ?? new List<Faq>();
+}
+
+@if (faqs.Any())
+{
+    @*SSS *@
+    <section class="faq-section bg-light-custom">
+        <div class="container">
+            <div class="section-header text-center fade-in">
+                <span class="section-subtitle">Sık Sorulan Sorular</span>
+                <h2 class="section-title">Merak Ettikleriniz</h2>
+                <p class="section-description">En çok sorulan sorular ve cevapları</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="faq-scroll-container">
+                        <div class="faq-scroll-wrapper">
+                            <div class="accordion accordion-flush" id="faqAccordion">
+                                @foreach (var (faq, index) in faqs.Select((f, i) => (f, i)))
+                                {
+                                    <div class="accordion-item fade-in">
+                                        <h2 class="accordion-header" id="faqHeading@(faq.Id)">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse@(faq.Id)" aria-expanded="false" aria-controls="faqCollapse@(faq.Id)">
+                                        @Html.Raw(faq.Question)
+                                    </button>
+                                </h2>
+                                        <div id="faqCollapse@(faq.Id)" class="accordion-collapse collapse" aria-labelledby="faqHeading@(faq.Id)" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body" style="white-space: normal; word-wrap: break-word; overflow-wrap: break-word;">
+                                        @Html.Raw(HtmlSanitizerHelper.SanitizeWithLineBreaks(faq.Answer).Replace("!", "").Replace("Kesinlikle", ""))
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+

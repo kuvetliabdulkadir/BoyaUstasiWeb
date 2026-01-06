@@ -1,0 +1,115 @@
+﻿@{
+    ViewData["Title"] = "Google Yorumlarını Aktar";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Google Yorumlarını Aktar</h2>
+        <a href="@ViewBag.AdminPath/yorumlar" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri
+        </a>
+    </div>
+    <div class="admin-card-body">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+        @if (TempData["Warning"] != null)
+        {
+            <div class="alert alert-warning">@TempData["Warning"]</div>
+        }
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card border mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-cloud-download me-2"></i>Google Places API ile Aktar</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" class="admin-form">
+                            @Html.AntiForgeryToken()
+                            <div class="mb-3">
+                                <label class="form-label">Google Place ID *</label>
+                                <input type="text" name="placeId" class="form-control" placeholder="ChIJN1t_tDeuEmsRUsoyG83frY4" required />
+                                <div class="form-text">
+                                    Google İşletmeler sayfanızın Place ID'sini bulmak için: 
+                                    <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank">
+                                        Place ID Nasıl Bulunur?
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Google Places API Key</label>
+                                <input type="text" name="apiKey" class="form-control" placeholder="AIzaSy..." />
+                                <div class="form-text">
+                                    Boş bırakılırsa ayarlardan kaydedilen API key kullanılır. 
+                                    <a href="https://console.cloud.google.com/google/maps-apis" target="_blank">
+                                        API Key Al
+                                    </a>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-download me-2"></i>Yorumları Çek ve Aktar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card border mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-code me-2"></i>JSON ile Aktar</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" class="admin-form">
+                            @Html.AntiForgeryToken()
+                            <div class="mb-3">
+                                <label class="form-label">JSON Verisi *</label>
+                                <textarea name="jsonData" class="form-control" rows="10" placeholder='[{"author_name": "Ahmet B.", "text": "Harika hizmet!", "rating": 5, "time": 1234567890}]' required></textarea>
+                                <div class="form-text">
+                                    Google İşletmeler yorumlarını JSON formatında buraya yapıştırın. 
+                                    Format: <code>[{"author_name": "...", "text": "...", "rating": 5, "time": 1234567890}]</code>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-upload me-2"></i>JSON'dan Aktar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info mt-4">
+            <h6><i class="bi bi-info-circle me-2"></i>Bilgilendirme</h6>
+            <ul class="mb-0">
+                <li><strong>Google Places API:</strong> Otomatik olarak Google'dan yorumları çeker. API key gerektirir.</li>
+                <li><strong>JSON Import:</strong> Google İşletmeler sayfasından yorumları kopyalayıp JSON formatında yapıştırabilirsiniz.</li>
+                <li>Yorumlar otomatik olarak duplicate kontrolünden geçer. Aynı yorum tekrar eklenmez.</li>
+                <li>Yorumlar "Google" kaynağı olarak işaretlenir ve aktif durumda eklenir.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Loading göster
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const button = this.querySelector('button[type="submit"]');
+                if (button) {
+                    button.disabled = true;
+                    button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Yükleniyor...';
+                }
+            });
+        });
+    </script>
+}
+

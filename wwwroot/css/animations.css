@@ -1,0 +1,434 @@
+﻿/*
+ * DOSYA: animations.css
+ * KONUM: wwwroot/css/animations.css
+ * KULLANIM: Views/Shared/_Layout.cshtml (Global)
+ * 
+ * AÇIKLAMA: Sitedeki tüm hareketli efektlerin (Fade, Slide, Boya damlaması vb.) bulunduğu dosya.
+ * Bu dosya, sayfanın "canlı" hissettirmesini sağlayan görsel efektleri yönetir.
+ */
+
+/* [GIRIS EFEKTLERI] - Fade & Slide
+   Sayfa yuklenirken veya scroll yaparken elementlerin yumusakca belirmesi. */
+
+/* [FADE-IN] Aşağıdan yukarı doğru süzülerek görünür olma */
+.fade-in {
+    opacity: 0;
+    /* Başlangıçta görünmez */
+    transform: translateY(30px);
+    /* 30px aşağıda başla */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    /* 0.3 saniyede tamamla */
+}
+
+/* JavaScript (.visible) ekleyince devreye giren durum */
+.fade-in.visible {
+    opacity: 1;
+    /* Tam görünür */
+    transform: translateY(0);
+    /* Orijinal konumuna gel */
+}
+
+/* [FADE-IN LEFT] Soldan sağa kayarak gelme */
+.fade-in-left {
+    opacity: 0;
+    transform: translateX(-50px);
+    /* 50px solda başla */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-in-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* [FADE-IN RIGHT] Sağdan sola kayarak gelme */
+.fade-in-right {
+    opacity: 0;
+    transform: translateX(50px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-in-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* [SCALE-IN] Küçürekten büyüyerek gelme (Pop-up efekti) */
+.scale-in {
+    opacity: 0;
+    transform: scale(0.8);
+    /* %80 boyutta başla */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.scale-in.visible {
+    opacity: 1;
+    transform: scale(1);
+    /* %100 boyuta ulaş */
+}
+
+/* [SIRALI GECİKME] - Stagger Effect
+   Liste elemanlarının hepsi aynı anda değil, sırayla gelmesini sağlar.
+   Örn: 1. kart gelir, 0.05sn sonra 2. kart gelir...
+*/
+.stagger-1 {
+    transition-delay: 0.05s;
+}
+
+.stagger-2 {
+    transition-delay: 0.1s;
+}
+
+.stagger-3 {
+    transition-delay: 0.15s;
+}
+
+.stagger-4 {
+    transition-delay: 0.2s;
+}
+
+.stagger-5 {
+    transition-delay: 0.25s;
+}
+
+.stagger-6 {
+    transition-delay: 0.3s;
+}
+
+/* [BOYA DAMLAMA EFEKTI] - Paint Drip Logic
+   Sayfanin ustunden rastgele zamanlarda dusen boya damalalari. */
+.paint-drip-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    overflow: hidden;
+    /* Taşan damlaları gizle */
+    pointer-events: none;
+    /* Tıklamaları engellememesi için */
+    z-index: 1;
+    opacity: 0.95;
+}
+
+/* Ana Damla Hareketi */
+.paint-drip {
+    position: absolute;
+    top: -25vh;
+    /* Ekranın çok üzerinde başla */
+    width: var(--blob-size, 58px);
+    /* Değişken boyut */
+    height: var(--blob-size, 58px);
+    transform: translate3d(0, 0, 0);
+    /* GPU hızlandırma için */
+    will-change: transform, opacity;
+    /* Tarayıcıya "bu hareket edecek" ipucu ver */
+    opacity: 0.9;
+    background: transparent;
+
+    /* [DEĞİŞKENLER] Her damla için farklı değerler atanabilir */
+    --drip-color: var(--primary-color);
+    --dur: 7.6s;
+    /* Düşüş süresi */
+    --delay: 0s;
+    /* Başlama gecikmesi */
+    --x: 16px;
+    /* Yatay salınım miktarı */
+    --trail-width: 10px;
+    /* Arkasındaki izin kalınlığı */
+    --trail-max: 58vh;
+    /* İzin maksimum uzunluğu */
+
+    /* Animasyonu başlat: dripBlob isminde, --dur süresince, sonsuz döngü */
+    animation: dripBlob var(--dur) cubic-bezier(0.14, 0.88, 0.25, 1) var(--delay) infinite;
+}
+
+/* [DAMLA İZİ] - Trail Effect (Before pseudo-element) */
+.paint-drip::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: calc(var(--blob-size, 58px) * 0.45);
+    /* Damlanın ortasından başla */
+    width: var(--trail-width, 10px);
+    height: var(--trail-max, 58vh);
+    border-radius: 999px;
+
+    /* İzin rengi aşağı doğru şeffaflaşır (Gradient) */
+    background: linear-gradient(to bottom,
+            rgba(255, 255, 255, 0.18) 0%,
+            /* Üst kısım hafif parlak */
+            var(--drip-color) 18%,
+            /* Orta kısım ana renk */
+            rgba(255, 255, 255, 0) 92%);
+    /* Alt kısım şeffaf */
+
+    opacity: 0.55;
+    transform: translateX(-50%) scaleY(0);
+    /* Başlangıçta iz yok (scaleY=0) */
+    transform-origin: top;
+    /* Yukarıdan aşağı uzasın */
+    pointer-events: none;
+
+    /* İzin animasyonu: Damladan biraz sonra başlar */
+    animation: dripTrail var(--dur) cubic-bezier(0.18, 0.9, 0.25, 1) var(--delay) infinite;
+}
+
+/* [DAMLA FORM] - Blob Shape (After pseudo-element) */
+.paint-drip::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    /* Armut şeklinde bozuk yuvarlak (doğal sıvı görünümü) */
+    border-radius: 55% 55% 62% 62% / 46% 46% 74% 74%;
+
+    /* 3D Işık ve Gölge Efektleri (Radial Gradient) */
+    background:
+        radial-gradient(circle at 32% 22%, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 58%),
+        /* Işık parlaması */
+        radial-gradient(circle at 55% 85%, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0) 56%),
+        /* Alt gölge */
+        var(--drip-color);
+    /* Ana renk */
+
+    box-shadow:
+        0 18px 28px rgba(0, 0, 0, 0.10),
+        /* Dış gölge */
+        inset 0 10px 12px rgba(255, 255, 255, 0.14);
+    /* İç parlama */
+
+    filter: saturate(1.1);
+    /* Rengi biraz doygunlaştır */
+
+    /* Damla düşerken titreme/esneme hareketi */
+    animation: dripBlobPulse calc(var(--dur) * 0.55) ease-in-out var(--delay) infinite;
+}
+
+/* [DAMLA VARYASYONLARI] - Her damla (child) için farklı konum ve süre */
+
+/* 1. Damla: En solda, mavi, orta hız */
+.paint-drip:nth-child(1) {
+    left: 5%;
+    --drip-color: var(--primary-color);
+    --dur: 7.8s;
+    --delay: 0.2s;
+    --blob-size: 64px;
+    --x: 14px;
+}
+
+/* 2. Damla: Soldan %20, altın rengi, yavaş */
+.paint-drip:nth-child(2) {
+    left: 20%;
+    --drip-color: var(--secondary-color);
+    --dur: 8.8s;
+    --delay: 0.95s;
+    --blob-size: 54px;
+    --x: 18px;
+}
+
+/* 3. Damla: Ortaya yakın, açık mavi, hızlı */
+.paint-drip:nth-child(3) {
+    left: 40%;
+    --drip-color: var(--primary-light);
+    --dur: 7.2s;
+    --delay: 0.55s;
+    --blob-size: 60px;
+    --x: 12px;
+}
+
+/* 4. Damla: Sağda, açık altın, çok yavaş */
+.paint-drip:nth-child(4) {
+    left: 60%;
+    --drip-color: var(--secondary-light);
+    --dur: 9.4s;
+    --delay: 1.35s;
+    --blob-size: 50px;
+    --x: 20px;
+}
+
+/* 5. Damla: En sağda, koyu mavi, orta hız */
+.paint-drip:nth-child(5) {
+    left: 80%;
+    --drip-color: var(--primary-dark);
+    --dur: 8.4s;
+    --delay: 1.8s;
+    --blob-size: 58px;
+    --x: 16px;
+}
+
+/* [KEYFRAMES] Ana Düşüş Animasyonu */
+@keyframes dripBlob {
+    0% {
+        transform: translate3d(0, -26vh, 0) scale(0.92);
+        /* Yukarıda, küçük başla */
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.9;
+        /* Görünür ol */
+    }
+
+    28% {
+        /* Hafif sola salınım ve başlangıç konumuna inme */
+        transform: translate3d(calc(var(--x) * -0.4), 6vh, 0) scale(1.0);
+    }
+
+    60% {
+        /* Sağa salınım ve aşağı düşüş */
+        transform: translate3d(var(--x), 68vh, 0) scale(1.02);
+        opacity: 0.95;
+    }
+
+    100% {
+        /* Ekranın altına geçiş ve kayboluş */
+        transform: translate3d(calc(var(--x) * -0.2), 124vh, 0) scale(0.95);
+        opacity: 0;
+    }
+}
+
+/* [KEYFRAMES] İz Uzama Animasyonu */
+@keyframes dripTrail {
+    0% {
+        transform: translateX(-50%) scaleY(0);
+        opacity: 0;
+    }
+
+    /* İz yok */
+    10% {
+        transform: translateX(-50%) scaleY(0.12);
+        opacity: 0.35;
+    }
+
+    /* Biraz uzadı */
+    60% {
+        transform: translateX(-50%) scaleY(1);
+        opacity: 0.55;
+    }
+
+    /* Maksimum uzunluk */
+    100% {
+        transform: translateX(-50%) scaleY(1);
+        opacity: 0;
+    }
+
+    /* Kaybol */
+}
+
+/* [KEYFRAMES] Damla Titreme (Pulse) */
+@keyframes dripBlobPulse {
+
+    0%,
+    100% {
+        transform: scale(0.96);
+    }
+
+    /* Biraz büzül */
+    45% {
+        transform: scale(1.04);
+    }
+
+    /* Biraz genişle (nefes alma hareketi) */
+}
+
+/* [ERİŞİLEBİLİRLİK] Hareket Azaltma Modu */
+@media (prefers-reduced-motion: reduce) {
+    .paint-drip {
+        animation: none !important;
+        /* Animasyonu kapat */
+        opacity: 0.12;
+        /* Sabit bir görüntü ver */
+        transform: none !important;
+    }
+}
+
+/* [IKON ANIMASYONLARI] - Vurgu Hareketleri */
+/* Zıplama */
+.icon-bounce {
+    animation: iconBounce 2s ease-in-out infinite;
+}
+
+@keyframes iconBounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Büyüyüp Küçülme */
+.icon-pulse {
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Dönme */
+.icon-rotate {
+    animation: iconRotate 3s linear infinite;
+}
+
+@keyframes iconRotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Titreme (Hata durumları için) */
+.icon-shake {
+    animation: iconShake 0.5s ease-in-out;
+}
+
+@keyframes iconShake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* [SAYAC ANIMASYONU] - Counter Effect
+   Istatistik sayilarinin (or. +500 Proje) stili. */
+.counter-value {
+    display: inline-block;
+    font-size: 3rem;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    /* Yazının içine gradient rengi gömme (Text Clipping) */
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.counter-suffix {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+}

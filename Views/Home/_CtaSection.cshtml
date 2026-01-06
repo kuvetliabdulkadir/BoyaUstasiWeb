@@ -1,0 +1,38 @@
+﻿@using boya_usta_web.Helpers
+@{
+    var settings = ViewBag.Settings as Dictionary<string, string?> ?? new Dictionary<string, string?>();
+    var whatsapp = settings.GetSetting("WhatsApp");
+    var whatsappDigits = !string.IsNullOrEmpty(whatsapp) 
+        ? whatsapp.Replace(" ", "").Replace("+", "") 
+        : "";
+    var hasWhatsApp = !string.IsNullOrEmpty(whatsappDigits);
+    var whatsappMessage = settings.GetSetting("WhatsAppDefaultMessage", "Merhaba, boya hizmeti hakkında bilgi almak istiyorum.");
+    var ctaTitle = settings.GetSetting("CtaTitle", "Hemen Ücretsiz Keşif İçin İletişime Geçin");
+    var ctaDescription = settings.GetSetting("CtaDescription", "WhatsApp'tan yazın veya telefon ile arayın. Size en uygun çözümü sunalım.");
+}
+
+@* Çağrı Alanı (CTA) *@
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-wrapper fade-in">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h2>@Html.Raw(ctaTitle)</h2>
+                    <p>@Html.Raw(ctaDescription)</p>
+                </div>
+                <div class="col-lg-4 d-flex flex-column align-items-center align-items-lg-end gap-3 mt-4 mt-lg-0">
+                    @if (hasWhatsApp && !string.IsNullOrEmpty(whatsapp))
+                    {
+                    <a href="@boya_usta_web.Helpers.UrlHelperExtensions.GetWhatsAppLink(whatsapp, whatsappMessage)" target="_blank" class="btn btn-secondary btn-lg" style="min-width: 220px;">
+                        <i class="bi bi-whatsapp me-2"></i>WhatsApp
+                    </a>
+                    }
+                    <a asp-controller="Contact" asp-action="Index" class="btn btn-outline-light btn-lg" style="min-width: 220px;">
+                        <i class="bi bi-envelope me-2"></i>İletişim Formu
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

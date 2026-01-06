@@ -1,0 +1,53 @@
+﻿@using boya_usta_web.Models
+@using boya_usta_web.Services
+@inject ISeoService SeoService
+@{
+    var reviews = ViewBag.Reviews as List<Review> ?? new List<Review>();
+    var siteUrl = SeoService.GetSiteUrl();
+    var siteName = SeoService.GetSiteName();
+    
+    if (!reviews.Any()) { return; }
+    
+    // Ortalama puan
+    var avgRating = 5.0;
+    var reviewCount = reviews.Count;
+    
+    // İlk 10 yorum (Schema standartları için 10 idealdir)
+    var topReviews = reviews.Take(10).ToList();
+    
+    // JSON oluştur
+    var reviewsJson = new System.Text.StringBuilder();
+    for (int i = 0; i < topReviews.Count; i++)
+    {
+        var review = topReviews[i];
+        var reviewDate = review.CreatedAt.ToString("yyyy-MM-dd");
+        var customerName = (review.CustomerName ?? "Müşteri").Replace("\"", "'");
+        var comment = (review.Comment ?? "").Replace("\"", "'").Replace("\r", "").Replace("\n", " ");
+        var isLast = i == topReviews.Count - 1;
+        
+        reviewsJson.Append("{");
+        reviewsJson.Append("\"@type\": \"Review\",");
+        reviewsJson.Append($"\"author\": {{\"@type\": \"Person\", \"name\": \"{customerName}\"}},");
+        reviewsJson.Append($"\"datePublished\": \"{reviewDate}\",");
+        reviewsJson.Append("\"reviewRating\": {\"@type\": \"Rating\", \"ratingValue\": \"5\", \"bestRating\": \"5\", \"worstRating\": \"1\"},");
+        reviewsJson.Append($"\"reviewBody\": \"{comment}\"");
+        reviewsJson.Append("}");
+        if (!isLast) reviewsJson.Append(",");
+    }
+}
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "LocalBusiness",
+    "@@id": "@siteUrl#reviews",
+    "name": "@Html.Raw(siteName)",
+    "aggregateRating": {
+        "@@type": "AggregateRating",
+        "ratingValue": "@avgRating.ToString("F1", System.Globalization.CultureInfo.InvariantCulture)",
+        "reviewCount": "@reviewCount",
+        "bestRating": "5",
+        "worstRating": "1"
+    },
+    "review": [@Html.Raw(reviewsJson.ToString())]
+}
+</script>

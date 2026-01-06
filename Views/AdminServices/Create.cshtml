@@ -1,0 +1,147 @@
+﻿@model Service
+@{
+    ViewData["Title"] = "Yeni Hizmet";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var detailsText = (ViewBag.DetailsText as string) ?? "";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2>Yeni Hizmet</h2>
+        <a href="@ViewBag.AdminPath/hizmetler" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri
+        </a>
+    </div>
+    <div class="admin-card-body">
+        <form method="post" enctype="multipart/form-data" class="admin-form">
+            @Html.AntiForgeryToken()
+
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label asp-for="Title" class="form-label">Başlık *</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="PriceInfo" class="form-label">Fiyat</label>
+                    <input asp-for="PriceInfo" class="form-control" placeholder="örn: 30-50 TL/m²" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="IconClass" class="form-label">İkon</label>
+                    <div class="row g-2 align-items-end">
+                        <div class="col-8">
+                            <select asp-for="IconClass" class="form-select icon-select" id="serviceIconSelect" data-initial-value="@(Model.IconClass ?? "")" data-preview-id="serviceIconPreview">
+                                <partial name="_IconSelectOptions" />
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <div class="border rounded d-flex align-items-center justify-content-center" style="height: 38px; background: #fff;">
+                                <i id="serviceIconPreview" class="bi bi-stars" style="font-size: 1.4rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-muted small mt-1">İkonu listeden seçin.</div>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="DisplayOrder" class="form-label">Sıra</label>
+                    <input asp-for="DisplayOrder" type="number" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="ShortDescription" class="form-label">Kısa Açıklama</label>
+                    <textarea asp-for="ShortDescription" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="col-12">
+                    <label asp-for="FullDescription" class="form-label">Detaylı Açıklama</label>
+                    <textarea asp-for="FullDescription" class="form-control" rows="4"></textarea>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Detaylar (her satır bir madde)</label>
+                    <textarea class="form-control" name="detailsText" rows="5" placeholder="Duvar hazırlığı&#10;Astar uygulaması&#10;Temizlik">@detailsText</textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Hizmet Görseli</label>
+                    <input type="file" name="image" class="form-control" accept="image/*" />
+                    <div class="text-muted small mt-1">Opsiyonel.</div>
+                </div>
+                <div class="col-md-6 d-flex align-items-center">
+                    <div class="form-check mt-4">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label">Aktif</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr class="my-3" />
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-check-lg me-2"></i>Kaydet
+                    </button>
+                    <a href="@ViewBag.AdminPath/hizmetler" class="btn btn-outline-secondary ms-2">İptal</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const select = document.getElementById('serviceIconSelect');
+            const preview = document.getElementById('serviceIconPreview');
+            if (!select || !preview) return;
+
+            // Değeri al
+            let currentValue = select.getAttribute('data-initial-value') || select.value || '';
+            
+            // Trim
+            if (currentValue) {
+                currentValue = currentValue.trim();
+            }
+            
+            // Option kontrol
+            if (currentValue) {
+                const trimmedValue = currentValue;
+                const hasOption = Array.from(select.options).some(o => {
+                    const optValue = (o.value || '').trim();
+                    return optValue === trimmedValue;
+                });
+                
+                if (!hasOption) {
+                    // Özel değer
+                    const opt = document.createElement('option');
+                    opt.value = trimmedValue;
+                    opt.textContent = 'Mevcut (özel): ' + trimmedValue;
+                    opt.selected = true;
+                    select.insertBefore(opt, select.firstChild);
+                    currentValue = trimmedValue;
+                } else {
+                    // Normal değer
+                    select.value = trimmedValue;
+                    // Selected kaldır
+                    Array.from(select.options).forEach(o => o.selected = false);
+                    // Doğruyu seç
+                    const correctOption = Array.from(select.options).find(o => (o.value || '').trim() === trimmedValue);
+                    if (correctOption) {
+                        correctOption.selected = true;
+                    }
+                    currentValue = trimmedValue;
+                }
+            }
+
+            function apply(val) {
+                if (preview && val) {
+                    preview.className = val.trim() || 'bi bi-stars';
+                }
+            }
+
+            // Preview güncelle
+            apply(currentValue);
+            
+            // Değişiklik
+            select.addEventListener('change', function () {
+                apply(this.value);
+            });
+        });
+    </script>
+}
+
+

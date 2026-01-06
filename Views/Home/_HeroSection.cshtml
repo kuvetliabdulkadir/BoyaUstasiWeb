@@ -1,0 +1,124 @@
+﻿@using boya_usta_web.Helpers
+@{
+    var settings = ViewBag.Settings as Dictionary<string, string?> ?? new Dictionary<string, string?>();
+    var experienceYears = settings.GetSetting("ExperienceYears");
+    var heroTitle = settings.GetSetting("HeroTitle");
+    var heroSubtitle = settings.GetSetting("HeroSubtitle");
+    var heroDescription = settings.GetSettingWithReplace("HeroDescription", "ExperienceYears");
+    var heroExperienceBadge = settings.GetSettingWithReplace("HeroExperienceBadge", "ExperienceYears");
+    var whatsapp = settings.GetSetting("WhatsApp");
+    var whatsappDigits = !string.IsNullOrEmpty(whatsapp) 
+        ? whatsapp.Replace(" ", "").Replace("+", "") 
+        : "";
+    var hasWhatsApp = !string.IsNullOrEmpty(whatsappDigits);
+    var whatsappMessage = settings.GetSetting("WhatsAppDefaultMessage", "Merhaba, boya hizmeti hakkında bilgi almak istiyorum.");
+    var phone = settings.GetSetting("Phone");
+    var phoneDigits = !string.IsNullOrEmpty(phone) 
+        ? phone.Replace(" ", "").Replace("+", "").Replace("-", "").Replace("(", "").Replace(")", "") 
+        : "";
+    var hasPhone = !string.IsNullOrEmpty(phoneDigits);
+    var simulatorImagePath = settings.GetSetting("SimulatorImagePath");
+    var heroVisualTitle = settings.GetSetting("HeroVisualTitle", "Kaliteli Boya Hizmeti");
+    var heroVisualSubtitle = settings.GetSetting("HeroVisualSubtitle", "Profesyonel Çözümler");
+}
+
+@* Ana Manşet (Hero) *@
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6 fade-in-left">
+                <div class="hero-content">
+                    <div class="hero-badge fade-in">
+                        <i class="bi bi-award-fill me-2"></i>
+                        <span>@Html.Raw(heroExperienceBadge) Tecrübe</span>
+                    </div>
+                    <h1 class="hero-title fade-in mb-2" style="font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.2; margin-top: -1rem; padding-bottom: 0.1em;">@Html.Raw(heroTitle)</h1>
+                    @if (!string.IsNullOrEmpty(heroSubtitle))
+                    {
+                        <h2 class="hero-title fade-in mb-4" style="font-size: clamp(1.5rem, 2.5vw, 2.2rem); line-height: 1.2; opacity: 0.9;">@Html.Raw(heroSubtitle)</h2>
+                    }
+                    <p class="hero-description fade-in">@Html.Raw(heroDescription)</p>
+                    
+                    <div class="hero-features fade-in">
+                        @{
+                            var feature1Icon = settings.GetSetting("HeroFeature1Icon", "bi bi-shield-check");
+                            var feature1Text = settings.GetSetting("HeroFeature1Text", "Memnuniyet Garantisi");
+                            var feature2Icon = settings.GetSetting("HeroFeature2Icon", "bi bi-cash-coin");
+                            var feature2Text = settings.GetSetting("HeroFeature2Text", "Uygun Fiyat");
+                            var feature3Icon = settings.GetSetting("HeroFeature3Icon", "bi bi-award");
+                            var feature3Text = settings.GetSetting("HeroFeature3Text", "Premium Kalite");
+                        }
+                        <div class="hero-feature">
+                            <i class="@feature1Icon"></i>
+                            <span>@Html.Raw(feature1Text)</span>
+                        </div>
+                        <div class="hero-feature">
+                            <i class="@feature2Icon"></i>
+                            <span>@Html.Raw(feature2Text)</span>
+                        </div>
+                        <div class="hero-feature">
+                            <i class="@feature3Icon"></i>
+                            <span>@Html.Raw(feature3Text)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-cta fade-in">
+                        @if (hasWhatsApp && !string.IsNullOrEmpty(whatsapp))
+                        {
+                        <a href="@boya_usta_web.Helpers.UrlHelperExtensions.GetWhatsAppLink(whatsapp, whatsappMessage)" target="_blank" class="btn btn-primary btn-lg me-3">
+                            <i class="bi bi-whatsapp me-2"></i>WhatsApp'tan Yaz
+                        </a>
+                        }
+                        @if (hasPhone)
+                        {
+                        <a href="tel:@phoneDigits" 
+                           data-contact-url="@Url.Action("Index", "Contact")" 
+                           data-phone="@phoneDigits"
+                           class="btn btn-outline-primary btn-lg phone-call-btn">
+                            <i class="bi bi-telephone-fill me-2"></i>İletişime Geç
+                        </a>
+                        }
+                </div>
+            </div>
+            </div>
+            <div class="col-lg-6 fade-in-right">
+                <div class="hero-image">
+                    <div class="hero-visual-container">
+                        @if (!string.IsNullOrEmpty(simulatorImagePath))
+                            {
+                            <div class="hero-visual-showcase">
+                                <div class="hero-geometric-bg">
+                                    <div class="geometric-shape geo-1"></div>
+                                    <div class="geometric-shape geo-2"></div>
+                                    <div class="geometric-shape geo-3"></div>
+                    </div>
+                                <div class="hero-image-wrapper">
+                                    <div class="hero-image-frame">
+                                        <img src="@simulatorImagePath" alt="Boya Ustası" class="hero-image-main" />
+                </div>
+            </div>
+                        </div>
+                            }
+                            else
+                            {
+                            <div class="hero-visual-showcase">
+                                <div class="hero-geometric-bg">
+                                    <div class="geometric-shape geo-1"></div>
+                                    <div class="geometric-shape geo-2"></div>
+                                    <div class="geometric-shape geo-3"></div>
+                        </div>
+                                <div class="hero-content-card">
+                                    <div class="hero-icon-circle">
+                                        <i class="fas fa-paint-roller" aria-hidden="true" style="font-size: 4rem; color: white;"></i>
+                                    </div>
+                                    <h2 class="hero-visual-title">@Html.Raw(heroVisualTitle)</h2>
+                                    <p class="hero-visual-subtitle">@Html.Raw(heroVisualSubtitle)</p>
+                                </div>
+                </div>
+            }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

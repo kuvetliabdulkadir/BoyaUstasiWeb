@@ -1,0 +1,28 @@
+@model boya_usta_web.Models.ViewModels.SeoSettingsVm
+
+@* Open Graph / Sosyal Medya *@
+<div class="card mb-4">
+    <div class="card-header bg-info text-white">
+        <i class="bi bi-share me-2"></i>Sosyal Medya (Open Graph)
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-8">
+                <label asp-for="DefaultOgImage" class="form-label"></label>
+                <input asp-for="DefaultOgImage" class="form-control" placeholder="/images/og-image.jpg" />
+                <div class="form-text">Sosyal medyada paylaşıldığında görünecek görsel. Önerilen boyut: <strong>1200x630 piksel</strong></div>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Locale" class="form-label"></label>
+                <select asp-for="Locale" class="form-select">
+                    <option value="tr_TR">Türkçe (Türkiye)</option>
+                    <option value="en_US">English (US)</option>
+                    <option value="en_GB">English (UK)</option>
+                    <option value="de_DE">Deutsch</option>
+                    <option value="fr_FR">Français</option>
+                    <option value="ar_SA">العربية</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
