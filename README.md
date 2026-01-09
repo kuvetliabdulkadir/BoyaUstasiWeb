@@ -183,7 +183,8 @@ boya_usta_web/
 -  FAQ (Sıkça Sorulan Sorular) bölümü
 
 
-## Lisans
 
-Bu proje eğitim ve ticari amaçlı geliştirilmiştir.
+
+
+> Bu proje eğitim ve ticari amaçlı geliştirilmiştir.
 
