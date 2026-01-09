@@ -186,5 +186,5 @@ boya_usta_web/
 
 
 
-> Bu proje eğitim ve ticari amaçlı geliştirilmiştir.
+ >  ### Bu proje eğitim ve ticari amaçlı geliştirilmiştir.
 
