@@ -2,7 +2,7 @@
 
 ## Proje Amacı
 
-Bu web uygulaması, boya ustalarının ve boya firmalarının müşterileriyle etkili iletişim kurmasını sağlayan, profesyonel bir online iş yönetim platformudur. Uygulama, hizmet tanıtımı, proje portföyü sunumu, müşteri talep yönetimi ve online teklif alma süreçlerini dijitalleştirerek sektördeki profesyonellerin işlerini daha verimli yürütmelerine yardımcı olur.
+Bu web uygulaması, boya ustalarının  müşterileriyle etkili iletişim kurmasını sağlayan, profesyonel bir online iş yönetim platformudur. Uygulama, hizmet tanıtımı, proje portföyü sunumu, müşteri talep yönetimi ve online teklif alma süreçlerini dijitalleştirerek sektördeki profesyonellerin işlerini daha verimli yürütmelerine yardımcı olur.
 
 ## Hedef Kullanıcı Kitlesi
 
