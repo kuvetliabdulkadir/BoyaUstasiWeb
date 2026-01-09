@@ -143,18 +143,7 @@ boya_usta_web/
 └─────────────────┘     └─────────────────┘
 ```
 
-### CRUD İşlemleri
 
-| Entity | Create | Read | Update | Delete |
-|--------|--------|------|--------|--------|
-| Project | ✅ | ✅ | ✅ | ✅ |
-| Service | ✅ | ✅ | ✅ | ✅ |
-| ContactMessage | ✅ | ✅ | ✅ | ✅ |
-| Review | ✅ | ✅ | ✅ | ✅ |
-| ColorPalette | ✅ | ✅ | ✅ | ✅ |
-| FAQ | ✅ | ✅ | ✅ | ✅ |
-| SiteSetting | ✅ | ✅ | ✅ | ✅ |
-| Statistic | ✅ | ✅ | ✅ | ✅ |
 
 ## Ekran Görüntüleri
 
@@ -180,18 +169,18 @@ boya_usta_web/
 ## Proje Özellikleri
 
 ### Tamamlanan Özellikler
-- [x] MVC mimarisi ile katmanlı yapı
-- [x] Entity Framework Core ile veritabanı entegrasyonu
-- [x] ASP.NET Core Identity ile kimlik doğrulama
-- [x] Responsive tasarım (Bootstrap 5)
-- [x] SEO uyumlu yapı (meta tags, sitemap)
-- [x] Admin paneli ile tam CRUD işlemleri
-- [x] Görsel optimizasyon (WebP dönüşümü)
-- [x] İletişim formu ve mesaj yönetimi
-- [x] Proje portföyü (önce/sonra görselleri)
-- [x] Müşteri yorumları sistemi
-- [x] Renk paleti simülatörü
-- [x] FAQ (Sıkça Sorulan Sorular) bölümü
+-  MVC mimarisi ile katmanlı yapı
+-  Entity Framework Core ile veritabanı entegrasyonu
+-  ASP.NET Core Identity ile kimlik doğrulama
+-  Responsive tasarım (Bootstrap 5)
+-  SEO uyumlu yapı (meta tags, sitemap)
+-  Admin paneli ile tam CRUD işlemleri
+-  Görsel optimizasyon (WebP dönüşümü)
+-  İletişim formu ve mesaj yönetimi
+-  Proje portföyü (önce/sonra görselleri)
+-  Müşteri yorumları sistemi
+-  Renk paleti simülatörü
+-  FAQ (Sıkça Sorulan Sorular) bölümü
 
 
 ## Lisans
