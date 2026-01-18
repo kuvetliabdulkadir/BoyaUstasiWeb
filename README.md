@@ -123,7 +123,7 @@ boya_usta_web/
 ![İstatistik](wwwroot/images/istati.png)
 ## Tanıtım Videosu
 
-**YouTube Linki:** [Proje tanıtım videosu](>https://youtu.be/hnnIbZEyMkU?si=xXmb_Ob-tfdgIMNK)
+**YouTube Linki:** [Proje tanıtım videosu]>(https://youtu.be/hnnIbZEyMkU?si=xXmb_Ob-tfdgIMNK)
 
 
 ## Proje Özellikleri
