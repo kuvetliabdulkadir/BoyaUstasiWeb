@@ -90,25 +90,37 @@ boya_usta_web/
 ├── appsettings.json    # Uygulama ayarları
 └── Program.cs          # Uygulama giriş noktası
 ```
-![test](./anasayfa.png)
-
 
 ## Ekran Görüntüleri
 
 ### Kullanıcı Arayüzü
-- **Ana Sayfa:** Hero slider, hizmetler, öne çıkan projeler, istatistikler
+- **Ana Sayfa:** Hero slider, hizmetler, öne çıkan projeler,SSS, müşteri yorumları 
+![Ana Sayfa](wwwroot/images/proje.png)
+- **Renk Simülatörü:** Müşterilerin boyatmak istedikleri alanları istediği renge boyayıp teklif alabilir, öncesi sonrası kısmı ile karşılaştırma yapabilir
+![Renk Simülatörü](wwwroot/images/renksim.png)
 - **Hizmetler Sayfası:** Tüm hizmetlerin detaylı listesi
-- **Projeler Sayfası:** Kategori filtreleme ile proje galerisi
+![Ana Sayfa](wwwroot/images/hizmetler.png)
+- **Projeler Sayfası:** Kategori filtreleme ile proje galerisi, proje detayında öncesi sonrası kısmı ile yapılan projeyi kıyaslama
+![Ana Sayfa](wwwroot/images/projeler.png)
+- **Hakkımız:** Boya ustasi hakkında kısa bilgiler, istatistikler, hizmet bölgeleri 
+![Hakkımız](wwwroot/images/hakkımız.png)
 - **İletişim:** Detaylı teklif talep formu
+![Ana Sayfa](wwwroot/images/iletişim.png)
 
 ### Admin Paneli
-- **Dashboard:** Genel istatistikler ve son aktiviteler
+- **Dashboard:** Yapılan son hareketler, genel istatistikler 
+![Dashboard](wwwroot/images/dashb.png)
 - **Projeler Yönetimi:** Proje ekleme, düzenleme, silme
+![Projeler](wwwroot/images/projelery.png)
 - **Hizmetler Yönetimi:** Hizmet CRUD işlemleri
+![Hizmetler](wwwroot/images/hizmetlery.png)
 - **Mesaj Yönetimi:** Gelen talepleri görüntüleme ve yanıtlama
-- **Ayarlar:** Site ayarları, SEO, renk paleti yönetimi
-
-
+![Mesajlar](wwwroot/images/mesajlar.png)
+- **Ayarlar:** Site ayarları, SEO, SSS yönetimi
+![Ana Sayfa](wwwroot/images/anasayfay.png)
+![Seo](wwwroot/images/seo.png)
+![Sosyal Medya](wwwroot/images/sosyal.png)
+![İstatistik](wwwroot/images/istati.png)
 ## Tanıtım Videosu
 
 **YouTube Linki:** [Proje Tanıtım Videosu](#)
