@@ -90,59 +90,7 @@ boya_usta_web/
 ├── appsettings.json    # Uygulama ayarları
 └── Program.cs          # Uygulama giriş noktası
 ```
-
-## Veritabanı Tasarımı
-
-### Entity-Relationship Diyagramı
-
-```
-┌─────────────────┐     ┌─────────────────┐
-│    Project      │────<│  ProjectImage   │
-├─────────────────┤     ├─────────────────┤
-│ Id (PK)         │     │ Id (PK)         │
-│ Title           │     │ ProjectId (FK)  │
-│ Description     │     │ ImagePath       │
-│ Category        │     │ DisplayOrder    │
-│ BeforeImagePath │     └─────────────────┘
-│ AfterImagePath  │
-│ IsActive        │
-└─────────────────┘
-
-┌─────────────────┐     ┌─────────────────┐
-│    Service      │────<│  ServiceDetail  │
-├─────────────────┤     ├─────────────────┤
-│ Id (PK)         │     │ Id (PK)         │
-│ Title           │     │ ServiceId (FK)  │
-│ ShortDescription│     │ Feature         │
-│ FullDescription │     └─────────────────┘
-│ IconClass       │
-│ ImagePath       │
-└─────────────────┘
-
-┌─────────────────┐     ┌─────────────────┐
-│ ContactMessage  │     │     Review      │
-├─────────────────┤     ├─────────────────┤
-│ Id (PK)         │     │ Id (PK)         │
-│ FullName        │     │ CustomerName    │
-│ Phone           │     │ Rating          │
-│ Email           │     │ Comment         │
-│ City            │     │ IsActive        │
-│ ServiceType     │     └─────────────────┘
-│ Message         │
-│ IsRead          │
-│ CreatedAt       │
-└─────────────────┘
-
-┌─────────────────┐     ┌─────────────────┐
-│  ColorPalette   │     │   SiteSetting   │
-├─────────────────┤     ├─────────────────┤
-│ Id (PK)         │     │ Id (PK)         │
-│ Name            │     │ Key (Unique)    │
-│ HexCode         │     │ Value           │
-│ Category        │     │ GroupName       │
-└─────────────────┘     └─────────────────┘
-```
-
+![test](./anasayfa.png)
 
 
 ## Ekran Görüntüleri
