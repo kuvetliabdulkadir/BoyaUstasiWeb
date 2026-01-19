@@ -1,5 +1,5 @@
 # Boya Ustası Web - Profesyonel Boya Badana Hizmetleri Yönetim Sistemi
-https://www.inegolboyaustasi.com
+[Site Linki](https://www.inegolboyaustasi.com)
 
 ## Proje Amacı
 
