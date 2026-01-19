@@ -28,7 +28,7 @@ Bu uygulama ile:
 1. **Hizmet Tanıtımı:** Sunulan tüm boya hizmetleri detaylı açıklamalarla listelenir
 2. **Proje Portföyü:** Önceki projeler "önce-sonra" fotoğraflarıyla sergilenir
 3. **Online Teklif Alma:** Müşteriler detaylı form doldurarak teklif talep edebilir
-4. **Renk Simülatörü:** Müşteriler renk paletlerini inceleyebilir
+4. **Renk Simülatörü:** Müşteriler renk paletlerini inceleyebilir, boyatmak istedikleri alanların nasıl gorüneceğine bakabilir
 5. **Müşteri Yorumları:** Referanslar ve yorumlar güven oluşturur
 6. **Admin Paneli:** Tüm içerik ve talepler merkezi olarak yönetilir
 
