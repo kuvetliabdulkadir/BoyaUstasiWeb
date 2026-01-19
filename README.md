@@ -105,7 +105,7 @@ boya_usta_web/
 - **Hakkımız:** Boya ustasi hakkında kısa bilgiler, istatistikler, hizmet bölgeleri 
 ![Hakkımız](wwwroot/images/hakkımız.png)
 - **İletişim:** Detaylı teklif talep formu
-![İletişim](wwwroot/images/iletişim.png)
+![İletişim](wwwroot/images/iletisim.png)
 
 ### Admin Paneli
 - **Dashboard:** Yapılan son hareketler, genel istatistikler 
