@@ -120,7 +120,7 @@ boya_usta_web/
 ![Ana Sayfa](wwwroot/images/anasayfay.png)
 ![Seo](wwwroot/images/seo.png)
 ![Sosyal Medya](wwwroot/images/sosyal.png)
-![İstatistik](wwwroot/images/istatiy.png)
+![İstatistik](wwwroot/images/istatay.png)
 ## Tanıtım Videosu
 
 **YouTube Linki:** [Proje tanıtım videosu](https://youtu.be/hnnIbZEyMkU?si=xXmb_Ob-tfdgIMNK)
