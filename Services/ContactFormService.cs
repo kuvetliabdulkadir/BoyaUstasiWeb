@@ -3,6 +3,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using boya_usta_web.Data;
 using boya_usta_web.Models;
+using boya_usta_web.Helpers;
 
 namespace boya_usta_web.Services
 {
@@ -36,6 +37,15 @@ namespace boya_usta_web.Services
         {
             try
             {
+                // Sanitize Inputs
+                model.FullName = SanitizationService.Sanitize(model.FullName);
+                model.Phone = SanitizationService.Sanitize(model.Phone);
+                model.Email = SanitizationService.Sanitize(model.Email);
+                model.City = SanitizationService.Sanitize(model.City);
+                model.District = SanitizationService.Sanitize(model.District);
+                model.ServiceType = SanitizationService.Sanitize(model.ServiceType);
+                model.Message = SanitizationService.Sanitize(model.Message);
+
                 // 1. Validasyonlar
                 var validationResult = ValidateForm(model, website);
                 if (!validationResult.IsValid)
